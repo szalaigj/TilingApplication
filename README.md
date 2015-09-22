@@ -1,6 +1,8 @@
 # TilingApplication
 This workspace contains c# solution of the problem 'histogram cells to servers' and Python project of the generation of simulated data and related figures.
 
+CellsToServers
+--------------
 The c# solution 'histogram cells to servers' included lp_solve as a compiled library which is a Linear Programming system (see: http://web.mit.edu/lpsolve/doc). The citation information is available below.
 
 lpsolve citation data
