@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Text;
 
 namespace CellsToServersApp.ArrayPartition
 {
@@ -20,6 +21,16 @@ namespace CellsToServersApp.ArrayPartition
                 Console.Write(" {0} {1} ", IndicesArray[2 * idx], IndicesArray[2 * idx + 1]);
             }
             Console.WriteLine("] : {0} heft", HeftOfRegion);
+        }
+
+        public void writeToStringBuilder(int spaceDimension, StringBuilder strBldr)
+        {
+            strBldr.Append(HeftOfRegion);
+            for (int idx = 0; idx < spaceDimension; idx++)
+            {
+                strBldr.Append(" ").Append(IndicesArray[2 * idx]).Append(" ").Append(IndicesArray[2 * idx + 1]);
+            }
+            strBldr.AppendLine();
         }
     }
 }

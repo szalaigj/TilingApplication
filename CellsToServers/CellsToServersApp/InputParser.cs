@@ -22,9 +22,10 @@ namespace CellsToServersApp
             serverNO = int.Parse(Console.ReadLine());
         }
 
-        public int parseInputArray(int histogramResolution, Array array)
+        public void parseInputArray(int serverNO, int histogramResolution, Array array, 
+            out int pointNO, out double delta)
         {
-            int pointNO = 0;
+            pointNO = 0;
             int cellNO = (int)Math.Pow(histogramResolution, array.Rank);
             Console.WriteLine("Enter values for array (splitted by character ' '):");
             Console.WriteLine("Example: (space dimension : 3, histogram resolution : 2)");
@@ -47,6 +48,7 @@ namespace CellsToServersApp
             // So the highest dimension-related index is the lowest index of the array.
             string line = Console.ReadLine();
             string[] cells = line.Split(' ');
+            int cellMaxValue = 0;
             if (cells.Length == cellNO)
             {
                 int[] indicesArray = new int[array.Rank];
@@ -54,6 +56,10 @@ namespace CellsToServersApp
                 {
                     transformator.transformCellIdxToIndicesArray(histogramResolution, indicesArray, cellIdx);
                     int cellValue = int.Parse(cells[cellIdx]);
+                    if (cellMaxValue < cellValue)
+                    {
+                        cellMaxValue = cellValue;
+                    }
                     pointNO += cellValue;
                     array.SetValue(cellValue, indicesArray);
                 }
@@ -62,7 +68,12 @@ namespace CellsToServersApp
             {
                 throw new ArgumentException("The cell number does not equal to the number of typed cells.");
             }
-            return pointNO;
+            delta = (double)pointNO / (double)serverNO;
+            if (cellMaxValue > delta)
+            {
+                throw new ArgumentException("There is a cell which has greater heft value than delta. " +
+                    "You should try to increase histogram resolution for the original data.");
+            }
         }
 
         public int parseInputTimeout()

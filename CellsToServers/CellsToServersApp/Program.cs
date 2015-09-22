@@ -2,6 +2,7 @@
 using CellsToServersApp.LPProblem;
 using System;
 using System.IO;
+using System.Text;
 
 namespace CellsToServersApp
 {
@@ -9,6 +10,8 @@ namespace CellsToServersApp
     {
         static void Main(string[] args)
         {
+            // IMPORTANT NOTE:
+            //     please check the Debug or Release folder contains lpsolve55.dll and build on x86 platform.
             IndexTransformator transformator = new IndexTransformator();
             InputParser inputParser = new InputParser(transformator);
             HeftArrayCreator heftArrayCreator = new HeftArrayCreator(transformator);
@@ -17,17 +20,26 @@ namespace CellsToServersApp
             double delta;
             int neededTileNumber;
             int[] tiles;
-            arrayPartitionPhase(transformator, inputParser, heftArrayCreator, 
+            try
+            {
+                arrayPartitionPhase(transformator, inputParser, heftArrayCreator,
                 out serverNO, out pointNO, out delta, out neededTileNumber, out tiles);
-            LPModelFileCreator lpModelFileCreator = new LPModelFileCreator();
-            LPSolver lpSolver = new LPSolver();
-            lpProblemPhase(inputParser, serverNO, pointNO, delta, neededTileNumber, tiles, 
-                lpModelFileCreator, lpSolver);
+                LPModelFileCreator lpModelFileCreator = new LPModelFileCreator();
+                LPSolver lpSolver = new LPSolver();
+                lpProblemPhase(inputParser, serverNO, pointNO, delta, neededTileNumber, tiles,
+                    lpModelFileCreator, lpSolver);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("ERROR: " + ex.Message);
+            }
             Console.WriteLine("Press any key to exit!");
             Console.Read();
         }
 
-        private static void arrayPartitionPhase(IndexTransformator transformator, InputParser inputParser, HeftArrayCreator heftArrayCreator, out int serverNO, out int pointNO, out double delta, out int neededTileNumber, out int[] tiles)
+        private static void arrayPartitionPhase(IndexTransformator transformator, InputParser inputParser, 
+            HeftArrayCreator heftArrayCreator, out int serverNO, out int pointNO, out double delta, 
+            out int neededTileNumber, out int[] tiles)
         {
             int spaceDimension;
             int histogramResolution;
@@ -40,9 +52,8 @@ namespace CellsToServersApp
                 lengthsArray[idx] = histogramResolution;
             }
             Array array = Array.CreateInstance(typeof(int), lengthsArray);
-            pointNO = inputParser.parseInputArray(histogramResolution, array);
+            inputParser.parseInputArray(serverNO, histogramResolution, array, out pointNO, out delta);
             Console.WriteLine("Point no.: {0}", pointNO);
-            delta = (double)pointNO / (double)serverNO;
             Console.WriteLine("Delta: {0}", delta);
             Array heftArray = heftArrayCreator.createHeftArray(spaceDimension, histogramResolution, array);
             
@@ -52,11 +63,15 @@ namespace CellsToServersApp
             neededTileNumber = divider.determineNeededTileNumber(out partition);
             Console.WriteLine("Needed tile number: {0}", neededTileNumber);
             tiles = new int[neededTileNumber];
+            StringBuilder strBldr = new StringBuilder();
             for (int idx = 0; idx < neededTileNumber; idx++)
             {
                 tiles[idx] = partition[idx].HeftOfRegion;
                 partition[idx].printCoords(spaceDimension, idx + 1);
+                partition[idx].writeToStringBuilder(spaceDimension, strBldr);
             }
+            string tilesOutput = @"c:\temp\data\tiles.dat";
+            System.IO.File.WriteAllText(tilesOutput, strBldr.ToString());
         }
 
         private static void lpProblemPhase(InputParser inputParser, int serverNO, int pointNO, double delta,
