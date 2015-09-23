@@ -77,13 +77,9 @@ class PlotResultUtil:
       ax.axhline(y = border, color=(0.5,0.5,0.5), linewidth=1, linestyle='-', zorder = 1)
     stepx = np.abs(coordsMaxs[0] - coordsMins[0]) / float(self.nhst_resolution)
     stepy = np.abs(coordsMaxs[1] - coordsMins[1]) / float(self.nhst_resolution)
-    red_rate = 1.0
-    green_rate = 0.0
     server_to_colors = {}
     for server_idx in range(nserver):
-      server_to_colors[server_idx] = (red_rate*1.0,green_rate*1.0,0.0)
-      red_rate -= 1/float(tilesCoords.shape[0])
-      green_rate += 1/float(tilesCoords.shape[0])
+      server_to_colors[server_idx] = tuple(np.random.uniform(0,1,3))
     for tileCoord_idx in range(tilesCoords.shape[0]):
       tile_x = coordsMins[0] + stepx * tilesCoords[tileCoord_idx][1]
       tile_y = coordsMins[1] + stepy * tilesCoords[tileCoord_idx][3]
