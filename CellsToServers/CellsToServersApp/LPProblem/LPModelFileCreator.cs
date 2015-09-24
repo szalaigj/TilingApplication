@@ -17,7 +17,7 @@ namespace CellsToServersApp.LPProblem
             output_lp = output_lp.Replace(@"${bin_vars}", binDefs);
             output_lp = output_lp.Replace(@"${consts}", constraints);
             //Console.WriteLine(output_lp);
-            string outputFilename = @"c:\Users\Janos Szalai-Gindl\Documents\_tiles\LPSolve Models\output_"
+            string outputFilename = @"c:\temp\LPSolve_Models\output_"
                 + serverNO + "_" + tileNO + ".lp";
             System.IO.File.WriteAllText(outputFilename, output_lp);
             Console.WriteLine("The output is written out to " + outputFilename);

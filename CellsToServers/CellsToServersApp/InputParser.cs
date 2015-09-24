@@ -1,5 +1,6 @@
 ﻿using CellsToServersApp.ArrayPartition;
 using System;
+using System.IO;
 
 namespace CellsToServersApp
 {
@@ -10,6 +11,48 @@ namespace CellsToServersApp
         public InputParser(IndexTransformator transformator)
         {
             this.transformator = transformator;
+        }
+
+        public bool determineTogetherOrSeparately()
+        {
+            bool together;
+            Console.WriteLine("Would you like to provide a path for the input file which "
+                + "contains sizes and histogram data (true or false)?");
+            while (!bool.TryParse(Console.ReadLine(), out together))
+            {
+                Console.WriteLine("Enter true or false:");
+            }
+            return together;
+        }
+
+        public Array parseInputFile(out int spaceDimension, out int histogramResolution, out int serverNO, out int pointNO, out double delta)
+        {
+            Array array;
+            Console.WriteLine("Enter the input path and filename:");
+            string filename = Console.ReadLine();
+            bool exists = File.Exists(filename);
+            if(exists)
+            {
+                string[] lines = File.ReadAllLines(filename);
+                spaceDimension = int.Parse(lines[0]);
+                histogramResolution = int.Parse(lines[1]);
+                serverNO = int.Parse(lines[2]);
+                Console.WriteLine("Space dim: {0}, resolution: {1}, server no.: {2}",
+                    spaceDimension, histogramResolution, serverNO);
+                int[] lengthsArray = new int[spaceDimension];
+                for (int idx = 0; idx < spaceDimension; idx++)
+                {
+                    lengthsArray[idx] = histogramResolution;
+                }
+                array = Array.CreateInstance(typeof(int), lengthsArray);
+                int cellNO = (int)Math.Pow(histogramResolution, array.Rank);
+                innerParseInputArray(serverNO, histogramResolution, array, cellNO, lines[3], out pointNO, out delta);
+            }
+            else
+            {
+                throw new ArgumentException("The path is not valid.");
+            }
+            return array;
         }
 
         public void parseInputSizes(out int spaceDimension, out int histogramResolution, out int serverNO)
@@ -25,7 +68,6 @@ namespace CellsToServersApp
         public void parseInputArray(int serverNO, int histogramResolution, Array array, 
             out int pointNO, out double delta)
         {
-            pointNO = 0;
             int cellNO = (int)Math.Pow(histogramResolution, array.Rank);
             Console.WriteLine("Enter values for array (splitted by character ' '):");
             Console.WriteLine("Example: (space dimension : 3, histogram resolution : 2)");
@@ -47,7 +89,13 @@ namespace CellsToServersApp
             //  array[1, 1, 1]==1
             // So the highest dimension-related index is the lowest index of the array.
             string line = Console.ReadLine();
+            innerParseInputArray(serverNO, histogramResolution, array, cellNO, line, out pointNO, out delta);
+        }
+
+        private void innerParseInputArray(int serverNO, int histogramResolution, Array array, int cellNO, string line, out int pointNO, out double delta)
+        {
             string[] cells = line.Split(' ');
+            pointNO = 0;
             int cellMaxValue = 0;
             if (cells.Length == cellNO)
             {

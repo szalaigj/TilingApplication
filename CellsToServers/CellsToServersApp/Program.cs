@@ -43,16 +43,17 @@ namespace CellsToServersApp
         {
             int spaceDimension;
             int histogramResolution;
-            inputParser.parseInputSizes(out spaceDimension, out histogramResolution, out serverNO);
-            Console.WriteLine("Space dim: {0}, resolution: {1}, server no.: {2}",
-                spaceDimension, histogramResolution, serverNO);
-            int[] lengthsArray = new int[spaceDimension];
-            for (int idx = 0; idx < spaceDimension; idx++)
+            Array array;
+            bool together = inputParser.determineTogetherOrSeparately();
+            if (together)
             {
-                lengthsArray[idx] = histogramResolution;
+                array = inputParser.parseInputFile(out spaceDimension, out histogramResolution, 
+                    out serverNO, out pointNO, out delta);
             }
-            Array array = Array.CreateInstance(typeof(int), lengthsArray);
-            inputParser.parseInputArray(serverNO, histogramResolution, array, out pointNO, out delta);
+            else
+            {
+                parseInputSeparately(inputParser, out serverNO, out pointNO, out delta, out spaceDimension, out histogramResolution, out array);
+            }
             Console.WriteLine("Point no.: {0}", pointNO);
             Console.WriteLine("Delta: {0}", delta);
             Array heftArray = heftArrayCreator.createHeftArray(spaceDimension, histogramResolution, array);
@@ -62,6 +63,26 @@ namespace CellsToServersApp
             Coords[] partition;
             neededTileNumber = divider.determineNeededTileNumber(out partition);
             Console.WriteLine("Needed tile number: {0}", neededTileNumber);
+            tiles = writeOutTiles(neededTileNumber, spaceDimension, partition);
+        }
+
+        private static void parseInputSeparately(InputParser inputParser, out int serverNO, out int pointNO, out double delta, out int spaceDimension, out int histogramResolution, out Array array)
+        {
+            inputParser.parseInputSizes(out spaceDimension, out histogramResolution, out serverNO);
+            Console.WriteLine("Space dim: {0}, resolution: {1}, server no.: {2}",
+                spaceDimension, histogramResolution, serverNO);
+            int[] lengthsArray = new int[spaceDimension];
+            for (int idx = 0; idx < spaceDimension; idx++)
+            {
+                lengthsArray[idx] = histogramResolution;
+            }
+            array = Array.CreateInstance(typeof(int), lengthsArray);
+            inputParser.parseInputArray(serverNO, histogramResolution, array, out pointNO, out delta);
+        }
+
+        private static int[] writeOutTiles(int neededTileNumber, int spaceDimension, Coords[] partition)
+        {
+            int[] tiles;
             tiles = new int[neededTileNumber];
             StringBuilder strBldr = new StringBuilder();
             for (int idx = 0; idx < neededTileNumber; idx++)
@@ -72,6 +93,7 @@ namespace CellsToServersApp
             }
             string tilesOutput = @"c:\temp\data\tiles.dat";
             System.IO.File.WriteAllText(tilesOutput, strBldr.ToString());
+            return tiles;
         }
 
         private static void lpProblemPhase(InputParser inputParser, int serverNO, int pointNO, double delta,
