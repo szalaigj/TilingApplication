@@ -17,7 +17,8 @@ args = parser.parse_args()
 
 utl = DataGenUtil(args)
 
-coords = utl.multivariate_normal_data_coords([0,0], [[1,0],[0,1]]) # diagonal covariance, points lie on x or y-axis
+#coords = utl.multivariate_normal_data_coords([0,0], [[1,0],[0,1]]) # diagonal covariance, points lie on x or y-axis
+coords = utl.multivariate_exponential_scale_0_5_data_coords(2)
 print coords
 utl.save_data_to_disk(coords)
 utl.plot_two_dimensional_data(coords)

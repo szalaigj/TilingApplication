@@ -31,9 +31,33 @@ class DataGenUtil:
   def multivariate_normal_data_coords(self, mean, cov):
     """
     This function returns coordinates of generated samples 
-    from multivariate normal
+    from multivariate normal distribution
     """
     coords = np.random.multivariate_normal(mean,cov,self.ndata)
+    return coords
+
+  def multivariate_uniform_data_coords(self, space_dim, low_value, high_value):
+    """
+    This function returns coordinates of generated samples 
+    from multivariate uniform distribution
+    """
+    coords = np.random.uniform(low=low_value,high=high_value,size=(self.ndata,space_dim))
+    return coords
+
+  def multivariate_chisquare_df_3_data_coords(self, space_dim):
+    """
+    This function returns coordinates of generated samples 
+    from multivariate chi-square distribution with three degree of freedom
+    """
+    coords = np.random.chisquare(df=3, size=(self.ndata,space_dim))
+    return coords
+	
+  def multivariate_exponential_scale_0_5_data_coords(self, space_dim):
+    """
+    This function returns coordinates of generated samples 
+    from multivariate exponential distribution with scale parameter 0.5
+    """
+    coords = np.random.exponential(scale=0.5, size=(self.ndata,space_dim))
     return coords
 	
   def save_data_to_disk(self, coords):

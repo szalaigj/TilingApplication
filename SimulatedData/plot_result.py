@@ -19,10 +19,10 @@ args = parser.parse_args()
 utl = PlotResultUtil(args)
 coords = utl.load_data_from_disk()
 tilesCoords = utl.load_tiles_from_disk()
-tiles_to_servers, nserver = utl.load_servers_from_disk()
+tiles_to_servers, nserver, hefts_of_servers = utl.load_servers_from_disk()
 
 print tilesCoords
 print '---------'
 print tiles_to_servers
 
-utl.plot_two_dimensional_data(coords, tilesCoords, nserver, tiles_to_servers)
+utl.plot_two_dimensional_data(coords, tilesCoords, nserver, tiles_to_servers, hefts_of_servers)
