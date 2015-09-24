@@ -95,8 +95,7 @@ class PlotResultUtil:
           leg_labels_to_objs[(related_server_idx + 1)] = rect1
       return leg_labels_to_objs
 
-  def _determine_legend(self, ax, coordsMaxs, coordsMins, hefts_of_servers, nserver, tiles_to_servers, tilesCoords):
-      leg_labels_to_objs = self._draw_tiles(ax, coordsMaxs, coordsMins, nserver, tiles_to_servers, tilesCoords)
+  def _determine_legend(self, leg_labels_to_objs, hefts_of_servers):
       leg_labels_sorted = leg_labels_to_objs.keys()
       leg_labels_sorted.sort()
       leg_objs_sorted = []
@@ -116,7 +115,8 @@ class PlotResultUtil:
     current_alpha = np.minimum(1.0, 1000.0 / self.ndata)
     ax.scatter(x_coord,y_coord, c=(0.0,0.0,1.0), marker = ".", linewidth=0, alpha=current_alpha, zorder = 3)
     self._draw_borders(ax, borders)
-    leg_labels_extended, leg_objs_sorted = self._determine_legend(ax, coordsMaxs, coordsMins, hefts_of_servers, nserver, tiles_to_servers, tilesCoords)
+    leg_labels_to_objs = self._draw_tiles(ax, coordsMaxs, coordsMins, nserver, tiles_to_servers, tilesCoords)
+    leg_labels_extended, leg_objs_sorted = self._determine_legend(leg_labels_to_objs, hefts_of_servers)
     xlim([coordsMins[0], coordsMaxs[0]])
     ylim([coordsMins[1], coordsMaxs[1]])
     lgd = ax.legend(leg_objs_sorted, leg_labels_extended, bbox_to_anchor=(1.075, 1.0), fontsize="small", mode="expand", borderaxespad=0.)
