@@ -89,6 +89,7 @@ class PlotResultUtil:
         ax.add_patch(patches.Rectangle((tile_x, tile_y),width,height,fill=False,linewidth=3,linestyle='solid',edgecolor='k',zorder = 2))
         related_server_idx = tiles_to_servers[tileCoord_idx]
         related_color = server_to_colors[related_server_idx]
+        ax.text(tile_x + (width/2.0), tile_y + (height/2.0), str(related_server_idx + 1), color='k',horizontalalignment='center', verticalalignment='center', fontweight='bold', fontsize=22)
         rect1 = patches.Rectangle((tile_x, tile_y),width,height,linewidth=0,alpha=0.6,facecolor=related_color,edgecolor='w',zorder = 2)
         ax.add_patch(rect1)
         if (related_server_idx + 1) not in leg_labels_to_objs:
