@@ -20,7 +20,8 @@ utl = DataGenUtil(args)
 #coords = utl.multivariate_normal_data_coords([0,0], [[1,0],[0,1]]) # diagonal covariance, points lie on x or y-axis
 #coords = utl.multivariate_exponential_scale_0_5_data_coords(2)
 #coords = utl.multivariate_chisquare_df_3_data_coords(2)
-coords = utl.multivariate_uniform_data_coords(2,-3,3)
+#coords = utl.multivariate_uniform_data_coords(2,-3,3)
+coords = utl.multivariate_normal_mixture_9_data_coords(2,[[-4,-4],[-4,0],[0,-4],[-4,4],[0,0],[4,-4],[0,4],[4,0],[4,4]],[[[0.25,0],[0,0.25]],[[0.25,0],[0,0.25]],[[0.25,0],[0,0.25]],[[0.25,0],[0,0.25]],[[0.5,0],[0,0.5]],[[0.25,0],[0,0.25]],[[0.25,0],[0,0.25]],[[0.25,0],[0,0.25]],[[0.25,0],[0,0.25]]],[0.0625,0.0625,0.0625,0.0625,0.5,0.0625,0.0625,0.0625,0.0625])
 print coords
 utl.save_data_to_disk(coords)
 utl.plot_two_dimensional_data(coords)
