@@ -136,7 +136,7 @@ class PlotResultUtil:
     color_pos = (color_pos - color_pos_mins) / color_pos_ranges
     return color_pos
 
-  def _determine_server_to_colors(self, nserver, tiles_to_servers, nTilesCoords):
+  def _determine_server_to_colors(self, nserver, tiles_to_servers, nTilesCoords, color_pos):
     server_to_colors = {}
     for server_idx in range(nserver):
       server_to_colors[server_idx] = [0.0,0.0,0.0,0.0]
@@ -164,7 +164,7 @@ class PlotResultUtil:
     # we would like to hand colors of tiles out such that the closer tiles are the less similar colors of them are. So we have to 'reverse' closeness for determination of similarities:
     similarities = -graph_edge_distances
     color_pos = self._determine_color_pos(similarities)
-    server_to_colors = self._determine_server_to_colors(nserver, tiles_to_servers, tilesCoords.shape[0])
+    server_to_colors = self._determine_server_to_colors(nserver, tiles_to_servers, tilesCoords.shape[0], color_pos)
     for tileCoord_idx in range(tilesCoords.shape[0]):
       tile_x = coordsMins[0] + stepx * tilesCoords[tileCoord_idx][1]
       tile_y = coordsMins[1] + stepy * tilesCoords[tileCoord_idx][3]
