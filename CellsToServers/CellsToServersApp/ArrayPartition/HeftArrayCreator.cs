@@ -36,8 +36,9 @@ namespace CellsToServersApp.ArrayPartition
                 {
                     transformator.transformCellIdxToIndicesArray(histogramResolution, innerIndicesArray, innerCellIdx);
                     int[] heftArrayIndeces;
+                    int cellPoints;
                     bool validHeftArrayIndeces = transformator.mergeIndicesArrays(spaceDimension, outerIndicesArray,
-                        innerIndicesArray, out heftArrayIndeces);
+                        innerIndicesArray, out heftArrayIndeces, out cellPoints);
                     if (validHeftArrayIndeces)
                     {
                         int cellValue = 0;

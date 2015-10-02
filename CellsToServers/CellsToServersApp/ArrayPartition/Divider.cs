@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CellsToServersApp.JensenShannonDiv;
+using System;
 
 namespace CellsToServersApp.ArrayPartition
 {
@@ -6,21 +7,29 @@ namespace CellsToServersApp.ArrayPartition
     {
         private Array array;
         private Array heftArray;
+        private Array frequencyArray;
+        private Array frequencyProjectionArray;
         private Array tileNumberArray;
         private Array partitionArray;
         private Array diffSumArray;
+        private Array maxDivArray;
         private IndexTransformator transformator;
+        private JenShaDivComputer jenShaDivComputer;
         private int spaceDimension;
         private int histogramResolution;
         private int serverNO;
         private double delta;
 
-        public Divider(Array array, Array heftArray, IndexTransformator transformator, 
-            int spaceDimension, int histogramResolution, int serverNO, double delta)
+        public Divider(Array array, Array heftArray, Array frequencyArray, Array frequencyProjectionArray,
+            IndexTransformator transformator, JenShaDivComputer jenShaDivComputer, int spaceDimension, 
+            int histogramResolution, int serverNO, double delta)
         {
             this.array = array;
             this.heftArray = heftArray;
+            this.frequencyArray = frequencyArray;
+            this.frequencyProjectionArray = frequencyProjectionArray;
             this.transformator = transformator;
+            this.jenShaDivComputer = jenShaDivComputer;
             this.spaceDimension = spaceDimension;
             this.histogramResolution = histogramResolution;
             this.serverNO = serverNO;
@@ -33,6 +42,7 @@ namespace CellsToServersApp.ArrayPartition
             this.tileNumberArray = Array.CreateInstance(typeof(int), lengthsTileNumberArray);
             this.partitionArray = Array.CreateInstance(typeof(Coords[]), lengthsTileNumberArray);
             this.diffSumArray = Array.CreateInstance(typeof(double), lengthsTileNumberArray);
+            this.maxDivArray = Array.CreateInstance(typeof(double), lengthsTileNumberArray);
         }
 
         public int determineNeededTileNumber(out Coords[] partition)
@@ -94,14 +104,14 @@ namespace CellsToServersApp.ArrayPartition
             int heftDifferenceOfParts = (int)heftArray.GetValue(indicesArray);
             int cellNO = (int)Math.Pow(histogramResolution, spaceDimension);
             int[] movingIndicesArray = new int[spaceDimension];
-            for (int windowIdx = 0; windowIdx < cellNO; windowIdx++)
+            for (int movingIdx = 0; movingIdx < cellNO; movingIdx++)
             {
-                transformator.transformCellIdxToIndicesArray(histogramResolution, movingIndicesArray, windowIdx);
+                transformator.transformCellIdxToIndicesArray(histogramResolution, movingIndicesArray, movingIdx);
                 for (int splitDimIdx = 0; splitDimIdx < spaceDimension; splitDimIdx++)
                 {
-                    bool validWindowIndicesArray = transformator.validateIndicesArrays(spaceDimension, splitDimIdx,
+                    bool validMovingIndicesArray = transformator.validateIndicesArrays(spaceDimension, splitDimIdx,
                         indicesArray, movingIndicesArray);
-                    if (validWindowIndicesArray)
+                    if (validMovingIndicesArray)
                     {
                         int[] firstPartIndicesArray, secondPartIndicesArray;
                         Coords[] firstPartPartition, secondPartPartition;
@@ -109,14 +119,25 @@ namespace CellsToServersApp.ArrayPartition
                             movingIndicesArray, out firstPartIndicesArray, out secondPartIndicesArray);
                         int neededTileNumberForFirstPart = innerDetermineNeededTileNumber(firstPartIndicesArray,
                             out firstPartPartition);
-                        int firstPartHeftOfRegion = (int)heftArray.GetValue(firstPartIndicesArray);
+                        //int firstPartHeftOfRegion = (int)heftArray.GetValue(firstPartIndicesArray);
                         int neededTileNumberForSecondPart = innerDetermineNeededTileNumber(secondPartIndicesArray,
                             out secondPartPartition);
-                        int secondPartHeftOfRegion = (int)heftArray.GetValue(secondPartIndicesArray);
+                        //int secondPartHeftOfRegion = (int)heftArray.GetValue(secondPartIndicesArray);
                         int currentTileNO = neededTileNumberForFirstPart + neededTileNumberForSecondPart;
-                        applyTheMoreDeltaApproxStrategy(indicesArray, ref partition, ref neededTileNumber,
-                            firstPartPartition, secondPartPartition, currentTileNO);
-                        // UNBALANCED SPLITTING SELECTION STRATEGY:
+
+                        applyJensenShannonWithProjectionStrategy(indicesArray, ref partition, ref neededTileNumber,
+                            firstPartPartition, secondPartPartition, currentTileNO, firstPartIndicesArray, 
+                            secondPartIndicesArray, splitDimIdx);
+
+                        //applyJensenShannonStrategy(indicesArray, ref partition, ref neededTileNumber,
+                        //    firstPartPartition, secondPartPartition, currentTileNO,
+                        //    firstPartIndicesArray, secondPartIndicesArray);
+
+                        //Delta-approximation strategy:
+                        //applyTheMoreDeltaApproxStrategy(indicesArray, ref partition, ref neededTileNumber,
+                        //    firstPartPartition, secondPartPartition, currentTileNO);
+
+                        //Unbalanced splitting selection strategy:
                         // applyUnbalancedSplittingSelectionStrategy(indicesArray, ref partition, ref neededTileNumber, 
                         //    ref heftDifferenceOfParts, firstPartPartition, 
                         //    secondPartPartition, firstPartHeftOfRegion, secondPartHeftOfRegion, currentTileNO);
@@ -125,6 +146,95 @@ namespace CellsToServersApp.ArrayPartition
             }
             return neededTileNumber;
         }
+
+        private void applyJensenShannonWithProjectionStrategy(int[] indicesArray, ref Coords[] partition,
+            ref int neededTileNumber, Coords[] firstPartPartition, Coords[] secondPartPartition, int currentTileNO,
+            int[] firstPartIndicesArray, int[] secondPartIndicesArray, int splitDimIdx)
+        {
+            if (currentTileNO < neededTileNumber)
+            {
+                neededTileNumber = currentTileNO;
+                partition = new Coords[neededTileNumber];
+                firstPartPartition.CopyTo(partition, 0);
+                secondPartPartition.CopyTo(partition, firstPartPartition.Length);
+                partitionArray.SetValue(partition, indicesArray);
+            }
+            else if (currentTileNO == neededTileNumber)
+            {
+                double currentDiv = determineCurrentDiv(firstPartIndicesArray, secondPartIndicesArray, splitDimIdx);
+                double maxDiv = (double)maxDivArray.GetValue(indicesArray);
+                if (maxDiv < currentDiv)
+                {
+                    maxDivArray.SetValue(currentDiv, indicesArray);
+                    partition = new Coords[neededTileNumber];
+                    firstPartPartition.CopyTo(partition, 0);
+                    secondPartPartition.CopyTo(partition, firstPartPartition.Length);
+                    partitionArray.SetValue(partition, indicesArray);
+                }
+            }
+        }
+
+        private double determineCurrentDiv(int[] firstPartIndicesArray, int[] secondPartIndicesArray, int splitDimIdx)
+        {
+            double firstPartHeftOfRegion = (double)((int)heftArray.GetValue(firstPartIndicesArray));
+            double secondPartHeftOfRegion = (double)((int)heftArray.GetValue(secondPartIndicesArray));
+            double firstWeight = firstPartHeftOfRegion / (firstPartHeftOfRegion + secondPartHeftOfRegion);
+            double secondWeight = secondPartHeftOfRegion / (firstPartHeftOfRegion + secondPartHeftOfRegion);
+            int[] firstPartExtendedIndicesArray = new int[firstPartIndicesArray.Length + 1];
+            firstPartExtendedIndicesArray[0] = splitDimIdx;
+            firstPartIndicesArray.CopyTo(firstPartExtendedIndicesArray, 1);
+            int[] secondPartExtendedIndicesArray = new int[secondPartIndicesArray.Length + 1];
+            secondPartExtendedIndicesArray[0] = splitDimIdx;
+            secondPartIndicesArray.CopyTo(secondPartExtendedIndicesArray, 1);
+            double[] firstPartFrequenciesOfRegion = (double[])frequencyProjectionArray.
+                GetValue(firstPartExtendedIndicesArray);
+            double[] secondPartFrequenciesOfRegion = (double[])frequencyProjectionArray.
+                GetValue(secondPartExtendedIndicesArray);
+            double currentDiv = jenShaDivComputer.computeDivergence(firstPartFrequenciesOfRegion, 
+                secondPartFrequenciesOfRegion, firstWeight, secondWeight);
+            return currentDiv;
+        }
+
+        private void applyJensenShannonStrategy(int[] indicesArray, ref Coords[] partition, 
+            ref int neededTileNumber, Coords[] firstPartPartition, Coords[] secondPartPartition, int currentTileNO, 
+            int[] firstPartIndicesArray, int[] secondPartIndicesArray)
+        {
+            if (currentTileNO < neededTileNumber)
+            {
+                neededTileNumber = currentTileNO;
+                partition = new Coords[neededTileNumber];
+                firstPartPartition.CopyTo(partition, 0);
+                secondPartPartition.CopyTo(partition, firstPartPartition.Length);
+                partitionArray.SetValue(partition, indicesArray);
+            }
+            else if (currentTileNO == neededTileNumber)
+            {
+                double currentDiv = determineCurrentDiv(firstPartIndicesArray, secondPartIndicesArray);
+                double maxDiv = (double)maxDivArray.GetValue(indicesArray);
+                if (maxDiv < currentDiv)
+                {
+                    maxDivArray.SetValue(currentDiv, indicesArray);
+                    partition = new Coords[neededTileNumber];
+                    firstPartPartition.CopyTo(partition, 0);
+                    secondPartPartition.CopyTo(partition, firstPartPartition.Length);
+                    partitionArray.SetValue(partition, indicesArray);
+                }
+            }
+        }
+
+        private double determineCurrentDiv(int[] firstPartIndicesArray, int[] secondPartIndicesArray)
+        {
+            double firstPartHeftOfRegion = (double)((int)heftArray.GetValue(firstPartIndicesArray));
+            double secondPartHeftOfRegion = (double)((int)heftArray.GetValue(secondPartIndicesArray));
+            double firstWeight = firstPartHeftOfRegion / (firstPartHeftOfRegion + secondPartHeftOfRegion);
+            double secondWeight = secondPartHeftOfRegion / (firstPartHeftOfRegion + secondPartHeftOfRegion);
+            double[] firstPartFrequenciesOfRegion = (double[])frequencyArray.GetValue(firstPartIndicesArray);
+            double[] secondPartFrequenciesOfRegion = (double[])frequencyArray.GetValue(secondPartIndicesArray);
+            double currentDiv = jenShaDivComputer.computeDivergence(firstPartFrequenciesOfRegion, secondPartFrequenciesOfRegion,
+                firstWeight, secondWeight);
+            return currentDiv;
+        }
+
 
         // This function applies a strategy when the stored needed tile number equals to the current value of it
         // where we would like to have tiles (multiple of server number) which are close to delta.

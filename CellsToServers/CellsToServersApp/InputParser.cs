@@ -1,5 +1,6 @@
 ﻿using CellsToServersApp.ArrayPartition;
 using System;
+using System.Globalization;
 using System.IO;
 
 namespace CellsToServersApp
@@ -25,7 +26,8 @@ namespace CellsToServersApp
             return together;
         }
 
-        public Array parseInputFile(out int spaceDimension, out int histogramResolution, out int serverNO, out int pointNO, out double delta)
+        public Array parseInputFile(out int spaceDimension, out int histogramResolution, out int serverNO,
+            out int pointNO, out double delta, out int scaleNumber, out int cellMaxValue, out double deltaCoefficient)
         {
             Array array;
             Console.WriteLine("Enter the input path and filename:");
@@ -37,8 +39,10 @@ namespace CellsToServersApp
                 spaceDimension = int.Parse(lines[0]);
                 histogramResolution = int.Parse(lines[1]);
                 serverNO = int.Parse(lines[2]);
-                Console.WriteLine("Space dim: {0}, resolution: {1}, server no.: {2}",
-                    spaceDimension, histogramResolution, serverNO);
+                scaleNumber = int.Parse(lines[3]);
+                deltaCoefficient = double.Parse(lines[4], CultureInfo.InvariantCulture);
+                Console.WriteLine("Space dim: {0}, resolution: {1}, server no.: {2}, scale no.: {3}, delta coefficient: {4}",
+                    spaceDimension, histogramResolution, serverNO, scaleNumber, deltaCoefficient);
                 int[] lengthsArray = new int[spaceDimension];
                 for (int idx = 0; idx < spaceDimension; idx++)
                 {
@@ -46,7 +50,8 @@ namespace CellsToServersApp
                 }
                 array = Array.CreateInstance(typeof(int), lengthsArray);
                 int cellNO = (int)Math.Pow(histogramResolution, array.Rank);
-                innerParseInputArray(serverNO, histogramResolution, array, cellNO, lines[3], out pointNO, out delta);
+                innerParseInputArray(serverNO, histogramResolution, array, cellNO, lines[5], out pointNO, out delta,
+                    out cellMaxValue);
             }
             else
             {
@@ -55,7 +60,8 @@ namespace CellsToServersApp
             return array;
         }
 
-        public void parseInputSizes(out int spaceDimension, out int histogramResolution, out int serverNO)
+        public void parseInputSizes(out int spaceDimension, out int histogramResolution, out int serverNO,
+            out int scaleNumber, out double deltaCoefficient)
         {
             Console.WriteLine("Enter space (array) dimension:");
             spaceDimension = int.Parse(Console.ReadLine());
@@ -63,10 +69,14 @@ namespace CellsToServersApp
             histogramResolution = int.Parse(Console.ReadLine());
             Console.WriteLine("Enter server number:");
             serverNO = int.Parse(Console.ReadLine());
+            Console.WriteLine("Enter scale number:");
+            scaleNumber = int.Parse(Console.ReadLine());
+            Console.WriteLine("Enter delta coefficient:");
+            deltaCoefficient = double.Parse(Console.ReadLine(), CultureInfo.InvariantCulture);
         }
 
-        public void parseInputArray(int serverNO, int histogramResolution, Array array, 
-            out int pointNO, out double delta)
+        public void parseInputArray(int serverNO, int histogramResolution, Array array,
+            out int pointNO, out double delta, out int cellMaxValue)
         {
             int cellNO = (int)Math.Pow(histogramResolution, array.Rank);
             Console.WriteLine("Enter values for array (splitted by character ' '):");
@@ -89,14 +99,16 @@ namespace CellsToServersApp
             //  array[1, 1, 1]==1
             // So the highest dimension-related index is the lowest index of the array.
             string line = Console.ReadLine();
-            innerParseInputArray(serverNO, histogramResolution, array, cellNO, line, out pointNO, out delta);
+            innerParseInputArray(serverNO, histogramResolution, array, cellNO, line, out pointNO, out delta, 
+                out cellMaxValue);
         }
 
-        private void innerParseInputArray(int serverNO, int histogramResolution, Array array, int cellNO, string line, out int pointNO, out double delta)
+        private void innerParseInputArray(int serverNO, int histogramResolution, Array array, int cellNO, string line,
+            out int pointNO, out double delta, out int cellMaxValue)
         {
             string[] cells = line.Split(' ');
             pointNO = 0;
-            int cellMaxValue = 0;
+            cellMaxValue = 0;
             if (cells.Length == cellNO)
             {
                 int[] indicesArray = new int[array.Rank];

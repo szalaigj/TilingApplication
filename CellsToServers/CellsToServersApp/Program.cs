@@ -1,4 +1,5 @@
 ﻿using CellsToServersApp.ArrayPartition;
+using CellsToServersApp.JensenShannonDiv;
 using CellsToServersApp.LPProblem;
 using System;
 using System.IO;
@@ -20,19 +21,19 @@ namespace CellsToServersApp
             double delta;
             int neededTileNumber;
             int[] tiles;
-            try
-            {
+            //try
+            //{
                 arrayPartitionPhase(transformator, inputParser, heftArrayCreator,
                 out serverNO, out pointNO, out delta, out neededTileNumber, out tiles);
                 LPModelFileCreator lpModelFileCreator = new LPModelFileCreator();
                 LPSolver lpSolver = new LPSolver();
                 lpProblemPhase(inputParser, serverNO, pointNO, delta, neededTileNumber, tiles,
                     lpModelFileCreator, lpSolver);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine("ERROR: " + ex.Message);
-            }
+            //}
+            //catch (Exception ex)
+            //{
+            //    Console.WriteLine("ERROR: " + ex.Message);
+            //}
             Console.WriteLine("Press any key to exit!");
             Console.Read();
         }
@@ -43,41 +44,59 @@ namespace CellsToServersApp
         {
             int spaceDimension;
             int histogramResolution;
+            int scaleNumber;
+            int cellMaxValue;
+            double deltaCoefficient;
             Array array;
             bool together = inputParser.determineTogetherOrSeparately();
             if (together)
             {
-                array = inputParser.parseInputFile(out spaceDimension, out histogramResolution, 
-                    out serverNO, out pointNO, out delta);
+                array = inputParser.parseInputFile(out spaceDimension, out histogramResolution,
+                    out serverNO, out pointNO, out delta, out scaleNumber, out cellMaxValue, out deltaCoefficient);
             }
             else
             {
-                parseInputSeparately(inputParser, out serverNO, out pointNO, out delta, out spaceDimension, out histogramResolution, out array);
+                parseInputSeparately(inputParser, out serverNO, out pointNO, out delta, out spaceDimension,
+                    out histogramResolution, out scaleNumber, out cellMaxValue, out array, out deltaCoefficient);
             }
             Console.WriteLine("Point no.: {0}", pointNO);
             Console.WriteLine("Delta: {0}", delta);
+            delta *= deltaCoefficient;
+            Console.WriteLine("The used delta: {0}", delta);
+            ShannonEntropyComputer entropyComputer = new ShannonEntropyComputer();
+            JenShaDivComputer jenShaDivComputer = new JenShaDivComputer(entropyComputer);
+            FrequencyComputer frequencyComputer = new FrequencyComputer(array, transformator, cellMaxValue, 
+                scaleNumber);
             Array heftArray = heftArrayCreator.createHeftArray(spaceDimension, histogramResolution, array);
-            
-            Divider divider = new Divider(array, heftArray, transformator,
-                spaceDimension, histogramResolution, serverNO, delta);
+            Array frequencyArray = frequencyComputer.createFrequencyArray(spaceDimension, histogramResolution);
+            FrequencyProjectionComputer frequencyProjectionComputer = new FrequencyProjectionComputer(array, 
+                heftArray, transformator, spaceDimension, histogramResolution, pointNO, scaleNumber);
+            Array frequencyProjectionArray = frequencyProjectionComputer.createFrequencyArray();
+
+            Divider divider = new Divider(array, heftArray, frequencyArray, frequencyProjectionArray, transformator, 
+                jenShaDivComputer, spaceDimension, histogramResolution, serverNO, delta);
             Coords[] partition;
             neededTileNumber = divider.determineNeededTileNumber(out partition);
             Console.WriteLine("Needed tile number: {0}", neededTileNumber);
             tiles = writeOutTiles(neededTileNumber, spaceDimension, partition);
         }
 
-        private static void parseInputSeparately(InputParser inputParser, out int serverNO, out int pointNO, out double delta, out int spaceDimension, out int histogramResolution, out Array array)
+        private static void parseInputSeparately(InputParser inputParser, out int serverNO, out int pointNO, 
+            out double delta, out int spaceDimension, out int histogramResolution, out int scaleNumber, 
+            out int cellMaxValue, out Array array, out double deltaCoefficient)
         {
-            inputParser.parseInputSizes(out spaceDimension, out histogramResolution, out serverNO);
-            Console.WriteLine("Space dim: {0}, resolution: {1}, server no.: {2}",
-                spaceDimension, histogramResolution, serverNO);
+            inputParser.parseInputSizes(out spaceDimension, out histogramResolution, out serverNO, out scaleNumber, 
+                out deltaCoefficient);
+            Console.WriteLine("Space dim: {0}, resolution: {1}, server no.: {2}, scale no.: {3}, delta coefficient: {4}",
+                spaceDimension, histogramResolution, serverNO, scaleNumber, deltaCoefficient);
             int[] lengthsArray = new int[spaceDimension];
             for (int idx = 0; idx < spaceDimension; idx++)
             {
                 lengthsArray[idx] = histogramResolution;
             }
             array = Array.CreateInstance(typeof(int), lengthsArray);
-            inputParser.parseInputArray(serverNO, histogramResolution, array, out pointNO, out delta);
+            inputParser.parseInputArray(serverNO, histogramResolution, array, out pointNO, out delta, 
+                out cellMaxValue);
         }
 
         private static int[] writeOutTiles(int neededTileNumber, int spaceDimension, Coords[] partition)

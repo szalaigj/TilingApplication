@@ -24,32 +24,34 @@ namespace CellsToServersApp.ArrayPartition
         }
 
         public bool mergeIndicesArrays(int spaceDimension, int[] outerIndicesArray,
-            int[] innerIndicesArray, out int[] heftArrayIndices)
+            int[] innerIndicesArray, out int[] mergedArrayIndices, out int cells)
         {
-            bool validHeftArrayIndices = true;
-            heftArrayIndices = new int[2 * spaceDimension];
+            bool validArrayIndices = true;
+            cells = 1;
+            mergedArrayIndices = new int[2 * spaceDimension];
             for (int idx = 0; idx < spaceDimension; idx++)
             {
                 int outerIdx = outerIndicesArray[idx];
                 int innerIdx = innerIndicesArray[idx];
                 if (outerIdx <= innerIdx)
                 {
-                    heftArrayIndices[2 * idx] = outerIdx;
-                    heftArrayIndices[2 * idx + 1] = innerIdx;
+                    mergedArrayIndices[2 * idx] = outerIdx;
+                    mergedArrayIndices[2 * idx + 1] = innerIdx;
+                    cells *= (innerIdx - outerIdx + 1);
                 }
                 else
                 {
-                    validHeftArrayIndices = false;
+                    validArrayIndices = false;
                     break;
                 }
             }
-            return validHeftArrayIndices;
+            return validArrayIndices;
         }
 
         public bool validateIndicesArrays(int spaceDimension, int[] outerIndicesArray,
             int[] innerIndicesArray, int[] windowIndicesArray)
         {
-            bool validHeftArrayIndices = true;
+            bool validArrayIndices = true;
             for (int idx = 0; idx < spaceDimension; idx++)
             {
                 int outerIdx = outerIndicesArray[idx];
@@ -57,32 +59,32 @@ namespace CellsToServersApp.ArrayPartition
                 int windowIdx = windowIndicesArray[idx];
                 if (!((outerIdx <= windowIdx) && (windowIdx <= innerIdx)))
                 {
-                    validHeftArrayIndices = false;
+                    validArrayIndices = false;
                     break;
                 }
             }
-            return validHeftArrayIndices;
+            return validArrayIndices;
         }
 
         public bool validateIndicesArrays(int spaceDimension, int splitDimIdx, int[] indicesArray,
-            int[] windowIndicesArray)
+            int[] movingIndicesArray)
         {
-            bool validWindowIndicesArray = true;
+            bool validMovingIndicesArray = true;
             for (int idx = 0; idx < spaceDimension; idx++)
             {
                 int lowerBound = indicesArray[2 * idx];
                 int upperBound = indicesArray[2 * idx + 1];
                 if (idx == splitDimIdx)
                 {
-                    int windowIdx = windowIndicesArray[idx];
-                    if (!((lowerBound <= windowIdx) && (windowIdx < upperBound)))
+                    int movingIdx = movingIndicesArray[idx];
+                    if (!((lowerBound <= movingIdx) && (movingIdx < upperBound)))
                     {
-                        validWindowIndicesArray = false;
+                        validMovingIndicesArray = false;
                         break;
                     }
                 }
             }
-            return validWindowIndicesArray;
+            return validMovingIndicesArray;
         }
 
         public void splitIndicesArrays(int spaceDimension, int splitDimIdx, int[] indicesArray,
@@ -108,6 +110,33 @@ namespace CellsToServersApp.ArrayPartition
                     secondPartIndicesArray[2 * idx] = lowerBound;
                 }
             }
+        }
+
+        public int[] aggregateProjectedIndicesArrays(int spaceDimension, int histogramResolution, int cellNO,
+            int lowerBoundForSplitDim, int upperBoundForSplitDim, int splitDimIdx, int[] indicesArray,
+            Array heftArray)
+        {
+            int cellsInProjectedRegion = (upperBoundForSplitDim - lowerBoundForSplitDim + 1);
+            int[] projectionArray = new int[cellsInProjectedRegion];
+            for (int movingIdx = lowerBoundForSplitDim; movingIdx <= upperBoundForSplitDim; movingIdx++)
+            {
+                int[] bandOfIndicesArray = new int[2 * spaceDimension];
+                for (int idx = 0; idx < spaceDimension; idx++)
+                {
+                    if (idx == splitDimIdx)
+                    {
+                        bandOfIndicesArray[2 * idx] = movingIdx;
+                        bandOfIndicesArray[2 * idx + 1] = movingIdx;
+                    }
+                    else
+                    {
+                        bandOfIndicesArray[2 * idx] = indicesArray[2 * idx];
+                        bandOfIndicesArray[2 * idx + 1] = indicesArray[2 * idx + 1];
+                    }
+                }
+                projectionArray[movingIdx - lowerBoundForSplitDim] = (int)heftArray.GetValue(bandOfIndicesArray);
+            }
+            return projectionArray;
         }
     }
 }

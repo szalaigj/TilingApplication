@@ -66,6 +66,10 @@
     <Compile Include="ArrayPartition\HeftArrayCreator.cs" />
     <Compile Include="ArrayPartition\IndexTransformator.cs" />
     <Compile Include="InputParser.cs" />
+    <Compile Include="JensenShannonDiv\FrequencyProjectionComputer.cs" />
+    <Compile Include="JensenShannonDiv\FrequencyComputer.cs" />
+    <Compile Include="JensenShannonDiv\JenShaDivComputer.cs" />
+    <Compile Include="JensenShannonDiv\ShannonEntropyComputer.cs" />
     <Compile Include="LPProblem\LPModelFileCreator.cs" />
     <Compile Include="LPProblem\lpsolve55.cs" />
     <Compile Include="LPProblem\LPSolver.cs" />
