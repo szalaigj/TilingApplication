@@ -3,6 +3,7 @@ Created 2015-09-22 by Janos Szalai-Gindl;
 Executing: e.g. python plot_result.py data.dat tiles.dat servers.dat 2 10  
 """
 import argparse as argp
+from data_io_util import DataIOUtil
 from plot_result_util import PlotResultUtil
 
 parser = argp.ArgumentParser()
@@ -16,10 +17,11 @@ parser.add_argument("--suffix", default = "", help="The suffix of sample-related
 parser.add_argument("--pdf_format", default = 'True', help="Would you like pdf format and high resolution for the figure output(s)?", type=str)
 args = parser.parse_args()
 
+data_io = DataIOUtil(args.data_dir)
 utl = PlotResultUtil(args)
-coords = utl.load_data_from_disk()
-tilesCoords = utl.load_tiles_from_disk()
-tiles_to_servers, nserver, hefts_of_servers = utl.load_servers_from_disk()
+coords = data_io.load_data_from_disk(args.data_file_name, args.space_dim)
+tilesCoords = data_io.load_tiles_from_disk(args.tiles_file_name, args.space_dim)
+tiles_to_servers, nserver, hefts_of_servers = data_io.load_servers_from_disk(args.servers_file_name)
 
 print tilesCoords
 print '---------'

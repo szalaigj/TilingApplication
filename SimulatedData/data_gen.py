@@ -3,7 +3,9 @@ Created 2015-09-22 by Janos Szalai-Gindl;
 Executing: e.g. python data_gen.py
 """
 import argparse as argp
+from data_io_util import DataIOUtil
 from data_gen_util import DataGenUtil
+from hstgram_creator import HistogramCreator
 
 parser = argp.ArgumentParser()
 parser.add_argument("--data_dir", default = "c:/temp/data/", help="The directory of the results", type=str)
@@ -15,7 +17,9 @@ parser.add_argument("--pdf_format", default = 'True', help="Would you like pdf f
 
 args = parser.parse_args()
 
+data_io = DataIOUtil(args.data_dir)
 utl = DataGenUtil(args)
+hstgram_cr = HistogramCreator()
 
 #coords = utl.multivariate_normal_data_coords([0,0], [[1,0],[0,1]]) # diagonal covariance, points lie on x or y-axis
 #coords = utl.multivariate_exponential_scale_0_5_data_coords(2)
@@ -24,7 +28,10 @@ utl = DataGenUtil(args)
 #coords = utl.multivariate_normal_mixture_9_data_coords(2,[[-4,-4],[-4,0],[0,-4],[-4,4],[0,0],[4,-4],[0,4],[4,0],[4,4]],[[[0.25,0],[0,0.25]],[[0.25,0],[0,0.25]],[[0.25,0],[0,0.25]],[[0.25,0],[0,0.25]],[[0.5,0],[0,0.5]],[[0.25,0],[0,0.25]],[[0.25,0],[0,0.25]],[[0.25,0],[0,0.25]],[[0.25,0],[0,0.25]]],[0.0625,0.0625,0.0625,0.0625,0.5,0.0625,0.0625,0.0625,0.0625])
 coords = utl.multivariate_normal_mixture_9_data_coords(2,[[-6,-6],[-6,0],[0,-6],[-6,6],[0,0],[6,-6],[0,6],[6,0],[6,6]],[[[0.1,0],[0,0.1]],[[0.1,0],[0,0.1]],[[0.1,0],[0,0.1]],[[0.1,0],[0,0.1]],[[0.1,0],[0,0.1]],[[0.1,0],[0,0.1]],[[0.1,0],[0,0.1]],[[0.1,0],[0,0.1]],[[0.1,0],[0,0.1]]],[0.111111,0.111111,0.111111,0.111111,0.111111,0.111111,0.111111,0.111111,0.111111])
 print coords
-utl.save_data_to_disk(coords)
+data_io.save_data_to_disk(args.suffix, coords)
 utl.plot_two_dimensional_data(coords)
-hstgram = utl.create_histogram(args.nhst_resolution, args.nserver, coords)
-utl.save_histogram_to_disk(hstgram)
+histogram_resolution = args.nhst_resolution
+if(histogram_resolution == 0):
+  histogram_resolution = np.ceil(np.sqrt((2*space_dim + 1)*nserver))
+hstgram = hstgram_cr.create_histogram(histogram_resolution, coords)
+data_io.save_histogram_to_disk(args.suffix, args.ndata, hstgram)

@@ -1,6 +1,5 @@
 ﻿"""
 Created 2015-09-22 by Janos Szalai-Gindl;
-Executing: e.g. python data_gen 
 """
 import datetime as dt
 import numpy as np
@@ -20,9 +19,6 @@ class PlotResultUtil:
   
   def __init__(self, args):
     self.data_dir = args.data_dir
-    self.data_file_name = args.data_file_name
-    self.tiles_file_name = args.tiles_file_name
-    self.servers_file_name = args.servers_file_name
     self.space_dim = args.space_dim
     self.nhst_resolution = args.nhst_resolution
     self.suffix = args.suffix
@@ -36,30 +32,6 @@ class PlotResultUtil:
       rc('savefig', dpi=150)
     else:
       rc('savefig', dpi=100)
-
-  def load_data_from_disk(self):
-    coords = np.loadtxt(self.data_dir + self.data_file_name, delimiter=' ', usecols=tuple(range(self.space_dim)))
-    self.ndata = coords.shape[0]
-    return coords
-
-  def load_tiles_from_disk(self):
-    return np.loadtxt(self.data_dir + self.tiles_file_name, dtype=np.int32, delimiter=' ', usecols=tuple(range(2 * self.space_dim + 1)))
-
-  def load_servers_from_disk(self):
-    with open (self.data_dir + self.servers_file_name, "r") as server_file:
-      server_file_contents=server_file.readlines()
-    tiles_to_servers = {}
-    currentServer = 0
-    hefts_of_servers = []
-    for server_file_line in server_file_contents:
-      line_to_list = map(int, server_file_line.replace('\n','').split(' '))
-      # the first column is the heft of the current server
-      hefts_of_servers.append(line_to_list[0])
-      for idx in range(1, len(line_to_list)):
-        tileIdx = line_to_list[idx]
-        tiles_to_servers[tileIdx] = currentServer
-      currentServer += 1
-    return tiles_to_servers, currentServer, hefts_of_servers
 
   def _determine_borders(self, coordsMaxs, coordsMins):
     borders = []
@@ -199,7 +171,7 @@ class PlotResultUtil:
     borders = self._determine_borders(coordsMaxs, coordsMins)
     fig = figure()
     ax = subplot(111, aspect='equal')
-    current_alpha = np.minimum(1.0, 1000.0 / self.ndata)
+    current_alpha = np.minimum(1.0, 1000.0 / coords.shape[0])
     ax.scatter(x_coord,y_coord, c=(0.0,0.0,1.0), marker = ".", linewidth=0, alpha=current_alpha, zorder = 3)
     self._draw_borders(ax, borders)
     leg_labels_to_objs = self._draw_tiles(ax, coordsMaxs, coordsMins, nserver, tiles_to_servers, tilesCoords)
