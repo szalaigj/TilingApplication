@@ -61,8 +61,8 @@ namespace CellsToServersApp
             }
             Console.WriteLine("Point no.: {0}", pointNO);
             Console.WriteLine("Delta: {0}", delta);
-            delta *= deltaCoefficient;
-            Console.WriteLine("The used delta: {0}", delta);
+            double usedDelta = delta * deltaCoefficient;
+            Console.WriteLine("The used delta: {0}", usedDelta);
             ShannonEntropyComputer entropyComputer = new ShannonEntropyComputer();
             JenShaDivComputer jenShaDivComputer = new JenShaDivComputer(entropyComputer);
             FrequencyComputer frequencyComputer = new FrequencyComputer(array, transformator, cellMaxValue, 
@@ -73,8 +73,8 @@ namespace CellsToServersApp
                 heftArray, transformator, spaceDimension, histogramResolution, pointNO, scaleNumber);
             Array frequencyProjectionArray = frequencyProjectionComputer.createFrequencyArray();
 
-            Divider divider = new Divider(array, heftArray, frequencyArray, frequencyProjectionArray, transformator, 
-                jenShaDivComputer, spaceDimension, histogramResolution, serverNO, delta);
+            Divider divider = new Divider(array, heftArray, frequencyArray, frequencyProjectionArray, transformator,
+                jenShaDivComputer, spaceDimension, histogramResolution, serverNO, usedDelta);
             Coords[] partition;
             neededTileNumber = divider.determineNeededTileNumber(out partition);
             Console.WriteLine("Needed tile number: {0}", neededTileNumber);
