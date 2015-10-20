@@ -29,3 +29,7 @@ The Python project for simulating and plotting data includes scikit-learn (see: 
 scikit-learn citation data
 --------------------------
 Scikit-learn: Machine Learning in Python, Pedregosa et al., JMLR 12, pp. 2825-2830, 2011.
+
+SpectralClustering
+------------------
+![Notations](ImagesOfReadme/random_walk_for_directed_graph.png)
