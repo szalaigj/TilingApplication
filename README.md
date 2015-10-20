@@ -1,12 +1,10 @@
 # TilingApplication
 This workspace contains c# solution of the problem 'histogram cells to servers' and Python project of the generation of simulated data and related figures.
 
-CellsToServers
---------------
+## CellsToServers
 The c# solution 'histogram cells to servers' includes lp_solve as a compiled library which is a Linear Programming system (see: http://web.mit.edu/lpsolve/doc). The citation information is available below.
 
-lpsolve citation data
-----------------------
+### lpsolve citation data
 Description     : Open source (Mixed-Integer) Linear Programming system
 
 Language        : Multi-platform, pure ANSI C / POSIX source code, Lex/Yacc based parsing
@@ -22,14 +20,15 @@ Licence terms   : GNU LGPL (Lesser General Public Licence)
 Citation policy : General references as per LGPL
                   Module specific references as specified therein
 
-SimulatedData
---------------
+## SimulatedData
 The Python project for simulating and plotting data includes scikit-learn (see: http://scikit-learn.org/stable/index.html) for usage of MDS algorithm for sophisticated color management of figure generation. The citation information is available below.
 
-scikit-learn citation data
---------------------------
+### scikit-learn citation data
 Scikit-learn: Machine Learning in Python, Pedregosa et al., JMLR 12, pp. 2825-2830, 2011.
 
-SpectralClustering
-------------------
+## SpectralClustering
 ![Notations](ImagesOfReadme/random_walk_for_directed_graph.png)
+
+### References
+* _Gleich, David. "Hierarchical directed spectral graph partitioning." Tech. rep., Stanford University (2006)._
+* _Malliaros, Fragkiskos D., and Michalis Vazirgiannis. "Clustering and community detection in directed networks: A survey." Physics Reports 533.4 (2013): 95-142._
