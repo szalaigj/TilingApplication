@@ -27,7 +27,14 @@ The Python project for simulating and plotting data includes __scikit-learn__ (s
 Scikit-learn: Machine Learning in Python, Pedregosa et al., JMLR 12, pp. 2825-2830, 2011.
 
 ## SpectralClustering
-This c# solution 'spectral clustering for directed network' is based on the below-mentioned articles (see: References). It includes __MathNet.Numerics__ (see: http://numerics.mathdotnet.com/) which is used for tasks of _Linear Algebra_ topics. \(\alpha\cdot\pi_{1}\)
+This c# solution 'spectral clustering for directed network' is based on the below-mentioned articles (see: [References](https://github.com/szalaigj/TilingApplication#references)). It includes __MathNet.Numerics__ (see: http://numerics.mathdotnet.com/) which is used for tasks of _Linear Algebra_ topics. This will be used for another approach of the original problem.
+
+See [Notations](https://github.com/szalaigj/TilingApplication#notations) for the followings:
+* __Input__: file which contains weights ![weights](ImagesOfReadme/weight_element.png)
+* __Output__: clusters of the directed network
+1. Form the matrix ![theta](ImagesOfReadme/theta.png)
+2. Compute the eigenvector which belongs to the second largest eigenvalue. Thereafter split the node set into two parts based on this vector. (If a coordinate of the vector is non-negative the related node will belong to the one part otherwise to the other part.)
+3. Repeat steps 1. and 2. for the parts while the needed condition is satisfied.
 
 ### Notations
 ![Notations](ImagesOfReadme/random_walk_for_directed_graph.png)
