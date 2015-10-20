@@ -27,7 +27,7 @@ The Python project for simulating and plotting data includes __scikit-learn__ (s
 Scikit-learn: Machine Learning in Python, Pedregosa et al., JMLR 12, pp. 2825-2830, 2011.
 
 ## SpectralClustering
-This c# solution 'spectral clustering for directed network' is based on the below-mentioned articles (see: [References](https://github.com/szalaigj/TilingApplication#references)). It includes __MathNet.Numerics__ (see: http://numerics.mathdotnet.com/) which is used for tasks of _Linear Algebra_ topics. This will be used for another approach of the original problem.
+This c# solution 'spectral clustering for directed network' is based on the below-mentioned articles (see: [References](https://github.com/szalaigj/TilingApplication#references)). This will be used for another approach of the original problem. It depends on __MathNet.Numerics__ (see: http://numerics.mathdotnet.com/) which is used for tasks of _Linear Algebra_ topics.
 
 See [Notations](https://github.com/szalaigj/TilingApplication#notations) for the followings:
 * __Input__: file which contains weights ![weights](ImagesOfReadme/weight_element.png)
