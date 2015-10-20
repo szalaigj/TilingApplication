@@ -32,6 +32,7 @@ This c# solution 'spectral clustering for directed network' is based on the belo
 See [Notations](https://github.com/szalaigj/TilingApplication#notations) for the followings:
 * __Input__: file which contains weights ![weights](ImagesOfReadme/weight_element.png)
 * __Output__: clusters of the directed network
+
 1. Form the matrix ![theta](ImagesOfReadme/theta.png)
 2. Compute the eigenvector which belongs to the second largest eigenvalue. Thereafter split the node set into two parts based on this vector. (If a coordinate of the vector is non-negative the related node will belong to the one part otherwise to the other part.)
 3. Repeat steps 1. and 2. for the parts while the needed condition is satisfied.
