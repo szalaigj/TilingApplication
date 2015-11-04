@@ -1,4 +1,5 @@
 ﻿using MathNet.Numerics.LinearAlgebra;
+using MathNet.Numerics.LinearAlgebra.Factorization;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -48,6 +49,23 @@ namespace SpectralClusteringApplication
             {
                 throw new ArgumentException("The alpha should be between 0.0 and 1.0.");
             }
+        }
+
+        public Vector<double> createStationaryDistributionOf(Matrix<double> randomWalkMX)
+        {
+            Evd<double> evdOfRandomWalkMXTransposed = randomWalkMX.Transpose().Evd();
+            Vector<double> pi = null;
+            for (int idx = 0; idx < evdOfRandomWalkMXTransposed.EigenValues.Count; idx++)
+            {
+                if (Math.Abs(evdOfRandomWalkMXTransposed.EigenValues[idx].Real - 1.0) < 0.00001)
+                {
+                    pi = evdOfRandomWalkMXTransposed.EigenVectors.Column(idx);
+                }
+            }
+            // see: https://en.wikipedia.org/wiki/Markov_chain#Stationary_distribution_relation_to_eigenvectors_and_simplices
+            double sumPi = pi.Sum();
+            pi = pi.Multiply(1 / sumPi);
+            return pi;
         }
     }
 }
