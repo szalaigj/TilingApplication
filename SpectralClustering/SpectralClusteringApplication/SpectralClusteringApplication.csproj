@@ -46,7 +46,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="InputParser.cs" />
+    <Compile Include="NormCutLeaf.cs" />
     <Compile Include="NormCutUtils.cs" />
+    <Compile Include="PartitioningBasedOnSpectrumAlgo.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RandomWalkDesigner.cs" />
