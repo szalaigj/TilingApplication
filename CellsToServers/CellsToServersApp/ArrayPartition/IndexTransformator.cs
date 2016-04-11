@@ -112,6 +112,30 @@ namespace CellsToServersApp.ArrayPartition
             }
         }
 
+        public void determineSidesOfSplit(int spaceDimension, int splitDimIdx, int[] indicesArray,
+            int[] movingIndicesArray, out int[] firstSideOfSplit, out int[] secondSideOfSplit)
+        {
+            firstSideOfSplit = new int[2 * spaceDimension];
+            secondSideOfSplit = new int[2 * spaceDimension];
+            for (int idx = 0; idx < spaceDimension; idx++)
+            {
+                if (idx == splitDimIdx)
+                {
+                    int movingIdx = movingIndicesArray[idx];
+                    firstSideOfSplit[2 * idx] = firstSideOfSplit[2 * idx + 1] = movingIdx;
+                    secondSideOfSplit[2 * idx] = secondSideOfSplit[2 * idx + 1] = movingIdx + 1;
+                }
+                else
+                {
+                    int lowerBound = indicesArray[2 * idx];
+                    int upperBound = indicesArray[2 * idx + 1];
+                    firstSideOfSplit[2 * idx] = secondSideOfSplit[2 * idx] = lowerBound;
+                    firstSideOfSplit[2 * idx + 1] = secondSideOfSplit[2 * idx + 1] = upperBound;
+                    
+                }
+            }
+        }
+
         public int[] aggregateProjectedIndicesArrays(int spaceDimension, int histogramResolution, int cellNO,
             int lowerBoundForSplitDim, int upperBoundForSplitDim, int splitDimIdx, int[] indicesArray,
             Array heftArray)
