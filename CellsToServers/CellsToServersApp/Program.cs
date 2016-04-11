@@ -1,5 +1,4 @@
 ﻿using CellsToServersApp.ArrayPartition;
-using CellsToServersApp.JensenShannonDiv;
 using CellsToServersApp.LPProblem;
 using System;
 using System.IO;
@@ -44,7 +43,7 @@ namespace CellsToServersApp
         {
             int spaceDimension;
             int histogramResolution;
-            int scaleNumber;
+            int strategyCode;
             int cellMaxValue;
             double deltaCoefficient;
             Array array;
@@ -52,29 +51,21 @@ namespace CellsToServersApp
             if (together)
             {
                 array = inputParser.parseInputFile(out spaceDimension, out histogramResolution,
-                    out serverNO, out pointNO, out delta, out scaleNumber, out cellMaxValue, out deltaCoefficient);
+                    out serverNO, out pointNO, out delta, out strategyCode, out cellMaxValue, out deltaCoefficient);
             }
             else
             {
                 parseInputSeparately(inputParser, out serverNO, out pointNO, out delta, out spaceDimension,
-                    out histogramResolution, out scaleNumber, out cellMaxValue, out array, out deltaCoefficient);
+                    out histogramResolution, out strategyCode, out cellMaxValue, out array, out deltaCoefficient);
             }
             Console.WriteLine("Point no.: {0}", pointNO);
             Console.WriteLine("Delta: {0}", delta);
             double usedDelta = delta * deltaCoefficient;
             Console.WriteLine("The used delta: {0}", usedDelta);
-            ShannonEntropyComputer entropyComputer = new ShannonEntropyComputer();
-            JenShaDivComputer jenShaDivComputer = new JenShaDivComputer(entropyComputer);
-            FrequencyComputer frequencyComputer = new FrequencyComputer(array, transformator, cellMaxValue, 
-                scaleNumber);
             Array heftArray = heftArrayCreator.createHeftArray(spaceDimension, histogramResolution, array);
-            Array frequencyArray = frequencyComputer.createFrequencyArray(spaceDimension, histogramResolution);
-            FrequencyProjectionComputer frequencyProjectionComputer = new FrequencyProjectionComputer(array, 
-                heftArray, transformator, spaceDimension, histogramResolution, pointNO, scaleNumber);
-            Array frequencyProjectionArray = frequencyProjectionComputer.createFrequencyArray();
 
-            Divider divider = new Divider(array, heftArray, frequencyArray, frequencyProjectionArray, transformator,
-                jenShaDivComputer, spaceDimension, histogramResolution, serverNO, usedDelta);
+            Divider divider = new Divider(array, heftArray, transformator, spaceDimension, histogramResolution,
+                serverNO, usedDelta, strategyCode);
             Coords[] partition;
             neededTileNumber = divider.determineNeededTileNumber(out partition);
             Console.WriteLine("Needed tile number: {0}", neededTileNumber);
@@ -82,13 +73,14 @@ namespace CellsToServersApp
         }
 
         private static void parseInputSeparately(InputParser inputParser, out int serverNO, out int pointNO, 
-            out double delta, out int spaceDimension, out int histogramResolution, out int scaleNumber, 
+            out double delta, out int spaceDimension, out int histogramResolution, out int strategyCode, 
             out int cellMaxValue, out Array array, out double deltaCoefficient)
         {
-            inputParser.parseInputSizes(out spaceDimension, out histogramResolution, out serverNO, out scaleNumber, 
+            inputParser.parseInputSizes(out spaceDimension, out histogramResolution, out serverNO, out strategyCode, 
                 out deltaCoefficient);
-            Console.WriteLine("Space dim: {0}, resolution: {1}, server no.: {2}, scale no.: {3}, delta coefficient: {4}",
-                spaceDimension, histogramResolution, serverNO, scaleNumber, deltaCoefficient);
+            string strategyText = determineStrategyText(strategyCode);
+            Console.WriteLine("Space dim: {0}, resolution: {1}, server no.: {2}, chosen strategy: {3}, delta coefficient: {4}",
+                spaceDimension, histogramResolution, serverNO, strategyText, deltaCoefficient);
             int[] lengthsArray = new int[spaceDimension];
             for (int idx = 0; idx < spaceDimension; idx++)
             {
@@ -97,6 +89,20 @@ namespace CellsToServersApp
             array = Array.CreateInstance(typeof(int), lengthsArray);
             inputParser.parseInputArray(serverNO, histogramResolution, array, out pointNO, out delta, 
                 out cellMaxValue);
+        }
+
+        private static string determineStrategyText(int strategyCode)
+        {
+            string strategyText;
+            if (strategyCode == 0)
+            {
+                strategyText = "Optimized for clustering";
+            }
+            else
+            {
+                strategyText = "Optimized for load balancing";
+            }
+            return strategyText;
         }
 
         private static int[] writeOutTiles(int neededTileNumber, int spaceDimension, Coords[] partition)

@@ -27,7 +27,7 @@ namespace CellsToServersApp
         }
 
         public Array parseInputFile(out int spaceDimension, out int histogramResolution, out int serverNO,
-            out int pointNO, out double delta, out int scaleNumber, out int cellMaxValue, out double deltaCoefficient)
+            out int pointNO, out double delta, out int strategyCode, out int cellMaxValue, out double deltaCoefficient)
         {
             Array array;
             Console.WriteLine("Enter the input path and filename:");
@@ -39,10 +39,11 @@ namespace CellsToServersApp
                 spaceDimension = int.Parse(lines[0]);
                 histogramResolution = int.Parse(lines[1]);
                 serverNO = int.Parse(lines[2]);
-                scaleNumber = int.Parse(lines[3]);
+                strategyCode = int.Parse(lines[3]);
+                string strategyText = determineStrategyText(strategyCode);
                 deltaCoefficient = double.Parse(lines[4], CultureInfo.InvariantCulture);
-                Console.WriteLine("Space dim: {0}, resolution: {1}, server no.: {2}, scale no.: {3}, delta coefficient: {4}",
-                    spaceDimension, histogramResolution, serverNO, scaleNumber, deltaCoefficient);
+                Console.WriteLine("Space dim: {0}, resolution: {1}, server no.: {2}, chosen strategy: {3}, delta coefficient: {4}",
+                    spaceDimension, histogramResolution, serverNO, strategyText, deltaCoefficient);
                 int[] lengthsArray = new int[spaceDimension];
                 for (int idx = 0; idx < spaceDimension; idx++)
                 {
@@ -60,8 +61,22 @@ namespace CellsToServersApp
             return array;
         }
 
+        private string determineStrategyText(int strategyCode)
+        {
+            string strategyText;
+            if (strategyCode == 0)
+            {
+                strategyText = "Optimized for clustering";
+            }
+            else
+            {
+                strategyText = "Optimized for load balancing";
+            }
+            return strategyText;
+        }
+
         public void parseInputSizes(out int spaceDimension, out int histogramResolution, out int serverNO,
-            out int scaleNumber, out double deltaCoefficient)
+            out int strategyCode, out double deltaCoefficient)
         {
             Console.WriteLine("Enter space (array) dimension:");
             spaceDimension = int.Parse(Console.ReadLine());
@@ -69,8 +84,9 @@ namespace CellsToServersApp
             histogramResolution = int.Parse(Console.ReadLine());
             Console.WriteLine("Enter server number:");
             serverNO = int.Parse(Console.ReadLine());
-            Console.WriteLine("Enter scale number:");
-            scaleNumber = int.Parse(Console.ReadLine());
+            Console.WriteLine("Enter strategy code:");
+            Console.WriteLine("(0 : Optimized for clustering; 1 : Optimized for load balancing)");
+            strategyCode = int.Parse(Console.ReadLine());
             Console.WriteLine("Enter delta coefficient:");
             deltaCoefficient = double.Parse(Console.ReadLine(), CultureInfo.InvariantCulture);
         }
