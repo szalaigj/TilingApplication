@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
 VisualStudioVersion = 12.0.30110.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CellsToServersApp", "CellsToServersApp\CellsToServersApp.csproj", "{227787D7-240C-4D08-92E9-B36B98EEB996}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OldCellsToServersApp", "OldCellsToServersApp\OldCellsToServersApp.csproj", "{227787D7-240C-4D08-92E9-B36B98EEB996}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
