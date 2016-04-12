@@ -46,17 +46,20 @@ namespace CellsToServersApp
             int strategyCode;
             int cellMaxValue;
             double deltaCoefficient;
+            int slidingWindowSize;
             Array array;
             bool together = inputParser.determineTogetherOrSeparately();
             if (together)
             {
                 array = inputParser.parseInputFile(out spaceDimension, out histogramResolution,
-                    out serverNO, out pointNO, out delta, out strategyCode, out cellMaxValue, out deltaCoefficient);
+                    out serverNO, out pointNO, out delta, out strategyCode, out cellMaxValue,
+                    out deltaCoefficient, out slidingWindowSize);
             }
             else
             {
                 parseInputSeparately(inputParser, out serverNO, out pointNO, out delta, out spaceDimension,
-                    out histogramResolution, out strategyCode, out cellMaxValue, out array, out deltaCoefficient);
+                    out histogramResolution, out strategyCode, out cellMaxValue, out array,
+                    out deltaCoefficient, out slidingWindowSize);
             }
             Console.WriteLine("Point no.: {0}", pointNO);
             Console.WriteLine("Delta: {0}", delta);
@@ -65,7 +68,7 @@ namespace CellsToServersApp
             Array heftArray = heftArrayCreator.createHeftArray(spaceDimension, histogramResolution, array);
 
             Divider divider = new Divider(array, heftArray, transformator, spaceDimension, histogramResolution,
-                serverNO, usedDelta, strategyCode);
+                serverNO, delta, usedDelta, strategyCode, slidingWindowSize);
             Coords[] partition;
             neededTileNumber = divider.determineNeededTileNumber(out partition);
             Console.WriteLine("Needed tile number: {0}", neededTileNumber);
@@ -73,14 +76,15 @@ namespace CellsToServersApp
         }
 
         private static void parseInputSeparately(InputParser inputParser, out int serverNO, out int pointNO, 
-            out double delta, out int spaceDimension, out int histogramResolution, out int strategyCode, 
-            out int cellMaxValue, out Array array, out double deltaCoefficient)
+            out double delta, out int spaceDimension, out int histogramResolution, out int strategyCode,
+            out int cellMaxValue, out Array array, out double deltaCoefficient, out int slidingWindowSize)
         {
-            inputParser.parseInputSizes(out spaceDimension, out histogramResolution, out serverNO, out strategyCode, 
-                out deltaCoefficient);
+            inputParser.parseInputSizes(out spaceDimension, out histogramResolution, out serverNO, out strategyCode,
+                out deltaCoefficient, out slidingWindowSize);
             string strategyText = determineStrategyText(strategyCode);
-            Console.WriteLine("Space dim: {0}, resolution: {1}, server no.: {2}, chosen strategy: {3}, delta coefficient: {4}",
-                spaceDimension, histogramResolution, serverNO, strategyText, deltaCoefficient);
+            Console.WriteLine("Space dim: {0}, resolution: {1}, server no.: {2}, chosen strategy: {3}, " +
+                    "delta coefficient: {4}, sliding window size: {5}", spaceDimension, histogramResolution, serverNO,
+                    strategyText, deltaCoefficient, slidingWindowSize);
             int[] lengthsArray = new int[spaceDimension];
             for (int idx = 0; idx < spaceDimension; idx++)
             {

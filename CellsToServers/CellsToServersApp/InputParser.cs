@@ -27,7 +27,8 @@ namespace CellsToServersApp
         }
 
         public Array parseInputFile(out int spaceDimension, out int histogramResolution, out int serverNO,
-            out int pointNO, out double delta, out int strategyCode, out int cellMaxValue, out double deltaCoefficient)
+            out int pointNO, out double delta, out int strategyCode, out int cellMaxValue, out double deltaCoefficient,
+            out int slidingWindowSize)
         {
             Array array;
             Console.WriteLine("Enter the input path and filename:");
@@ -42,8 +43,10 @@ namespace CellsToServersApp
                 strategyCode = int.Parse(lines[3]);
                 string strategyText = determineStrategyText(strategyCode);
                 deltaCoefficient = double.Parse(lines[4], CultureInfo.InvariantCulture);
-                Console.WriteLine("Space dim: {0}, resolution: {1}, server no.: {2}, chosen strategy: {3}, delta coefficient: {4}",
-                    spaceDimension, histogramResolution, serverNO, strategyText, deltaCoefficient);
+                slidingWindowSize = int.Parse(lines[5]);
+                Console.WriteLine("Space dim: {0}, resolution: {1}, server no.: {2}, chosen strategy: {3}, " +
+                    "delta coefficient: {4}, sliding window size: {5}", spaceDimension, histogramResolution, serverNO, 
+                    strategyText, deltaCoefficient, slidingWindowSize);
                 int[] lengthsArray = new int[spaceDimension];
                 for (int idx = 0; idx < spaceDimension; idx++)
                 {
@@ -51,7 +54,7 @@ namespace CellsToServersApp
                 }
                 array = Array.CreateInstance(typeof(int), lengthsArray);
                 int cellNO = (int)Math.Pow(histogramResolution, array.Rank);
-                innerParseInputArray(serverNO, histogramResolution, array, cellNO, lines[5], out pointNO, out delta,
+                innerParseInputArray(serverNO, histogramResolution, array, cellNO, lines[6], out pointNO, out delta,
                     out cellMaxValue);
             }
             else
@@ -76,7 +79,7 @@ namespace CellsToServersApp
         }
 
         public void parseInputSizes(out int spaceDimension, out int histogramResolution, out int serverNO,
-            out int strategyCode, out double deltaCoefficient)
+            out int strategyCode, out double deltaCoefficient, out int slidingWindowSize)
         {
             Console.WriteLine("Enter space (array) dimension:");
             spaceDimension = int.Parse(Console.ReadLine());
@@ -89,6 +92,8 @@ namespace CellsToServersApp
             strategyCode = int.Parse(Console.ReadLine());
             Console.WriteLine("Enter delta coefficient:");
             deltaCoefficient = double.Parse(Console.ReadLine(), CultureInfo.InvariantCulture);
+            Console.WriteLine("Enter sliding window size:");
+            slidingWindowSize = int.Parse(Console.ReadLine());
         }
 
         public void parseInputArray(int serverNO, int histogramResolution, Array array,

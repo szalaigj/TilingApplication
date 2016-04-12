@@ -15,10 +15,13 @@ namespace CellsToServersApp.ArrayPartition
         private int histogramResolution;
         private int serverNO;
         private double delta;
+        private double usedDelta;
         private int strategyCode;
+        private int slidingWindowSize;
 
-        public Divider(Array array, Array heftArray, IndexTransformator transformator, int spaceDimension, 
-            int histogramResolution, int serverNO, double delta, int strategyCode)
+        public Divider(Array array, Array heftArray, IndexTransformator transformator, int spaceDimension,
+            int histogramResolution, int serverNO, double delta, double usedDelta, int strategyCode, 
+            int slidingWindowSize)
         {
             this.array = array;
             this.heftArray = heftArray;
@@ -27,7 +30,9 @@ namespace CellsToServersApp.ArrayPartition
             this.histogramResolution = histogramResolution;
             this.serverNO = serverNO;
             this.delta = delta;
+            this.usedDelta = usedDelta;
             this.strategyCode = strategyCode;
+            this.slidingWindowSize = slidingWindowSize;
             int[] lengthsTileNumberArray = new int[2 * spaceDimension];
             for (int idx = 0; idx < 2 * spaceDimension; idx++)
             {
@@ -47,7 +52,24 @@ namespace CellsToServersApp.ArrayPartition
                 indicesArray[2 * idx] = 0;
                 indicesArray[2 * idx + 1] = histogramResolution - 1;
             }
-            return innerDetermineNeededTileNumber(indicesArray, out partition);
+            int neededTileNumber = innerDetermineNeededTileNumber(indicesArray, out partition);
+            foreach (var coords in partition)
+            {
+                int[] coordsIndicesArray = coords.IndicesArray;
+                int heftOfRegion = (int)heftArray.GetValue(coordsIndicesArray);
+                int[] maxCellIndices;
+                int maxCellValue = transformator.determineMaxCellValueAndIdx(spaceDimension, histogramResolution, array,
+                    coordsIndicesArray, out maxCellIndices);
+                int[] centerOfMassIndices = transformator.determineRoundedCenterOfMassIdx(spaceDimension, histogramResolution,
+                    array, heftOfRegion, coordsIndicesArray);
+                int crossBorderHeft = transformator.determineCrossBorderHeft(spaceDimension, histogramResolution, array,
+                    coordsIndicesArray, centerOfMassIndices);
+                coords.MaxCellValue = maxCellValue;
+                coords.MaxCellIndices = maxCellIndices;
+                coords.CenterOfMassIndices = centerOfMassIndices;
+                coords.CrossBorderHeft = crossBorderHeft;
+            }
+            return neededTileNumber;
         }
 
         private int innerDetermineNeededTileNumber(int[] indicesArray, out Coords[] partition)
@@ -70,7 +92,7 @@ namespace CellsToServersApp.ArrayPartition
         {
             int neededTileNumber;
             int heftOfRegion = (int)heftArray.GetValue(indicesArray);
-            if (heftOfRegion <= delta)
+            if (heftOfRegion <= usedDelta)
             {
                 neededTileNumber = 1;
                 partition = new Coords[neededTileNumber];
@@ -84,13 +106,13 @@ namespace CellsToServersApp.ArrayPartition
             }
             else
             {
-                neededTileNumber = fillTileNumberWhenRegionHeftIsLargerThenDelta(indicesArray, out partition);
+                neededTileNumber = fillTileNumberWhenRegionHeftIsLargerThenUsedDelta(indicesArray, out partition);
             }
             tileNumberArray.SetValue(neededTileNumber, indicesArray);
             return neededTileNumber;
         }
 
-        private int fillTileNumberWhenRegionHeftIsLargerThenDelta(int[] indicesArray, out Coords[] partition)
+        private int fillTileNumberWhenRegionHeftIsLargerThenUsedDelta(int[] indicesArray, out Coords[] partition)
         {
             int neededTileNumber;
             neededTileNumber = int.MaxValue;
@@ -158,8 +180,7 @@ namespace CellsToServersApp.ArrayPartition
             }
             else if (currentTileNO == neededTileNumber)
             {
-                double currentDiff = determineCurrentDiffOfSides(spaceDimension, splitDimIdx, 
-                    indicesArray, movingIndicesArray);
+                double currentDiff = determineCurrentDiffOfSides(splitDimIdx, indicesArray, movingIndicesArray);
                 double maxDiff = (double)maxDiffArray.GetValue(indicesArray);
                 if (maxDiff < currentDiff)
                 {
@@ -172,12 +193,11 @@ namespace CellsToServersApp.ArrayPartition
             }
         }
 
-        private double determineCurrentDiffOfSides(int spaceDimension, int splitDimIdx, 
-            int[] indicesArray, int[] movingIndicesArray)
+        private double determineCurrentDiffOfSides(int splitDimIdx, int[] indicesArray, int[] movingIndicesArray)
         {
             int[] firstSideOfSplit, secondSideOfSplit;
-            transformator.determineSidesOfSplit(spaceDimension, splitDimIdx, indicesArray, movingIndicesArray, 
-                out firstSideOfSplit, out secondSideOfSplit);
+            transformator.determineSidesOfSplit(spaceDimension, splitDimIdx, slidingWindowSize, histogramResolution,
+                indicesArray, movingIndicesArray, out firstSideOfSplit, out secondSideOfSplit);
             int heftFirstSideOfSplit = (int)heftArray.GetValue(firstSideOfSplit);
             int heftSecondSideOfSplit = (int)heftArray.GetValue(secondSideOfSplit);
             return Math.Abs(heftFirstSideOfSplit - heftSecondSideOfSplit);
@@ -198,11 +218,14 @@ namespace CellsToServersApp.ArrayPartition
                 partitionArray.SetValue(partition, indicesArray);
                 // when the needed tile number is decreased we should set the current value 
                 // to current indices array
-                double currentDiffSum = determineCurrentDiffSum(neededTileNumber,
+                if (neededTileNumber >= serverNO)
+                {
+                    double currentDiffSum = determineCurrentDiffSum(neededTileNumber,
                     firstPartPartition, secondPartPartition);
-                diffSumArray.SetValue(currentDiffSum, indicesArray);
+                    diffSumArray.SetValue(currentDiffSum, indicesArray);
+                }
             }
-            else if (currentTileNO == neededTileNumber)
+            else if ((currentTileNO == neededTileNumber) && (neededTileNumber >= serverNO))
             {
                 double currentDiffSum = determineCurrentDiffSum(neededTileNumber, firstPartPartition, secondPartPartition);
                 double diffSum = (double)diffSumArray.GetValue(indicesArray);
@@ -234,8 +257,8 @@ namespace CellsToServersApp.ArrayPartition
                 new Comparison<double>(
                             (d1, d2) => d2.CompareTo(d1))
                 );
-            // if the tile number is still less than the server number we sums all differences
-            int limitForSum = (neededTileNumber < serverNO) ? neededTileNumber : serverNO;
+
+            int limitForSum = serverNO;
             double currentDiffSum = 0.0;
             for (int idx = 0; idx < limitForSum; idx++)
             {
