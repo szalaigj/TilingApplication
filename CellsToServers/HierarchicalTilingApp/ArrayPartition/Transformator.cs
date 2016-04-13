@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace OldCellsToServersApp.ArrayPartition
+namespace HierarchicalTilingApp.ArrayPartition
 {
-    public class IndexTransformator
+    public class Transformator
     {
         public void transformCellIdxToIndicesArray(int histogramResolution, int[] indicesArray, int cellIdx)
         {
@@ -113,7 +113,7 @@ namespace OldCellsToServersApp.ArrayPartition
             }
         }
 
-        public void determineSidesOfSplit(int spaceDimension, int splitDimIdx, int slidingWindowSize, 
+        public void determineSidesOfSplit(int spaceDimension, int splitDimIdx, int slidingWindowSize,
             int histogramResolution, int[] indicesArray, int[] movingIndicesArray,
             out int[] firstSideOfSplit, out int[] secondSideOfSplit)
         {
@@ -139,138 +139,47 @@ namespace OldCellsToServersApp.ArrayPartition
                     int upperBound = indicesArray[2 * idx + 1];
                     firstSideOfSplit[2 * idx] = secondSideOfSplit[2 * idx] = lowerBound;
                     firstSideOfSplit[2 * idx + 1] = secondSideOfSplit[2 * idx + 1] = upperBound;
-                    
+
                 }
             }
         }
-
-        public int determineMaxCellValueAndIdx(int spaceDimension, int histogramResolution, Array array,
-            int[] indicesArray, out int[] maxCellIndices)
+               
+        public void initializeBoundArray(int spaceDimension, int histogramResolution, int serverNO,
+            int initializationValue, Array boundArray)
         {
-            int cellNO = (int)Math.Pow(histogramResolution, spaceDimension);
-            int maxCellValue = 0;
-            int[] tempCellIndices = new int[spaceDimension];
-            int[] movingIndicesArray = new int[spaceDimension];
-            for (int movingIdx = 0; movingIdx < cellNO; movingIdx++)
+            int movingIdxLimit = (int)Math.Pow(histogramResolution, spaceDimension);
+            int[] movingIndicesArray = new int[2 * spaceDimension + 1];
+            int[] tempOuterIndicesArray = new int[spaceDimension];
+            int[] tempInnerIndicesArray = new int[spaceDimension];
+            for (int splitNOIdx = 0; splitNOIdx < serverNO; splitNOIdx++)
             {
-                transformCellIdxToIndicesArray(histogramResolution, movingIndicesArray, movingIdx);
-                bool validMovingIndicesArray = validateIndicesArrays(spaceDimension, indicesArray, movingIndicesArray);
-                if (validMovingIndicesArray && (maxCellValue < (int)array.GetValue(movingIndicesArray)))
+                movingIndicesArray[0] = splitNOIdx;
+                for (int movingIdx = 0; movingIdx < movingIdxLimit; movingIdx++)
                 {
-                    maxCellValue = (int)array.GetValue(movingIndicesArray);
-                    movingIndicesArray.CopyTo(tempCellIndices, 0);
-                }
-            }
-            maxCellIndices = tempCellIndices;
-            return maxCellValue;
-        }
-
-        public int[] determineRoundedCenterOfMassIdx(int spaceDimension, int histogramResolution, Array array, 
-            int heftOfRegion, int[] indicesArray)
-        {
-            int cellNO = (int)Math.Pow(histogramResolution, spaceDimension);
-            int[] tempCellIndices = new int[spaceDimension];
-            double[] totalCoords = new double[spaceDimension];
-            int[] movingIndicesArray = new int[spaceDimension];
-            int heftOfCell;
-            for (int movingIdx = 0; movingIdx < cellNO; movingIdx++)
-            {
-                transformCellIdxToIndicesArray(histogramResolution, movingIndicesArray, movingIdx);
-                bool validMovingIndicesArray = validateIndicesArrays(spaceDimension, indicesArray, movingIndicesArray);
-                if (validMovingIndicesArray)
-                {
-                    heftOfCell = (int)array.GetValue(movingIndicesArray);
-                    for (int idx = 0; idx < spaceDimension; idx++)
+                    transformCellIdxToIndicesArray(histogramResolution, tempOuterIndicesArray, movingIdx);
+                    for (int subMovingIdx = 0; subMovingIdx < movingIdxLimit; subMovingIdx++)
                     {
-                        totalCoords[idx] += (double)movingIndicesArray[idx] * heftOfCell;
+                        transformCellIdxToIndicesArray(histogramResolution, tempInnerIndicesArray, subMovingIdx);
+                        for (int idx = 0; idx < spaceDimension; idx++)
+                        {
+                            movingIndicesArray[2 * idx + 1] = tempOuterIndicesArray[idx];
+                            movingIndicesArray[2 * idx + 2] = tempInnerIndicesArray[idx];
+                        }
+                        boundArray.SetValue(initializationValue, movingIndicesArray);
                     }
                 }
             }
-            int[] centerOfMassIndices = new int[spaceDimension];
+        }
+
+        public int[] determineIndicesArray(int spaceDimension, int[] extendedIndicesArray)
+        {
+            int[] indicesArray = new int[2 * spaceDimension];
             for (int idx = 0; idx < spaceDimension; idx++)
             {
-                centerOfMassIndices[idx] = (int)Math.Round(totalCoords[idx] / (double)heftOfRegion);
+                indicesArray[2 * idx] = extendedIndicesArray[2 * idx + 1];
+                indicesArray[2 * idx + 1] = extendedIndicesArray[2 * idx + 2];
             }
-            return centerOfMassIndices;
-        }
-
-        private bool validateIndicesArrays(int spaceDimension, int[] indicesArray, int[] movingIndicesArray)
-        {
-            bool validMovingIndicesArray = true;
-            for (int idx = 0; idx < spaceDimension; idx++)
-            {
-                int lowerBound = indicesArray[2 * idx];
-                int upperBound = indicesArray[2 * idx + 1];
-                int movingIdx = movingIndicesArray[idx];
-                if (!((lowerBound <= movingIdx) && (movingIdx <= upperBound)))
-                {
-                    validMovingIndicesArray = false;
-                    break;
-                }
-            }
-            return validMovingIndicesArray;
-        }
-
-        public int determineCrossBorderHeft(int spaceDimension, int histogramResolution, Array array,
-            int[] indicesArray, int[] centerOfMassIndices)
-        {
-            int crossBorderHeft = 0;
-            for (int crossBorderIdx = 0; crossBorderIdx < (int)Math.Pow(3, spaceDimension); crossBorderIdx++)
-            {
-                int[] crossBorderCandidateIndicesArray = determineCrossBorderIndicesArray(spaceDimension, crossBorderIdx,
-                    centerOfMassIndices);
-                if (isCrossBorder(spaceDimension, histogramResolution, indicesArray, crossBorderCandidateIndicesArray))
-                {
-                    crossBorderHeft += (int)array.GetValue(crossBorderCandidateIndicesArray);
-                }
-            }
-            return crossBorderHeft;
-        }
-
-        private int[] determineCrossBorderIndicesArray(int spaceDimension, int crossBorderIdx, int[] centerOfMassIndices)
-        {
-            int[] crossBorderIndicesArray = new int[spaceDimension];
-            crossBorderIndicesArray[0] = (crossBorderIdx / (int)Math.Pow(3, spaceDimension - 1));
-            for (int coordIdx = 1; coordIdx < spaceDimension; coordIdx++)
-            {
-                crossBorderIndicesArray[coordIdx] = crossBorderIdx;
-                for (int subCoordIdx = coordIdx - 1; subCoordIdx >= 0; subCoordIdx--)
-                {
-                    crossBorderIndicesArray[coordIdx] -=
-                        (int)Math.Pow(3, spaceDimension - (subCoordIdx + 1)) * crossBorderIndicesArray[subCoordIdx];
-                }
-                crossBorderIndicesArray[coordIdx] = 
-                    crossBorderIndicesArray[coordIdx] / (int)Math.Pow(3, spaceDimension - (coordIdx + 1));
-            }
-            for (int coordIdx = 0; coordIdx < spaceDimension; coordIdx++)
-            {
-                crossBorderIndicesArray[coordIdx] = centerOfMassIndices[coordIdx] + 
-                    crossBorderIndicesArray[coordIdx] - 1;
-            }
-            return crossBorderIndicesArray;
-        }
-
-        private bool isCrossBorder(int spaceDimension, int histogramResolution, int[] indicesArray, 
-            int[] crossBorderIndicesArray)
-        {
-            bool isCrossBorder = false;
-            bool isValidIndicesArray = true;
-            for (int idx = 0; idx < spaceDimension; idx++)
-            {
-                int lowerBound = indicesArray[2 * idx];
-                int upperBound = indicesArray[2 * idx + 1];
-                int crossBorderIdx = crossBorderIndicesArray[idx];
-                if ((crossBorderIdx < 0) || (crossBorderIdx >= histogramResolution))
-                {
-                    isValidIndicesArray = false;
-                    break;
-                }
-                if (!((lowerBound <= crossBorderIdx) && (crossBorderIdx <= upperBound)))
-                {
-                    isCrossBorder = true;
-                }
-            }
-            return (isCrossBorder && isValidIndicesArray);
+            return indicesArray;
         }
     }
 }

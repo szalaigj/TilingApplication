@@ -1,10 +1,10 @@
-﻿using CellsToServersApp.ArrayPartition;
-using CellsToServersApp.LPProblem;
+﻿using OldCellsToServersApp.ArrayPartition;
+using OldCellsToServersApp.LPProblem;
 using System;
 using System.IO;
 using System.Text;
 
-namespace CellsToServersApp
+namespace OldCellsToServersApp
 {
     class Program
     {

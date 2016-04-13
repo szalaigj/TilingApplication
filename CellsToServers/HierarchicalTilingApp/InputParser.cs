@@ -1,15 +1,15 @@
-﻿using OldCellsToServersApp.ArrayPartition;
+﻿using HierarchicalTilingApp.ArrayPartition;
 using System;
 using System.Globalization;
 using System.IO;
 
-namespace OldCellsToServersApp
+namespace HierarchicalTilingApp
 {
     public class InputParser
     {
-        private IndexTransformator transformator;
+        private Transformator transformator;
 
-        public InputParser(IndexTransformator transformator)
+        public InputParser(Transformator transformator)
         {
             this.transformator = transformator;
         }
@@ -27,8 +27,7 @@ namespace OldCellsToServersApp
         }
 
         public Array parseInputFile(out int spaceDimension, out int histogramResolution, out int serverNO,
-            out int pointNO, out double delta, out int strategyCode, out int cellMaxValue, out double deltaCoefficient,
-            out int slidingWindowSize)
+            out int pointNO, out double delta, out int strategyCode, out int slidingWindowSize)
         {
             Array array;
             Console.WriteLine("Enter the input path and filename:");
@@ -42,11 +41,10 @@ namespace OldCellsToServersApp
                 serverNO = int.Parse(lines[2]);
                 strategyCode = int.Parse(lines[3]);
                 string strategyText = determineStrategyText(strategyCode);
-                deltaCoefficient = double.Parse(lines[4], CultureInfo.InvariantCulture);
-                slidingWindowSize = int.Parse(lines[5]);
+                slidingWindowSize = int.Parse(lines[4]);
                 Console.WriteLine("Space dim: {0}, resolution: {1}, server no.: {2}, chosen strategy: {3}, " +
-                    "delta coefficient: {4}, sliding window size: {5}", spaceDimension, histogramResolution, serverNO, 
-                    strategyText, deltaCoefficient, slidingWindowSize);
+                    "sliding window size: {4}", spaceDimension, histogramResolution, serverNO, strategyText, 
+                    slidingWindowSize);
                 int[] lengthsArray = new int[spaceDimension];
                 for (int idx = 0; idx < spaceDimension; idx++)
                 {
@@ -54,8 +52,7 @@ namespace OldCellsToServersApp
                 }
                 array = Array.CreateInstance(typeof(int), lengthsArray);
                 int cellNO = (int)Math.Pow(histogramResolution, array.Rank);
-                innerParseInputArray(serverNO, histogramResolution, array, cellNO, lines[6], out pointNO, out delta,
-                    out cellMaxValue);
+                innerParseInputArray(serverNO, histogramResolution, array, cellNO, lines[5], out pointNO, out delta);
             }
             else
             {
@@ -79,7 +76,7 @@ namespace OldCellsToServersApp
         }
 
         public void parseInputSizes(out int spaceDimension, out int histogramResolution, out int serverNO,
-            out int strategyCode, out double deltaCoefficient, out int slidingWindowSize)
+            out int strategyCode, out int slidingWindowSize)
         {
             Console.WriteLine("Enter space (array) dimension:");
             spaceDimension = int.Parse(Console.ReadLine());
@@ -90,14 +87,12 @@ namespace OldCellsToServersApp
             Console.WriteLine("Enter strategy code:");
             Console.WriteLine("(0 : Optimized for clustering; 1 : Optimized for load balancing)");
             strategyCode = int.Parse(Console.ReadLine());
-            Console.WriteLine("Enter delta coefficient:");
-            deltaCoefficient = double.Parse(Console.ReadLine(), CultureInfo.InvariantCulture);
             Console.WriteLine("Enter sliding window size:");
             slidingWindowSize = int.Parse(Console.ReadLine());
         }
 
         public void parseInputArray(int serverNO, int histogramResolution, Array array,
-            out int pointNO, out double delta, out int cellMaxValue)
+            out int pointNO, out double delta)
         {
             int cellNO = (int)Math.Pow(histogramResolution, array.Rank);
             Console.WriteLine("Enter values for array (splitted by character ' '):");
@@ -120,16 +115,15 @@ namespace OldCellsToServersApp
             //  array[1, 1, 1]==1
             // So the highest dimension-related index is the lowest index of the array.
             string line = Console.ReadLine();
-            innerParseInputArray(serverNO, histogramResolution, array, cellNO, line, out pointNO, out delta, 
-                out cellMaxValue);
+            innerParseInputArray(serverNO, histogramResolution, array, cellNO, line, out pointNO, out delta);
         }
 
         private void innerParseInputArray(int serverNO, int histogramResolution, Array array, int cellNO, string line,
-            out int pointNO, out double delta, out int cellMaxValue)
+            out int pointNO, out double delta)
         {
             string[] cells = line.Split(' ');
             pointNO = 0;
-            cellMaxValue = 0;
+            int cellMaxValue = 0;
             if (cells.Length == cellNO)
             {
                 int[] indicesArray = new int[array.Rank];

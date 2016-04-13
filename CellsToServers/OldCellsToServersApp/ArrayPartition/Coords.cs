@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Text;
 
-namespace CellsToServersApp.ArrayPartition
+namespace OldCellsToServersApp.ArrayPartition
 {
     public class Coords
     {
@@ -14,7 +14,7 @@ namespace CellsToServersApp.ArrayPartition
 
         public double differenceFromDelta(double delta)
         {
-            return delta - HeftOfRegion;
+            return Math.Abs(delta - HeftOfRegion);
         }
 
         public void printCoords(int spaceDimension, int serialNO)

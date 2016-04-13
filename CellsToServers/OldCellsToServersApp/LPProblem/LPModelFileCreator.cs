@@ -1,9 +1,9 @@
-﻿using CellsToServersApp.ArrayPartition;
+﻿using OldCellsToServersApp.ArrayPartition;
 using System;
 using System.Globalization;
 using System.Text;
 
-namespace CellsToServersApp.LPProblem
+namespace OldCellsToServersApp.LPProblem
 {
     public class LPModelFileCreator
     {

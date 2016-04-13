@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace CellsToServersApp.ArrayPartition
+namespace OldCellsToServersApp.ArrayPartition
 {
     public class Divider
     {

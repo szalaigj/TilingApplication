@@ -1,12 +1,12 @@
 ﻿using System;
 
-namespace OldCellsToServersApp.ArrayPartition
+namespace HierarchicalTilingApp.ArrayPartition
 {
     public class HeftArrayCreator
     {
-        private IndexTransformator transformator;
+        private Transformator transformator;
 
-        public HeftArrayCreator(IndexTransformator transformator)
+        public HeftArrayCreator(Transformator transformator)
         {
             this.transformator = transformator;
         }

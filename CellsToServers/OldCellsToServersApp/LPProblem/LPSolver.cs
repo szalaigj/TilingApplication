@@ -2,7 +2,7 @@
 using System;
 using System.Text;
 
-namespace CellsToServersApp.LPProblem
+namespace OldCellsToServersApp.LPProblem
 {
     public class LPSolver
     {
