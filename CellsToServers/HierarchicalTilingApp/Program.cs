@@ -19,29 +19,26 @@ namespace HierarchicalTilingApp
             double delta;
             int spaceDimension;
             int histogramResolution;
-            int strategyCode;
-            int slidingWindowSize;
             Array array;
             bool together = inputParser.determineTogetherOrSeparately();
             if (together)
             {
                 array = inputParser.parseInputFile(out spaceDimension, out histogramResolution,
-                    out serverNO, out pointNO, out delta, out strategyCode, out slidingWindowSize);
+                    out serverNO, out pointNO, out delta);
             }
             else
             {
                 parseInputSeparately(inputParser, out serverNO, out pointNO, out delta, out spaceDimension,
-                    out histogramResolution, out strategyCode, out array, out slidingWindowSize);
+                    out histogramResolution, out array);
             }
             Console.WriteLine("Point no.: {0}", pointNO);
             Console.WriteLine("Delta: {0}", delta);
             Array heftArray = heftArrayCreator.createHeftArray(spaceDimension, histogramResolution, array);
 
-            Divider divider = new Divider(heftArray, transformator, spaceDimension, histogramResolution, serverNO, delta,
-                strategyCode, slidingWindowSize);
+            Divider divider = new Divider(heftArray, transformator, spaceDimension, histogramResolution, serverNO, delta);
             Coords[] partition;
-            int neededBound = divider.determineNeededBound(out partition);
-            Console.WriteLine("Needed bound: {0}", neededBound);
+            double objectiveValue = divider.determineObjectiveValue(out partition);
+            Console.WriteLine("Objective value: {0}", objectiveValue);
             Console.WriteLine("Sum of differences between tile hefts and delta: {0}", divider.getDiffSum());
             writeOutTiles(serverNO, spaceDimension, partition);
             writeOutServers(serverNO, partition);
@@ -50,15 +47,11 @@ namespace HierarchicalTilingApp
         }
 
         private static void parseInputSeparately(InputParser inputParser, out int serverNO, out int pointNO,
-            out double delta, out int spaceDimension, out int histogramResolution, out int strategyCode,
-            out Array array, out int slidingWindowSize)
+            out double delta, out int spaceDimension, out int histogramResolution, out Array array)
         {
-            inputParser.parseInputSizes(out spaceDimension, out histogramResolution, out serverNO, out strategyCode,
-                out slidingWindowSize);
-            string strategyText = determineStrategyText(strategyCode);
-            Console.WriteLine("Space dim: {0}, resolution: {1}, server no.: {2}, chosen strategy: {3}, " +
-                    "sliding window size: {4}", spaceDimension, histogramResolution, serverNO, strategyText, 
-                    slidingWindowSize);
+            inputParser.parseInputSizes(out spaceDimension, out histogramResolution, out serverNO);
+            Console.WriteLine("Space dim: {0}, resolution: {1}, server no.: {2}", spaceDimension, histogramResolution, 
+                serverNO);
             int[] lengthsArray = new int[spaceDimension];
             for (int idx = 0; idx < spaceDimension; idx++)
             {
@@ -66,20 +59,6 @@ namespace HierarchicalTilingApp
             }
             array = Array.CreateInstance(typeof(int), lengthsArray);
             inputParser.parseInputArray(serverNO, histogramResolution, array, out pointNO, out delta);
-        }
-
-        private static string determineStrategyText(int strategyCode)
-        {
-            string strategyText;
-            if (strategyCode == 0)
-            {
-                strategyText = "Optimized for clustering";
-            }
-            else
-            {
-                strategyText = "Optimized for load balancing";
-            }
-            return strategyText;
         }
 
         private static void writeOutTiles(int serverNO, int spaceDimension, Coords[] partition)

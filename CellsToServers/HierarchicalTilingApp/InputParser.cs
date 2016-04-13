@@ -27,7 +27,7 @@ namespace HierarchicalTilingApp
         }
 
         public Array parseInputFile(out int spaceDimension, out int histogramResolution, out int serverNO,
-            out int pointNO, out double delta, out int strategyCode, out int slidingWindowSize)
+            out int pointNO, out double delta)
         {
             Array array;
             Console.WriteLine("Enter the input path and filename:");
@@ -39,12 +39,8 @@ namespace HierarchicalTilingApp
                 spaceDimension = int.Parse(lines[0]);
                 histogramResolution = int.Parse(lines[1]);
                 serverNO = int.Parse(lines[2]);
-                strategyCode = int.Parse(lines[3]);
-                string strategyText = determineStrategyText(strategyCode);
-                slidingWindowSize = int.Parse(lines[4]);
-                Console.WriteLine("Space dim: {0}, resolution: {1}, server no.: {2}, chosen strategy: {3}, " +
-                    "sliding window size: {4}", spaceDimension, histogramResolution, serverNO, strategyText, 
-                    slidingWindowSize);
+                Console.WriteLine("Space dim: {0}, resolution: {1}, server no.: {2}", spaceDimension, 
+                    histogramResolution, serverNO);
                 int[] lengthsArray = new int[spaceDimension];
                 for (int idx = 0; idx < spaceDimension; idx++)
                 {
@@ -52,7 +48,7 @@ namespace HierarchicalTilingApp
                 }
                 array = Array.CreateInstance(typeof(int), lengthsArray);
                 int cellNO = (int)Math.Pow(histogramResolution, array.Rank);
-                innerParseInputArray(serverNO, histogramResolution, array, cellNO, lines[5], out pointNO, out delta);
+                innerParseInputArray(serverNO, histogramResolution, array, cellNO, lines[3], out pointNO, out delta);
             }
             else
             {
@@ -75,8 +71,7 @@ namespace HierarchicalTilingApp
             return strategyText;
         }
 
-        public void parseInputSizes(out int spaceDimension, out int histogramResolution, out int serverNO,
-            out int strategyCode, out int slidingWindowSize)
+        public void parseInputSizes(out int spaceDimension, out int histogramResolution, out int serverNO)
         {
             Console.WriteLine("Enter space (array) dimension:");
             spaceDimension = int.Parse(Console.ReadLine());
@@ -84,11 +79,6 @@ namespace HierarchicalTilingApp
             histogramResolution = int.Parse(Console.ReadLine());
             Console.WriteLine("Enter server number:");
             serverNO = int.Parse(Console.ReadLine());
-            Console.WriteLine("Enter strategy code:");
-            Console.WriteLine("(0 : Optimized for clustering; 1 : Optimized for load balancing)");
-            strategyCode = int.Parse(Console.ReadLine());
-            Console.WriteLine("Enter sliding window size:");
-            slidingWindowSize = int.Parse(Console.ReadLine());
         }
 
         public void parseInputArray(int serverNO, int histogramResolution, Array array,

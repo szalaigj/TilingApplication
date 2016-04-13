@@ -144,8 +144,8 @@ namespace HierarchicalTilingApp.ArrayPartition
             }
         }
                
-        public void initializeBoundArray(int spaceDimension, int histogramResolution, int serverNO,
-            int initializationValue, Array boundArray)
+        public void initializeObjectiveValueArray(int spaceDimension, int histogramResolution, int serverNO,
+            double initializationValue, Array objectiveValueArray)
         {
             int movingIdxLimit = (int)Math.Pow(histogramResolution, spaceDimension);
             int[] movingIndicesArray = new int[2 * spaceDimension + 1];
@@ -165,7 +165,7 @@ namespace HierarchicalTilingApp.ArrayPartition
                             movingIndicesArray[2 * idx + 1] = tempOuterIndicesArray[idx];
                             movingIndicesArray[2 * idx + 2] = tempInnerIndicesArray[idx];
                         }
-                        boundArray.SetValue(initializationValue, movingIndicesArray);
+                        objectiveValueArray.SetValue(initializationValue, movingIndicesArray);
                     }
                 }
             }

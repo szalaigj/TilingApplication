@@ -5,7 +5,7 @@ namespace HierarchicalTilingApp.ArrayPartition
     public class Divider
     {
         private Array heftArray;
-        private Array boundArray;
+        private Array objectiveValueArray;
         private Array partitionArray;
         private Array maxDiffArray;
         private Transformator transformator;
@@ -13,13 +13,11 @@ namespace HierarchicalTilingApp.ArrayPartition
         private int histogramResolution;
         private int serverNO;
         private double delta;
-        private int strategyCode;
-        private int slidingWindowSize;
         private double diffSum;
-        private int initializationValue;
+        private double initializationValue;
 
         public Divider(Array heftArray, Transformator transformator, int spaceDimension, int histogramResolution, 
-            int serverNO, double delta, int strategyCode, int slidingWindowSize)
+            int serverNO, double delta)
         {
             this.heftArray = heftArray;
             this.transformator = transformator;
@@ -27,21 +25,19 @@ namespace HierarchicalTilingApp.ArrayPartition
             this.histogramResolution = histogramResolution;
             this.serverNO = serverNO;
             this.delta = delta;
-            this.strategyCode = strategyCode;
-            this.slidingWindowSize = slidingWindowSize;
-            this.initializationValue = -1;
+            this.initializationValue = -1.0;
             int[] lengthsMaxDiffArray = new int[2 * spaceDimension];
-            int[] lengthsBoundArray = new int[2 * spaceDimension + 1];
-            lengthsBoundArray[0] = serverNO;
+            int[] lengthsObjectiveValueArray = new int[2 * spaceDimension + 1];
+            lengthsObjectiveValueArray[0] = serverNO;
             for (int idx = 1; idx <= 2 * spaceDimension; idx++)
             {
-                lengthsBoundArray[idx] = histogramResolution;
+                lengthsObjectiveValueArray[idx] = histogramResolution;
                 lengthsMaxDiffArray[idx - 1] = histogramResolution;
             }
-            this.boundArray = Array.CreateInstance(typeof(int), lengthsBoundArray);
-            transformator.initializeBoundArray(this.spaceDimension, this.histogramResolution, this.serverNO, 
-                this.initializationValue, this.boundArray);
-            this.partitionArray = Array.CreateInstance(typeof(Coords[]), lengthsBoundArray);
+            this.objectiveValueArray = Array.CreateInstance(typeof(double), lengthsObjectiveValueArray);
+            transformator.initializeObjectiveValueArray(this.spaceDimension, this.histogramResolution, this.serverNO, 
+                this.initializationValue, this.objectiveValueArray);
+            this.partitionArray = Array.CreateInstance(typeof(Coords[]), lengthsObjectiveValueArray);
             this.maxDiffArray = Array.CreateInstance(typeof(double), lengthsMaxDiffArray);
         }
 
@@ -50,7 +46,7 @@ namespace HierarchicalTilingApp.ArrayPartition
             return diffSum;
         }
 
-        public int determineNeededBound(out Coords[] partition)
+        public double determineObjectiveValue(out Coords[] partition)
         {
             int[] extendedIndicesArray = new int[2 * spaceDimension + 1];
             extendedIndicesArray[0] = serverNO - 1;
@@ -59,28 +55,28 @@ namespace HierarchicalTilingApp.ArrayPartition
                 extendedIndicesArray[2 * idx + 1] = 0;
                 extendedIndicesArray[2 * idx + 2] = histogramResolution - 1;
             }
-            return innerDetermineNeededBound(extendedIndicesArray, out partition);
+            return innerDetermineObjectiveValue(extendedIndicesArray, out partition);
         }
 
-        private int innerDetermineNeededBound(int[] extendedIndicesArray, out Coords[] partition)
+        private double innerDetermineObjectiveValue(int[] extendedIndicesArray, out Coords[] partition)
         {
-            int neededBound;
-            int currentBound = (int)boundArray.GetValue(extendedIndicesArray);
-            if (currentBound != initializationValue)
+            double objectiveValue;
+            double currentObjectiveValue = (double)objectiveValueArray.GetValue(extendedIndicesArray);
+            if (currentObjectiveValue >= 0)
             {
-                neededBound = currentBound;
+                objectiveValue = currentObjectiveValue;
                 partition = (Coords[])partitionArray.GetValue(extendedIndicesArray);
             }
             else
             {
-                neededBound = fillBoundArray(extendedIndicesArray, out partition);
+                objectiveValue = fillObjectiveValueArray(extendedIndicesArray, out partition);
             }
-            return neededBound;
+            return objectiveValue;
         }
 
-        private int fillBoundArray(int[] extendedIndicesArray, out Coords[] partition)
+        private double fillObjectiveValueArray(int[] extendedIndicesArray, out Coords[] partition)
         {
-            int neededBound;
+            double objectiveValue;
             int[] indicesArray = transformator.determineIndicesArray(spaceDimension, extendedIndicesArray);
             int splitNO = extendedIndicesArray[0];
             if (splitNO == 0)
@@ -93,20 +89,21 @@ namespace HierarchicalTilingApp.ArrayPartition
                 };
                 partition = new Coords[] {coords};
                 partitionArray.SetValue(partition, extendedIndicesArray);
-                neededBound = heftOfRegion;
+                objectiveValue = coords.differenceFromDelta(delta);
             }
             else
             {
-                neededBound = fillBoundWhenSplitNOIsLargerThenZero(extendedIndicesArray, indicesArray, out partition);
+                objectiveValue = fillObjectiveValueWhenSplitNOIsLargerThenZero(extendedIndicesArray, indicesArray, 
+                    out partition);
             }
-            boundArray.SetValue(neededBound, extendedIndicesArray);
-            return neededBound;
+            objectiveValueArray.SetValue(objectiveValue, extendedIndicesArray);
+            return objectiveValue;
         }
 
-        private int fillBoundWhenSplitNOIsLargerThenZero(int[] extendedIndicesArray, int[] indicesArray, 
+        private double fillObjectiveValueWhenSplitNOIsLargerThenZero(int[] extendedIndicesArray, int[] indicesArray, 
             out Coords[] partition)
         {
-            int neededBound = int.MaxValue;
+            double objectiveValue = double.MaxValue;
             int splitNO = extendedIndicesArray[0];
             partition = (Coords[])partitionArray.GetValue(extendedIndicesArray);
             int cellNO = (int)Math.Pow(histogramResolution, spaceDimension);
@@ -120,16 +117,16 @@ namespace HierarchicalTilingApp.ArrayPartition
                         indicesArray, movingIndicesArray);
                     if (validMovingIndicesArray)
                     {
-                        fillBoundWhenMovingIdxArrayIsValid(extendedIndicesArray, indicesArray, ref partition, 
-                            ref neededBound, splitNO, movingIndicesArray, splitDimIdx);
+                        fillObjectiveValueWhenMovingIdxArrayIsValid(extendedIndicesArray, indicesArray, ref partition, 
+                            ref objectiveValue, splitNO, movingIndicesArray, splitDimIdx);
                     }
                 }
             }
-            return neededBound;
+            return objectiveValue;
         }
 
-        private void fillBoundWhenMovingIdxArrayIsValid(int[] extendedIndicesArray, int[] indicesArray, 
-            ref Coords[] partition, ref int neededBound, int splitNO, int[] movingIndicesArray, int splitDimIdx)
+        private void fillObjectiveValueWhenMovingIdxArrayIsValid(int[] extendedIndicesArray, int[] indicesArray,
+            ref Coords[] partition, ref double objectiveValue, int splitNO, int[] movingIndicesArray, int splitDimIdx)
         {
             int[] firstPartIndicesArray, secondPartIndicesArray;
             int[] firstPartExtendedIndicesArray = new int[2 * spaceDimension + 1];
@@ -144,96 +141,26 @@ namespace HierarchicalTilingApp.ArrayPartition
                 firstPartExtendedIndicesArray[0] = firstSplitNO;
                 secondPartIndicesArray.CopyTo(secondPartExtendedIndicesArray, 1);
                 secondPartExtendedIndicesArray[0] = secondSplitNO;
-                int neededBoundForFirstPart = innerDetermineNeededBound(firstPartExtendedIndicesArray,
+                double objectiveValueForFirstPart = innerDetermineObjectiveValue(firstPartExtendedIndicesArray,
                     out firstPartPartition);
-                int neededBoundForSecondPart = innerDetermineNeededBound(secondPartExtendedIndicesArray,
+                double objectiveValueForSecondPart = innerDetermineObjectiveValue(secondPartExtendedIndicesArray,
                     out secondPartPartition);
-                int currentBound = Math.Max(neededBoundForFirstPart, neededBoundForSecondPart);
-
-                useChosenStrategy(extendedIndicesArray, indicesArray, ref partition, ref neededBound,
-                    movingIndicesArray, splitDimIdx, firstPartIndicesArray, secondPartIndicesArray,
-                    firstPartPartition, secondPartPartition, currentBound, splitNO);
-            }
-        }
-
-        private void useChosenStrategy(int[] extendedIndicesArray, int[] indicesArray, ref Coords[] partition, 
-            ref int neededBound, int[] movingIndicesArray, int splitDimIdx, int[] firstPartIndicesArray, 
-            int[] secondPartIndicesArray, Coords[] firstPartPartition, Coords[] secondPartPartition,
-            int currentBound, int splitNO)
-        {
-            if (strategyCode == 0)
-            {
-                // Optimized for clustering strategy:
-                applySideDifferenceStrategy(extendedIndicesArray, indicesArray, ref partition, ref neededBound,
-                    firstPartPartition, secondPartPartition, currentBound, splitNO, firstPartIndicesArray,
-                    secondPartIndicesArray, splitDimIdx, movingIndicesArray);
-            }
-            else
-            {
-                //Optimized for load balancing strategy:
-                applyMinDiffSumStrategy(extendedIndicesArray, ref partition, ref neededBound, firstPartPartition, 
-                    secondPartPartition, currentBound, splitNO);
-            }
-        }
-
-        private void applySideDifferenceStrategy(int[] extendedIndicesArray, int[] indicesArray, ref Coords[] partition,
-            ref int neededBound, Coords[] firstPartPartition, Coords[] secondPartPartition, int currentBound, int splitNO,
-            int[] firstPartIndicesArray, int[] secondPartIndicesArray, int splitDimIdx, int[] movingIndicesArray)
-        {
-            if (currentBound < neededBound)
-            {
-                neededBound = currentBound;
-                partition = new Coords[splitNO + 1];
-                setPartitionByParts(extendedIndicesArray, partition, firstPartPartition, secondPartPartition);
-            }
-            else if (currentBound == neededBound)
-            {
-                double currentDiff = determineCurrentDiffOfSides(splitDimIdx, indicesArray, movingIndicesArray);
-                double maxDiff = (double)maxDiffArray.GetValue(indicesArray);
-                if ((maxDiff < currentDiff) && (splitNO == serverNO - 1))
+                
+                double currentObjectiveValue = Math.Max(objectiveValueForFirstPart, objectiveValueForSecondPart);
+                if (currentObjectiveValue < objectiveValue)
                 {
-                    maxDiffArray.SetValue(currentDiff, indicesArray);
+                    objectiveValue = currentObjectiveValue;
+                    partition = new Coords[splitNO + 1];
                     setPartitionByParts(extendedIndicesArray, partition, firstPartPartition, secondPartPartition);
+                    if (splitNO == serverNO - 1)
+                    {
+                        diffSum = determineCurrentDiffSum(firstPartPartition, secondPartPartition);
+                    }
                 }
             }
         }
 
-        private double determineCurrentDiffOfSides(int splitDimIdx, int[] indicesArray, int[] movingIndicesArray)
-        {
-            int[] firstSideOfSplit, secondSideOfSplit;
-            transformator.determineSidesOfSplit(spaceDimension, splitDimIdx, slidingWindowSize, histogramResolution,
-                indicesArray, movingIndicesArray, out firstSideOfSplit, out secondSideOfSplit);
-            int heftFirstSideOfSplit = (int)heftArray.GetValue(firstSideOfSplit);
-            int heftSecondSideOfSplit = (int)heftArray.GetValue(secondSideOfSplit);
-            return Math.Abs(heftFirstSideOfSplit - heftSecondSideOfSplit);
-        }
-        
-        private void applyMinDiffSumStrategy(int[] extendedIndicesArray, ref Coords[] partition, ref int neededBound,
-            Coords[] firstPartPartition, Coords[] secondPartPartition, int currentBound, int splitNO)
-        {
-            if (currentBound < neededBound)
-            {
-                neededBound = currentBound;
-                partition = new Coords[splitNO + 1];
-                setPartitionByParts(extendedIndicesArray, partition, firstPartPartition, secondPartPartition);
-                if (splitNO == serverNO - 1)
-                {
-                    diffSum = determineCurrentDiffSum(neededBound, firstPartPartition, secondPartPartition);
-                }
-            }
-            else if ((currentBound == neededBound) && (splitNO == serverNO - 1))
-            {
-                double currentDiffSum = determineCurrentDiffSum(neededBound, firstPartPartition, secondPartPartition);
-                if (currentDiffSum < diffSum)
-                {
-                    diffSum = currentDiffSum;
-                    setPartitionByParts(extendedIndicesArray, partition, firstPartPartition, secondPartPartition);
-                }
-            }
-        }
-
-        private double determineCurrentDiffSum(int neededTileNumber, Coords[] firstPartPartition, 
-            Coords[] secondPartPartition)
+        private double determineCurrentDiffSum(Coords[] firstPartPartition, Coords[] secondPartPartition)
         {
             double currentDiffSum = 0.0;
             for (int idx = 0; idx < firstPartPartition.Length; idx++)
