@@ -150,27 +150,5 @@ namespace HierarchicalTilingApp
                     "You should try to increase histogram resolution for the original data.");
             }
         }
-
-        public int parseInputTimeout()
-        {
-            int timeoutSec;
-            Console.WriteLine("Enter timeout (sec), if you enter 0 then no timeout will occur:");
-            while (!int.TryParse(Console.ReadLine(), out timeoutSec))
-            {
-                Console.WriteLine("Enter correct timeout (sec):");
-            }
-            return timeoutSec;
-        }
-
-        public bool parseInputDeleteOutputLP()
-        {
-            bool deleteOutputLP;
-            Console.WriteLine("Would you like to delete output lp (model) file after execution (true or false)?");
-            while (!bool.TryParse(Console.ReadLine(), out deleteOutputLP))
-            {
-                Console.WriteLine("Enter true or false:");
-            }
-            return deleteOutputLP;
-        }
     }
 }
