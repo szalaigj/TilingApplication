@@ -1,0 +1,8 @@
+/* Objective function */
+min: ${obj_func};
+
+/* Constraints */
+${consts}
+
+/* Binary (0-1 valued variables) definitions */
+bin ${bin_vars};
