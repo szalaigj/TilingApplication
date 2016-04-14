@@ -48,6 +48,8 @@
     <Compile Include="InputParser.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SumOfSquares\CornacchiaMethod.cs" />
+    <Compile Include="SumOfSquares\IntPair.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
