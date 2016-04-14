@@ -10,6 +10,27 @@ namespace HierarchicalTilingApp.SumOfSquares
     {
         public int X { get; set; }
         public int Y { get; set; }
+
+        public bool determineIdxArrayRelativeTo(int histogramResolution, int[] inputIndicesArray,
+            out int[] outputIndicesArray)
+        {
+            int outputX = X + inputIndicesArray[0];
+            int outputY = Y + inputIndicesArray[1];
+            outputIndicesArray = new int[] { outputX, outputY };
+            return isValidIdxArray(histogramResolution, outputX, outputY);
+        }
+
+        private bool isValidIdxArray(int histogramResolution, int outputX, int outputY)
+        {
+            if ((outputX >= 0) && (outputX < histogramResolution) && (outputY >= 0) && (outputY < histogramResolution))
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
     }
 
     public class IntPairEqualityComparer : IEqualityComparer<IntPair>

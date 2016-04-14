@@ -8,7 +8,7 @@ namespace HierarchicalTilingApp.ArrayPartition
 {
     public class Coords
     {
-        public int[] IndicesArray { get; set; }
+        public int[] ExtendedIndicesArray { get; set; }
         public int HeftOfRegion { get; set; }
 
         public double differenceFromDelta(double delta)
@@ -21,7 +21,7 @@ namespace HierarchicalTilingApp.ArrayPartition
             Console.Write("{0}. tile: [", serialNO);
             for (int idx = 0; idx < spaceDimension; idx++)
             {
-                Console.Write(" {0} {1} ", IndicesArray[2 * idx + 1], IndicesArray[2 * idx + 2]);
+                Console.Write(" {0} {1} ", ExtendedIndicesArray[2 * idx + 1], ExtendedIndicesArray[2 * idx + 2]);
             }
             Console.WriteLine("] : {0} heft", HeftOfRegion);
         }
@@ -31,7 +31,7 @@ namespace HierarchicalTilingApp.ArrayPartition
             strBldr.Append(HeftOfRegion);
             for (int idx = 0; idx < spaceDimension; idx++)
             {
-                strBldr.Append(" ").Append(IndicesArray[2 * idx + 1]).Append(" ").Append(IndicesArray[2 * idx + 2]);
+                strBldr.Append(" ").Append(ExtendedIndicesArray[2 * idx + 1]).Append(" ").Append(ExtendedIndicesArray[2 * idx + 2]);
             }
             strBldr.AppendLine();
         }

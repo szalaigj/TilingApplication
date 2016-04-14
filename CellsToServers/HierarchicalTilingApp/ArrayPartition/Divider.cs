@@ -85,7 +85,7 @@ namespace HierarchicalTilingApp.ArrayPartition
                 int heftOfRegion = (int)heftArray.GetValue(indicesArray);
                 Coords coords = new Coords
                 {
-                    IndicesArray = extendedIndicesArray,
+                    ExtendedIndicesArray = extendedIndicesArray,
                     HeftOfRegion = heftOfRegion
                 };
                 partition = new Coords[] {coords};

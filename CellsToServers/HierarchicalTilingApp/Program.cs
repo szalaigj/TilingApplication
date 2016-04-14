@@ -1,4 +1,5 @@
 ﻿using HierarchicalTilingApp.ArrayPartition;
+using HierarchicalTilingApp.Measure;
 using HierarchicalTilingApp.SumOfSquares;
 using HierarchicalTilingApp.Transformation;
 using System;
@@ -13,14 +14,16 @@ namespace HierarchicalTilingApp
     {
         static void Main(string[] args)
         {
-            Transformator transformator = new Transformator();
-            InputParser inputParser = new InputParser(transformator);
-            HeftArrayCreator heftArrayCreator = new HeftArrayCreator(transformator);
             IntPairEqualityComparer comparer = new IntPairEqualityComparer();
             CornacchiaMethod cornacchiaMethod = new CornacchiaMethod(comparer);
             IntPair[] intPairs10 = cornacchiaMethod.applyCornacchiaMethod(64370);
             ShellBuilder shellBuilder = new ShellBuilder(cornacchiaMethod);
             Shell[] shells = shellBuilder.createShellsInTwoDimSpace(30);
+            Transformator transformator = new Transformator(shellBuilder);
+            InputParser inputParser = new InputParser(transformator);
+            HeftArrayCreator heftArrayCreator = new HeftArrayCreator(transformator);
+            int kNN = 333;
+
             int serverNO;
             int pointNO;
             double delta;
@@ -38,6 +41,17 @@ namespace HierarchicalTilingApp
                 parseInputSeparately(inputParser, out serverNO, out pointNO, out delta, out spaceDimension,
                     out histogramResolution, out array);
             }
+            DefaultAuxData auxData = new DefaultAuxData()
+            { 
+                SpaceDimension = spaceDimension,
+                HistogramResolution = histogramResolution,
+                ServerNO = serverNO,
+                PointNO = pointNO,
+                KNN = kNN,
+                Histogram = array
+            };
+            KNNMeasure kNNMeasure = new KNNMeasure(auxData, transformator);
+
             Console.WriteLine("Point no.: {0}", pointNO);
             Console.WriteLine("Delta: {0}", delta);
             Array heftArray = heftArrayCreator.createHeftArray(spaceDimension, histogramResolution, array);
@@ -47,6 +61,8 @@ namespace HierarchicalTilingApp
             double objectiveValue = divider.determineObjectiveValue(out partition);
             Console.WriteLine("Objective value: {0}", objectiveValue);
             Console.WriteLine("Sum of differences between tile hefts and delta: {0}", divider.getDiffSum());
+            double measureOfKNN = kNNMeasure.computeMeasure(partition);
+            Console.WriteLine("k-NN measure of the partition (k={0}): {1}", kNN, measureOfKNN);
             writeOutTiles(serverNO, spaceDimension, partition);
             writeOutServers(serverNO, partition);
             Console.WriteLine("Press any key to exit!");

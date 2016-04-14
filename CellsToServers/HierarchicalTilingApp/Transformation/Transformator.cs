@@ -1,10 +1,18 @@
-﻿using System;
+﻿using HierarchicalTilingApp.SumOfSquares;
+using System;
 using System.Collections.Generic;
 
 namespace HierarchicalTilingApp.Transformation
 {
     public class Transformator
     {
+        private ShellBuilder shellBuilder;
+
+        public Transformator(ShellBuilder shellBuilder)
+        {
+            this.shellBuilder = shellBuilder;
+        }
+
         public void transformCellIdxToIndicesArray(int histogramResolution, int[] indicesArray, int cellIdx)
         {
             indicesArray[0] =
@@ -67,6 +75,18 @@ namespace HierarchicalTilingApp.Transformation
             return validArrayIndices;
         }
 
+        public bool validateIndicesArrays(int spaceDimension, int[] indicesArrayOfRegion, int[] indicesArrayOfBin)
+        {
+            int[] lowerIndicesArray = new int[spaceDimension];
+            int[] upperIndicesArray = new int[spaceDimension];
+            for (int idx = 0; idx < spaceDimension; idx++)
+            {
+                lowerIndicesArray[idx] = indicesArrayOfRegion[2 * idx];
+                upperIndicesArray[idx] = indicesArrayOfRegion[2 * idx + 1];
+            }
+            return validateIndicesArrays(spaceDimension, lowerIndicesArray, upperIndicesArray, indicesArrayOfBin);
+        }
+
         public bool validateIndicesArrays(int spaceDimension, int splitDimIdx, int[] indicesArray,
             int[] movingIndicesArray)
         {
@@ -112,37 +132,6 @@ namespace HierarchicalTilingApp.Transformation
                 }
             }
         }
-
-        public void determineSidesOfSplit(int spaceDimension, int splitDimIdx, int slidingWindowSize,
-            int histogramResolution, int[] indicesArray, int[] movingIndicesArray,
-            out int[] firstSideOfSplit, out int[] secondSideOfSplit)
-        {
-            firstSideOfSplit = new int[2 * spaceDimension];
-            secondSideOfSplit = new int[2 * spaceDimension];
-            for (int idx = 0; idx < spaceDimension; idx++)
-            {
-                if (idx == splitDimIdx)
-                {
-                    int movingIdx = movingIndicesArray[idx];
-                    //firstSideOfSplit[2 * idx] = firstSideOfSplit[2 * idx + 1] = movingIdx;
-                    //secondSideOfSplit[2 * idx] = secondSideOfSplit[2 * idx + 1] = movingIdx + 1;
-                    firstSideOfSplit[2 * idx] = (movingIdx - slidingWindowSize + 1 >= 0) ?
-                        movingIdx - slidingWindowSize + 1 : 0;
-                    firstSideOfSplit[2 * idx + 1] = movingIdx;
-                    secondSideOfSplit[2 * idx] = movingIdx + 1;
-                    secondSideOfSplit[2 * idx + 1] = (movingIdx + slidingWindowSize < histogramResolution) ?
-                        movingIdx + slidingWindowSize : histogramResolution - 1;
-                }
-                else
-                {
-                    int lowerBound = indicesArray[2 * idx];
-                    int upperBound = indicesArray[2 * idx + 1];
-                    firstSideOfSplit[2 * idx] = secondSideOfSplit[2 * idx] = lowerBound;
-                    firstSideOfSplit[2 * idx + 1] = secondSideOfSplit[2 * idx + 1] = upperBound;
-
-                }
-            }
-        }
                
         public void initializeObjectiveValueArray(int spaceDimension, int histogramResolution, int serverNO,
             double initializationValue, Array objectiveValueArray)
@@ -180,6 +169,39 @@ namespace HierarchicalTilingApp.Transformation
                 indicesArray[2 * idx + 1] = extendedIndicesArray[2 * idx + 2];
             }
             return indicesArray;
+        }
+
+        public Dictionary<int, List<int[]>> determineShellIdxArraysInTwoDimSpace(int histogramResolution, 
+            int[] inputIndicesArray, int maxShellNO)
+        {
+            Shell[] shells = shellBuilder.createShellsInTwoDimSpace(maxShellNO);
+            return convertIntPairsOfShellsToListOfIdxArrays(histogramResolution, inputIndicesArray, shells);
+        }
+
+        private Dictionary<int, List<int[]>> convertIntPairsOfShellsToListOfIdxArrays(int histogramResolution, 
+            int[] inputIndicesArray, Shell[] shells)
+        {
+            Dictionary<int, List<int[]>> result = new Dictionary<int, List<int[]>>();
+            int startX = inputIndicesArray[0];
+            int startY = inputIndicesArray[1];
+            int shellIdx = 0;
+            foreach (var shell in shells)
+            {
+                List<int[]> indicesArraysInCurrentShell = new List<int[]>();
+                IntPair[] intPairs = shell.getIntPairs();
+                foreach (var intPair in intPairs)
+                {
+                    int[] currentIndicesArray;
+                    if(intPair.determineIdxArrayRelativeTo(histogramResolution, inputIndicesArray, 
+                        out currentIndicesArray))
+                    {
+                        indicesArraysInCurrentShell.Add(currentIndicesArray);
+                    }
+                }
+                result.Add(shellIdx, indicesArraysInCurrentShell);
+                shellIdx++;
+            }
+            return result;
         }
     }
 }
