@@ -5,10 +5,36 @@ namespace HierarchicalTilingApp.SumOfSquares
 {
     public class CornacchiaMethod
     {
+        private IntPairEqualityComparer comparer;
+
+        public CornacchiaMethod(IntPairEqualityComparer comparer)
+        {
+            this.comparer = comparer;
+        }
+
+        public IntPairEqualityComparer getComparer()
+        {
+            return comparer;
+        }
+
+        /// <summary>
+        /// This method return such IntPair where property X is less than or equal to property Y.
+        /// </summary>
+        /// <param name="num"></param>
+        /// <returns></returns>
         public IntPair[] applyCornacchiaMethod(int num)
         {
-            List<IntPair> intPairsOfFactors = listSumOfSquaresOfFactors(num);
-            return applyFibonacciIdentity(intPairsOfFactors);
+            IntPair[] intPairs;
+            if (num == 1)
+	        {
+                intPairs = new IntPair[] { new IntPair() { X = 1, Y = 0 }, new IntPair() { X = 0, Y = 1 } };
+	        } 
+            else
+	        {
+                List<IntPair> intPairsOfFactors = listSumOfSquaresOfFactors(num);
+                intPairs = applyFibonacciIdentity(intPairsOfFactors);
+	        }
+            return intPairs;
         }
 
         private IntPair[] applyCornacchiaMethodForPrime(int prime)
@@ -90,19 +116,17 @@ namespace HierarchicalTilingApp.SumOfSquares
 
         private IntPair[] applyFibonacciIdentity(List<IntPair> intPairsOfFactors)
         {
-            IntPairEqualityComparer comparer = new IntPairEqualityComparer();
             HashSet<IntPair> currentIntPairs = new HashSet<IntPair>(comparer);
             foreach (var intPair in intPairsOfFactors)
             {
-                currentIntPairs = applyFibonacciIdentity(currentIntPairs, intPair, comparer);
+                currentIntPairs = applyFibonacciIdentity(currentIntPairs, intPair);
             }
             IntPair[] result = new IntPair[currentIntPairs.Count];
             currentIntPairs.CopyTo(result);
             return result;
         }
 
-        private HashSet<IntPair> applyFibonacciIdentity(HashSet<IntPair> currentIntPairs, IntPair newIntPair, 
-            IntPairEqualityComparer comparer)
+        private HashSet<IntPair> applyFibonacciIdentity(HashSet<IntPair> currentIntPairs, IntPair newIntPair)
         {
             HashSet<IntPair> result = new HashSet<IntPair>(comparer);
             if (currentIntPairs.Count == 0)

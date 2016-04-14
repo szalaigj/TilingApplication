@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace HierarchicalTilingApp.ArrayPartition
+namespace HierarchicalTilingApp.Transformation
 {
     public class Transformator
     {

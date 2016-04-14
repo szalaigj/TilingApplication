@@ -1,4 +1,5 @@
-﻿using System;
+﻿using HierarchicalTilingApp.Transformation;
+using System;
 
 namespace HierarchicalTilingApp.ArrayPartition
 {

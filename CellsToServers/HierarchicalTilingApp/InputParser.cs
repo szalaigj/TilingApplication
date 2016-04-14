@@ -1,4 +1,4 @@
-﻿using HierarchicalTilingApp.ArrayPartition;
+﻿using HierarchicalTilingApp.Transformation;
 using System;
 using System.Globalization;
 using System.IO;

@@ -1,4 +1,6 @@
 ﻿using HierarchicalTilingApp.ArrayPartition;
+using HierarchicalTilingApp.SumOfSquares;
+using HierarchicalTilingApp.Transformation;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,6 +16,11 @@ namespace HierarchicalTilingApp
             Transformator transformator = new Transformator();
             InputParser inputParser = new InputParser(transformator);
             HeftArrayCreator heftArrayCreator = new HeftArrayCreator(transformator);
+            IntPairEqualityComparer comparer = new IntPairEqualityComparer();
+            CornacchiaMethod cornacchiaMethod = new CornacchiaMethod(comparer);
+            IntPair[] intPairs10 = cornacchiaMethod.applyCornacchiaMethod(64370);
+            ShellBuilder shellBuilder = new ShellBuilder(cornacchiaMethod);
+            Shell[] shells = shellBuilder.createShellsInTwoDimSpace(30);
             int serverNO;
             int pointNO;
             double delta;
