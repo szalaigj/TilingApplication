@@ -1,4 +1,5 @@
-﻿using System;
+﻿using HierarchicalTilingApp.SumOfSquares;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -15,5 +16,7 @@ namespace HierarchicalTilingApp.Measure
         public int HistogramResolution { get; set; }
 
         public Array Histogram { get; set; }
+
+        public Shell[] Shells { get; set; }
     }
 }

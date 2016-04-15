@@ -108,6 +108,23 @@ namespace HierarchicalTilingApp.Transformation
             return validMovingIndicesArray;
         }
 
+        public bool validateRegionHasEnoughBins(int spaceDimension, int[] indicesArray, int splitNO)
+        {
+            bool validMovingIndicesArray = true;
+            int binNOInThisRegion = 1;
+            for (int idx = 0; idx < spaceDimension; idx++)
+            {
+                int lowerBound = indicesArray[2 * idx];
+                int upperBound = indicesArray[2 * idx + 1];
+                binNOInThisRegion *= (upperBound - lowerBound + 1);
+            }
+            if (binNOInThisRegion <= splitNO)
+            {
+                validMovingIndicesArray = false;
+            }
+            return validMovingIndicesArray;
+        }
+
         public void splitIndicesArrays(int spaceDimension, int splitDimIdx, int[] indicesArray,
             int[] movingIndicesArray, out int[] firstPartIndicesArray, out int[] secondPartIndicesArray)
         {
@@ -170,15 +187,8 @@ namespace HierarchicalTilingApp.Transformation
             }
             return indicesArray;
         }
-
-        public Dictionary<int, List<int[]>> determineShellIdxArraysInTwoDimSpace(int histogramResolution, 
-            int[] inputIndicesArray, int maxShellNO)
-        {
-            Shell[] shells = shellBuilder.createShellsInTwoDimSpace(maxShellNO);
-            return convertIntPairsOfShellsToListOfIdxArrays(histogramResolution, inputIndicesArray, shells);
-        }
-
-        private Dictionary<int, List<int[]>> convertIntPairsOfShellsToListOfIdxArrays(int histogramResolution, 
+        
+        public Dictionary<int, List<int[]>> convertIntPairsOfShellsToListOfIdxArrays(int histogramResolution, 
             int[] inputIndicesArray, Shell[] shells)
         {
             Dictionary<int, List<int[]>> result = new Dictionary<int, List<int[]>>();

@@ -44,6 +44,7 @@
     <Compile Include="ArrayPartition\Coords.cs" />
     <Compile Include="ArrayPartition\Divider.cs" />
     <Compile Include="ArrayPartition\HeftArrayCreator.cs" />
+    <Compile Include="ArrayPartition\NotEnoughBinsException.cs" />
     <Compile Include="Measure\BaseAuxData.cs" />
     <Compile Include="Measure\BaseMeasure.cs" />
     <Compile Include="Measure\DefaultAuxData.cs" />

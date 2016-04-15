@@ -1,4 +1,5 @@
 ﻿using HierarchicalTilingApp.ArrayPartition;
+using HierarchicalTilingApp.SumOfSquares;
 using HierarchicalTilingApp.Transformation;
 using System;
 using System.Collections.Generic;
@@ -79,9 +80,14 @@ namespace HierarchicalTilingApp.Measure
                 int kNN = (AuxData.KNN < AuxData.PointNO) ? AuxData.KNN : AuxData.PointNO - 1;
                 int nnInServer = binValue - 1;
                 int nnOutserver = 0;
-                var dictOfShells = transformator.determineShellIdxArraysInTwoDimSpace(AuxData.HistogramResolution,
-                    indicesArrayOfBin, kNN - binValue + 1);
-                iterateOverShells(indicesArrayOfRegion, kNN, ref nnInServer, ref nnOutserver, dictOfShells);
+                if (kNN - binValue + 1 > 0)
+	            {
+		            Shell[] currentShells = new Shell[kNN - binValue + 1];
+                    Array.Copy(AuxData.Shells, currentShells, kNN - binValue + 1);
+                    var dictOfShells = transformator.convertIntPairsOfShellsToListOfIdxArrays(
+                        AuxData.HistogramResolution, indicesArrayOfBin, AuxData.Shells);
+                    iterateOverShells(indicesArrayOfRegion, kNN, ref nnInServer, ref nnOutserver, dictOfShells);
+	            }
                 //nnInServer should not be greater than (kNN - nnOutserver) because nnOutserver has been 'commited':
                 nnInServer = (nnInServer <= kNN - nnOutserver) ? nnInServer : kNN - nnOutserver;
                 measureForBin = (double)nnInServer / (double)kNN;

@@ -16,13 +16,13 @@ namespace HierarchicalTilingApp
         {
             IntPairEqualityComparer comparer = new IntPairEqualityComparer();
             CornacchiaMethod cornacchiaMethod = new CornacchiaMethod(comparer);
-            IntPair[] intPairs10 = cornacchiaMethod.applyCornacchiaMethod(64370);
             ShellBuilder shellBuilder = new ShellBuilder(cornacchiaMethod);
-            Shell[] shells = shellBuilder.createShellsInTwoDimSpace(30);
             Transformator transformator = new Transformator(shellBuilder);
             InputParser inputParser = new InputParser(transformator);
             HeftArrayCreator heftArrayCreator = new HeftArrayCreator(transformator);
             int kNN = 333;
+            double kNNMeasCoeff = 0.1;
+            double lbMeasCoeff = 0.9;
 
             int serverNO;
             int pointNO;
@@ -41,38 +41,26 @@ namespace HierarchicalTilingApp
                 parseInputSeparately(inputParser, out serverNO, out pointNO, out delta, out spaceDimension,
                     out histogramResolution, out array);
             }
-            KNNAuxData kNNAuxData = new KNNAuxData()
-            { 
-                SpaceDimension = spaceDimension,
-                HistogramResolution = histogramResolution,
-                ServerNO = serverNO,
-                PointNO = pointNO,
-                KNN = kNN,
-                Histogram = array
-            };
-            KNNMeasure kNNMeasure = new KNNMeasure(kNNAuxData, transformator);
-
-            LoadBalancingAuxData lbAuxData = new LoadBalancingAuxData()
+            Shell[] shells;
+            if (spaceDimension == 2)
             {
-                ServerNO = serverNO,
-                PointNO = pointNO,
-                Delta = delta
-            };
-            LoadBalancingMeasure lbMeasure = new LoadBalancingMeasure(lbAuxData, transformator);
-
+                shells = shellBuilder.createShellsInTwoDimSpace(kNN);
+            }
+            else
+            {
+                // TODO: implementation for higher dimension case
+                throw new NotImplementedException();
+            }
             Console.WriteLine("Point no.: {0}", pointNO);
             Console.WriteLine("Delta: {0}", delta);
             Array heftArray = heftArrayCreator.createHeftArray(spaceDimension, histogramResolution, array);
 
-            Divider divider = new Divider(heftArray, transformator, spaceDimension, histogramResolution, serverNO, delta);
+            Divider divider = new Divider(array, heftArray, transformator, spaceDimension, histogramResolution, serverNO,
+                delta, pointNO, kNN, shells, kNNMeasCoeff, lbMeasCoeff);
             Coords[] partition;
             double objectiveValue = divider.determineObjectiveValue(out partition);
             Console.WriteLine("Objective value: {0}", objectiveValue);
             Console.WriteLine("Sum of differences between tile hefts and delta: {0}", divider.getDiffSum());
-            double measureOfLB = lbMeasure.computeMeasure(partition);
-            Console.WriteLine("Load balancing measure of the partition: {0}", measureOfLB);
-            double measureOfKNN = kNNMeasure.computeMeasure(partition);
-            Console.WriteLine("k-NN measure of the partition (k={0}): {1}", kNN, measureOfKNN);
             writeOutTiles(serverNO, spaceDimension, partition);
             writeOutServers(serverNO, partition);
             writeOutCellsToServers(histogramResolution, serverNO, partition);

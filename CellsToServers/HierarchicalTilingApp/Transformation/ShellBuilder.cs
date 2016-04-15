@@ -13,17 +13,12 @@ namespace HierarchicalTilingApp.Transformation
             this.cornacchiaMethod = cornacchiaMethod;
         }
 
-        /// <summary>
-        /// This method returns shell array with maximum maxShellNO element number.
-        /// Exact element number depends on how many primes of the form 4k+3 there are until maxShellNO.
-        /// </summary>
-        /// <param name="maxShellNO"></param>
-        /// <returns></returns>
-        public Shell[] createShellsInTwoDimSpace(int maxShellNO)
+        public Shell[] createShellsInTwoDimSpace(int shellNO)
         {
             List<Shell> shells = new List<Shell>();
             // The shellIdx is only a candidate shell index because of the primes of the form 4k+3
-            for (int shellIdx = 1; shellIdx <= maxShellNO; shellIdx++)
+            int shellIdx = 1;
+            while (shells.Count < shellNO)
             {
                 Shell currentShell = new Shell();
                 IntPair[] currentIntPairs = cornacchiaMethod.applyCornacchiaMethod(shellIdx);
@@ -32,6 +27,7 @@ namespace HierarchicalTilingApp.Transformation
                     currentShell.setIntPairsWithSwapsAndSignChange(currentIntPairs, cornacchiaMethod.getComparer());
                     shells.Add(currentShell);
                 }
+                shellIdx++;
             }
             return shells.ToArray();
         }
