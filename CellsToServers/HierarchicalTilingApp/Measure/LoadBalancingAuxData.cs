@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 
 namespace HierarchicalTilingApp.Measure
 {
-    public class DefaultAuxData : BaseAuxData
+    public class LoadBalancingAuxData : DefaultAuxData
     {
-        public int PointNO { get; set; }
+        public double Delta { get; set; }
     }
 }

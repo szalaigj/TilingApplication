@@ -44,11 +44,15 @@
     <Compile Include="ArrayPartition\Coords.cs" />
     <Compile Include="ArrayPartition\Divider.cs" />
     <Compile Include="ArrayPartition\HeftArrayCreator.cs" />
+    <Compile Include="Measure\BaseAuxData.cs" />
     <Compile Include="Measure\BaseMeasure.cs" />
     <Compile Include="Measure\DefaultAuxData.cs" />
     <Compile Include="Measure\IAuxData.cs" />
     <Compile Include="Measure\IMeasure.cs" />
+    <Compile Include="Measure\KNNAuxData.cs" />
     <Compile Include="Measure\KNNMeasure.cs" />
+    <Compile Include="Measure\LoadBalancingAuxData.cs" />
+    <Compile Include="Measure\LoadBalancingMeasure.cs" />
     <Compile Include="SumOfSquares\Shell.cs" />
     <Compile Include="Transformation\ShellBuilder.cs" />
     <Compile Include="Transformation\Transformator.cs" />

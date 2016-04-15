@@ -1,16 +1,35 @@
 ﻿using HierarchicalTilingApp.ArrayPartition;
+using HierarchicalTilingApp.Transformation;
 using System;
 using System.Collections.Generic;
 
 namespace HierarchicalTilingApp.Measure
 {
-    public abstract class BaseMeasure : IMeasure<DefaultAuxData>
+    public abstract class BaseMeasure<T> : IMeasure<T>
+        where T : BaseAuxData
     {
-        public DefaultAuxData AuxData { get; set; }
+        protected Transformator transformator;
 
-        public abstract double computeMeasure(Coords[] partition);
+        public T AuxData { get; set; }
 
-        public abstract double computeMeasureForRegion(int[] indicesArrayOfRegion);
+        protected BaseMeasure(T auxData, Transformator transformator)
+        {
+            this.transformator = transformator;
+            this.AuxData = auxData;
+        }
+
+        public double computeMeasure(Coords[] partition)
+        {
+            double measure = 0.0;
+            foreach (var coords in partition)
+            {
+                measure += computeMeasureForRegion(coords);
+            }
+            measure = measure / (double)AuxData.ServerNO;
+            return measure;
+        }
+
+        public abstract double computeMeasureForRegion(Coords coords);
 
         public abstract double computeMeasureForBin(int[] indicesArrayOfBin, int[] indicesArrayOfRegion);
     }

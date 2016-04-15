@@ -7,9 +7,11 @@ namespace HierarchicalTilingApp.Measure
     public interface IMeasure<T>
         where T : IAuxData
     {
+        T AuxData { get; set; }
+
         double computeMeasure(Coords[] partition);
 
-        double computeMeasureForRegion(int[] indicesArrayOfRegion);
+        double computeMeasureForRegion(Coords coords);
 
         double computeMeasureForBin(int[] indicesArrayOfBin, int[] indicesArrayOfRegion);
     }

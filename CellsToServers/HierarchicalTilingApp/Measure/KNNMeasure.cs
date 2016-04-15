@@ -5,32 +5,18 @@ using System.Collections.Generic;
 
 namespace HierarchicalTilingApp.Measure
 {
-    public class KNNMeasure : BaseMeasure
+    public class KNNMeasure : BaseMeasure<KNNAuxData>
     {
-        private Transformator transformator;
-
-        public KNNMeasure(DefaultAuxData auxData, Transformator transformator)
+        public KNNMeasure(KNNAuxData auxData, Transformator transformator)
+            : base(auxData, transformator)
         {
-            this.transformator = transformator;
-            this.AuxData = auxData;
         }
 
-        public override double computeMeasure(Coords[] partition)
-        {
-            double measure = 0.0;
-            foreach (var coords in partition)
-            {
-                int[] indicesArrayOfRegion = 
-                    transformator.determineIndicesArray(AuxData.SpaceDimension, coords.ExtendedIndicesArray);
-                measure += computeMeasureForRegion(indicesArrayOfRegion);
-            }
-            measure = measure / (double)AuxData.ServerNO;
-            return measure;
-        }
-
-        public override double computeMeasureForRegion(int[] indicesArrayOfRegion)
+        public override double computeMeasureForRegion(Coords coords)
         {
             double measureForRegion = 0.0;
+            int[] indicesArrayOfRegion =
+                    transformator.determineIndicesArray(AuxData.SpaceDimension, coords.ExtendedIndicesArray);
             if (AuxData.SpaceDimension == 2)
             {
                 int[] indicesArrayOfBin = new int[2];

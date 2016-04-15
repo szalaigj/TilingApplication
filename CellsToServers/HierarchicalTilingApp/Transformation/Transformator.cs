@@ -182,8 +182,6 @@ namespace HierarchicalTilingApp.Transformation
             int[] inputIndicesArray, Shell[] shells)
         {
             Dictionary<int, List<int[]>> result = new Dictionary<int, List<int[]>>();
-            int startX = inputIndicesArray[0];
-            int startY = inputIndicesArray[1];
             int shellIdx = 0;
             foreach (var shell in shells)
             {

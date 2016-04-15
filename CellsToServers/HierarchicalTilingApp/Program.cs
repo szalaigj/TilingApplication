@@ -41,7 +41,7 @@ namespace HierarchicalTilingApp
                 parseInputSeparately(inputParser, out serverNO, out pointNO, out delta, out spaceDimension,
                     out histogramResolution, out array);
             }
-            DefaultAuxData auxData = new DefaultAuxData()
+            KNNAuxData kNNAuxData = new KNNAuxData()
             { 
                 SpaceDimension = spaceDimension,
                 HistogramResolution = histogramResolution,
@@ -50,7 +50,15 @@ namespace HierarchicalTilingApp
                 KNN = kNN,
                 Histogram = array
             };
-            KNNMeasure kNNMeasure = new KNNMeasure(auxData, transformator);
+            KNNMeasure kNNMeasure = new KNNMeasure(kNNAuxData, transformator);
+
+            LoadBalancingAuxData lbAuxData = new LoadBalancingAuxData()
+            {
+                ServerNO = serverNO,
+                PointNO = pointNO,
+                Delta = delta
+            };
+            LoadBalancingMeasure lbMeasure = new LoadBalancingMeasure(lbAuxData, transformator);
 
             Console.WriteLine("Point no.: {0}", pointNO);
             Console.WriteLine("Delta: {0}", delta);
@@ -61,10 +69,13 @@ namespace HierarchicalTilingApp
             double objectiveValue = divider.determineObjectiveValue(out partition);
             Console.WriteLine("Objective value: {0}", objectiveValue);
             Console.WriteLine("Sum of differences between tile hefts and delta: {0}", divider.getDiffSum());
+            double measureOfLB = lbMeasure.computeMeasure(partition);
+            Console.WriteLine("Load balancing measure of the partition: {0}", measureOfLB);
             double measureOfKNN = kNNMeasure.computeMeasure(partition);
             Console.WriteLine("k-NN measure of the partition (k={0}): {1}", kNN, measureOfKNN);
             writeOutTiles(serverNO, spaceDimension, partition);
             writeOutServers(serverNO, partition);
+            writeOutCellsToServers(histogramResolution, serverNO, partition);
             Console.WriteLine("Press any key to exit!");
             Console.Read();
         }
@@ -105,6 +116,30 @@ namespace HierarchicalTilingApp
                 strBldr.AppendLine();
             }
             string serversOutput = @"c:\temp\data\servers.dat";
+            System.IO.File.WriteAllText(serversOutput, strBldr.ToString());
+        }
+
+        private static void writeOutCellsToServers(int histogramResolution, int serverNO, Coords[] partition)
+        {
+            StringBuilder strBldr = new StringBuilder();
+            for (int serverIdx = 0; serverIdx < serverNO; serverIdx++)
+            {
+                int[] extendedIndicesArray = partition[serverIdx].ExtendedIndicesArray;
+                for (int x = extendedIndicesArray[1]; x <= extendedIndicesArray[2]; x++)
+                {
+                    for (int y = extendedIndicesArray[3]; y <= extendedIndicesArray[4]; y++)
+                    {
+                        int cellIdx = x * histogramResolution + y;
+                        strBldr.Append(cellIdx);
+                        if ((x != extendedIndicesArray[2]) || (y != extendedIndicesArray[4]))
+                        {
+                            strBldr.Append(" ");
+                        }
+                    }
+                }
+                strBldr.AppendLine();
+            }
+            string serversOutput = @"c:\temp\data\cells_to_servers.dat";
             System.IO.File.WriteAllText(serversOutput, strBldr.ToString());
         }
     }
