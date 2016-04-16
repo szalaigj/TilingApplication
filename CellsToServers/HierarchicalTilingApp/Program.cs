@@ -14,12 +14,15 @@ namespace HierarchicalTilingApp
     {
         static void Main(string[] args)
         {
-            IntPairEqualityComparer comparer = new IntPairEqualityComparer();
+            IntTupleEqualityComparer comparer = new IntTupleEqualityComparer();
             CornacchiaMethod cornacchiaMethod = new CornacchiaMethod(comparer);
             ShellBuilder shellBuilder = new ShellBuilder(cornacchiaMethod);
             Transformator transformator = new Transformator(shellBuilder);
             InputParser inputParser = new InputParser(transformator);
             HeftArrayCreator heftArrayCreator = new HeftArrayCreator(transformator);
+            BacktrackingMethod backtrackingMethod = new BacktrackingMethod();
+            IntTuple[] intPair = cornacchiaMethod.applyCornacchiaMethod(64370);
+            IntTuple[] decompositions = backtrackingMethod.decomposeByBacktracking(64370, 2);
             int kNN = 333;
             double kNNMeasCoeff = 0.1;
             double lbMeasCoeff = 0.9;

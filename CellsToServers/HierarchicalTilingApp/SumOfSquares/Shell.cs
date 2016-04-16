@@ -8,43 +8,96 @@ namespace HierarchicalTilingApp.SumOfSquares
 {
     public class Shell
     {
-        private IntPair[] intPairs;
+        private IntTuple[] intTuples;
 
-        public void setIntPairsWithSwapsAndSignChange(IntPair[] inputIntPairs, IntPairEqualityComparer comparer)
+        public void setIntTuplesWithSwapsAndSignChange(IntTuple[] inputIntTuples, IntTupleEqualityComparer comparer)
         {
-            HashSet<IntPair> container = new HashSet<IntPair>(comparer);
-            foreach (var intPair in inputIntPairs)
+            HashSet<IntTuple> container = new HashSet<IntTuple>(comparer);
+            foreach (var intTuple in inputIntTuples)
             {
-                container.Add(intPair);
-                addOppositeElements(container, intPair);
+                container.Add(intTuple);
+                addOppositeElements(container, intTuple);
                 addSwapElements(container);
             }
-            this.intPairs = new IntPair[container.Count];
-            container.CopyTo(this.intPairs);
+            this.intTuples = new IntTuple[container.Count];
+            container.CopyTo(this.intTuples);
         }
 
-        private void addOppositeElements(HashSet<IntPair> tempIntPairs, IntPair intPair)
+        private void addOppositeElements(HashSet<IntTuple> tempIntTuples, IntTuple intTuple)
         {
-            int x = intPair.X;
-            int y = intPair.Y;
-            tempIntPairs.Add(new IntPair { X = -x, Y = y });
-            tempIntPairs.Add(new IntPair { X = x, Y = -y });
-            tempIntPairs.Add(new IntPair { X = -x, Y = -y });
-        }
-
-        private void addSwapElements(HashSet<IntPair> tempIntPairs)
-        {
-            List<IntPair> swapElements = new List<IntPair>();
-            foreach (var tempIntPair in tempIntPairs)
+            int dim = intTuple.Tuple.Length;
+            // The following loop iterates over the all sign-combinations of the original tuple components.
+            // E.g. for (x,y) these are (-x,y),(x,-y),(-x,-y)
+            for (int signDealingOut = 1; signDealingOut < Math.Pow(2, dim); signDealingOut++)
             {
-                swapElements.Add(new IntPair { X = tempIntPair.Y, Y = tempIntPair.X });
+                int[] currentTuple = new int[dim];
+                for (int idx = 0; idx < dim; idx++)
+                {
+                    int bit = (signDealingOut >> idx) & 1;
+                    if (bit == 0) // the bit 0 symbolizes '+'
+                        currentTuple[idx] = intTuple.Tuple[idx];
+                    else // the bit 0 symbolizes '-'
+                        currentTuple[idx] = -intTuple.Tuple[idx];
+                }
+                tempIntTuples.Add(new IntTuple() { Tuple = currentTuple });
             }
-            tempIntPairs.UnionWith(swapElements);
         }
 
-        public IntPair[] getIntPairs()
+        private void addSwapElements(HashSet<IntTuple> tempIntTuples)
         {
-            return intPairs;
+            List<IntTuple> swapElements = new List<IntTuple>();
+            foreach (var tempIntTuple in tempIntTuples)
+            {
+                List<int[]> perms = permutateWithoutInitial(tempIntTuple.Tuple);
+                foreach (var perm in perms)
+                {
+                    swapElements.Add(new IntTuple { Tuple = perm });
+                }
+            }
+            tempIntTuples.UnionWith(swapElements);
+        }
+
+        private List<int[]> permutateWithoutInitial(int[] tuple)
+        {
+            List<int> components = new List<int>(tuple);
+            List<int[]> perms = innerPermutate(components);
+            perms.RemoveAt(0);
+            return perms;
+        }
+
+        private List<int[]> innerPermutate(List<int> components)
+        {
+            List<int[]> result = new List<int[]>();
+            if (components.Count == 2)
+            {
+                int[] perm1 = new int[] { components[0], components[1] };
+                int[] perm2 = new int[] { components[1], components[0] };
+                result.Add(perm1);
+                result.Add(perm2);
+            }
+            else if (components.Count > 2)
+            {
+                for (int idx = 0; idx < components.Count; idx++)
+                {
+                    int currentComponent = components[idx];
+                    List<int> componentsWithoutCurrent = new List<int>(components);
+                    componentsWithoutCurrent.RemoveAt(idx);
+                    List<int[]> perms = innerPermutate(componentsWithoutCurrent);
+                    foreach (var perm in perms)
+                    {
+                        int[] extendedPerm = new int[components.Count];
+                        extendedPerm[0] = currentComponent;
+                        perm.CopyTo(extendedPerm, 1);
+                        result.Add(extendedPerm);
+                    }
+                }
+            }
+            return result;
+        }
+
+        public IntTuple[] getIntTuples()
+        {
+            return intTuples;
         }
     }
 }

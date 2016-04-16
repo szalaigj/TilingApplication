@@ -21,10 +21,10 @@ namespace HierarchicalTilingApp.Transformation
             while (shells.Count < shellNO)
             {
                 Shell currentShell = new Shell();
-                IntPair[] currentIntPairs = cornacchiaMethod.applyCornacchiaMethod(shellIdx);
-                if (currentIntPairs.Length != 0)
+                IntTuple[] currentIntTuples = cornacchiaMethod.applyCornacchiaMethod(shellIdx);
+                if (currentIntTuples.Length != 0)
                 {
-                    currentShell.setIntPairsWithSwapsAndSignChange(currentIntPairs, cornacchiaMethod.getComparer());
+                    currentShell.setIntTuplesWithSwapsAndSignChange(currentIntTuples, cornacchiaMethod.getComparer());
                     shells.Add(currentShell);
                 }
                 shellIdx++;

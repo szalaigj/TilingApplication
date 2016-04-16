@@ -54,6 +54,8 @@
     <Compile Include="Measure\KNNMeasure.cs" />
     <Compile Include="Measure\LoadBalancingAuxData.cs" />
     <Compile Include="Measure\LoadBalancingMeasure.cs" />
+    <Compile Include="SumOfSquares\BacktrackingMethod.cs" />
+    <Compile Include="SumOfSquares\IntTuple.cs" />
     <Compile Include="SumOfSquares\Shell.cs" />
     <Compile Include="Transformation\ShellBuilder.cs" />
     <Compile Include="Transformation\Transformator.cs" />

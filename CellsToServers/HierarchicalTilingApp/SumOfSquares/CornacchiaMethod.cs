@@ -5,44 +5,48 @@ namespace HierarchicalTilingApp.SumOfSquares
 {
     public class CornacchiaMethod
     {
-        private IntPairEqualityComparer comparer;
+        private IntTupleEqualityComparer comparer;
 
-        public CornacchiaMethod(IntPairEqualityComparer comparer)
+        public CornacchiaMethod(IntTupleEqualityComparer comparer)
         {
             this.comparer = comparer;
         }
 
-        public IntPairEqualityComparer getComparer()
+        public IntTupleEqualityComparer getComparer()
         {
             return comparer;
         }
 
         /// <summary>
-        /// This method return such IntPair where property X is less than or equal to property Y.
+        /// This method return such int tuple where the components of this tuple have ascending order.
         /// </summary>
         /// <param name="num"></param>
         /// <returns></returns>
-        public IntPair[] applyCornacchiaMethod(int num)
+        public IntTuple[] applyCornacchiaMethod(int num)
         {
-            IntPair[] intPairs;
+            IntTuple[] intTuples;
             if (num == 1)
 	        {
-                intPairs = new IntPair[] { new IntPair() { X = 1, Y = 0 }, new IntPair() { X = 0, Y = 1 } };
+                intTuples = new IntTuple[]
+                { 
+                    new IntTuple() { Tuple = new int[] { 1, 0 } }, 
+                    new IntTuple() { Tuple = new int[] { 0, 1 } } 
+                };
 	        } 
             else
 	        {
-                List<IntPair> intPairsOfFactors = listSumOfSquaresOfFactors(num);
-                intPairs = applyFibonacciIdentity(intPairsOfFactors);
+                List<IntTuple> intTuplesOfFactors = listSumOfSquaresOfFactors(num);
+                intTuples = applyFibonacciIdentity(intTuplesOfFactors);
 	        }
-            return intPairs;
+            return intTuples;
         }
 
-        private IntPair[] applyCornacchiaMethodForPrime(int prime)
+        private IntTuple[] applyCornacchiaMethodForPrime(int prime)
         {
-            List<IntPair> container = new List<IntPair>();
+            List<IntTuple> container = new List<IntTuple>();
             if (prime == 2)
             {
-                container.Add(new IntPair { X = 1, Y = 1 });
+                container.Add(new IntTuple { Tuple = new int[] { 1, 1 } });
             }
             else
             {
@@ -54,7 +58,7 @@ namespace HierarchicalTilingApp.SumOfSquares
             return container.ToArray();
         }
 
-        private void innerApplyCornacchiaMethodForPrime(int prime, List<IntPair> container, int t)
+        private void innerApplyCornacchiaMethodForPrime(int prime, List<IntTuple> container, int t)
         {
             int x, y;
             if ((t * t) % prime == prime - 1)
@@ -72,14 +76,14 @@ namespace HierarchicalTilingApp.SumOfSquares
                 {
                     x = r2;
                     y = r1 % r2;
-                    chooseOrderedIntPair(container, x, y);
+                    chooseOrderedIntTuple(container, x, y);
                 }
             }
         }
 
-        private List<IntPair> listSumOfSquaresOfFactors(int num)
+        private List<IntTuple> listSumOfSquaresOfFactors(int num)
         {
-            List<IntPair> intPairsOfFactors = new List<IntPair>();
+            List<IntTuple> intTuplesOfFactors = new List<IntTuple>();
             for (int factor = 2; num > 1; factor++)
             {
                 if (num % factor == 0)
@@ -91,7 +95,7 @@ namespace HierarchicalTilingApp.SumOfSquares
                         exponent++;
                         if ((factor % 4 == 1) || (factor == 2))
                         {
-                            intPairsOfFactors.AddRange(applyCornacchiaMethodForPrime(factor));
+                            intTuplesOfFactors.AddRange(applyCornacchiaMethodForPrime(factor));
                         }
                     }
                     // If the prime factor is of the form 4k+3 then its exponent should be even
@@ -101,61 +105,67 @@ namespace HierarchicalTilingApp.SumOfSquares
                     {
                         if (exponent % 2 == 0)
                         {
-                            intPairsOfFactors.Add(new IntPair { X = 0, Y = (int)Math.Pow(factor, exponent/2) });
+                            intTuplesOfFactors.Add( 
+                                new IntTuple { Tuple = new int[] { 0, (int)Math.Pow(factor, exponent / 2) } }
+                                );
                         }
                         else
                         {
-                            intPairsOfFactors = new List<IntPair>();
+                            intTuplesOfFactors = new List<IntTuple>();
                             break;
                         }
                     }
                 }
             }
-            return intPairsOfFactors;
+            return intTuplesOfFactors;
         }
 
-        private IntPair[] applyFibonacciIdentity(List<IntPair> intPairsOfFactors)
+        private IntTuple[] applyFibonacciIdentity(List<IntTuple> intTuplesOfFactors)
         {
-            HashSet<IntPair> currentIntPairs = new HashSet<IntPair>(comparer);
-            foreach (var intPair in intPairsOfFactors)
+            HashSet<IntTuple> currentIntTuples = new HashSet<IntTuple>(comparer);
+            foreach (var intTuple in intTuplesOfFactors)
             {
-                currentIntPairs = applyFibonacciIdentity(currentIntPairs, intPair);
+                currentIntTuples = applyFibonacciIdentity(currentIntTuples, intTuple);
             }
-            IntPair[] result = new IntPair[currentIntPairs.Count];
-            currentIntPairs.CopyTo(result);
+            IntTuple[] result = new IntTuple[currentIntTuples.Count];
+            currentIntTuples.CopyTo(result);
             return result;
         }
 
-        private HashSet<IntPair> applyFibonacciIdentity(HashSet<IntPair> currentIntPairs, IntPair newIntPair)
+        private HashSet<IntTuple> applyFibonacciIdentity(HashSet<IntTuple> currentIntTuples, IntTuple newIntTuple)
         {
-            HashSet<IntPair> result = new HashSet<IntPair>(comparer);
-            if (currentIntPairs.Count == 0)
-                result.Add(newIntPair);
+            HashSet<IntTuple> result = new HashSet<IntTuple>(comparer);
+            if (currentIntTuples.Count == 0)
+                result.Add(newIntTuple);
             else
             {
-                foreach (var currentIntPair in currentIntPairs)
+                foreach (var currentIntTuple in currentIntTuples)
                 {
                     int n1, n2;
-                    n1 = (int)Math.Abs(currentIntPair.X * newIntPair.X - currentIntPair.Y * newIntPair.Y);
-                    n2 = (int)Math.Abs(currentIntPair.X * newIntPair.Y + currentIntPair.Y * newIntPair.X);
-                    chooseOrderedIntPair(result, n1, n2);
-                    n1 = (int)Math.Abs(currentIntPair.X * newIntPair.X + currentIntPair.Y * newIntPair.Y);
-                    n2 = (int)Math.Abs(currentIntPair.X * newIntPair.Y - currentIntPair.Y * newIntPair.X);
-                    chooseOrderedIntPair(result, n1, n2);
+                    int a = currentIntTuple.Tuple[0];
+                    int b = currentIntTuple.Tuple[1];
+                    int c = newIntTuple.Tuple[0];
+                    int d = newIntTuple.Tuple[1];
+                    n1 = (int)Math.Abs(a * c - b * d);
+                    n2 = (int)Math.Abs(a * d + b * c);
+                    chooseOrderedIntTuple(result, n1, n2);
+                    n1 = (int)Math.Abs(a * c + b * d);
+                    n2 = (int)Math.Abs(a * d - b * c);
+                    chooseOrderedIntTuple(result, n1, n2);
                 }
             }
             return result;
         }
 
-        private void chooseOrderedIntPair(ICollection<IntPair> result, int n1, int n2)
+        private void chooseOrderedIntTuple(ICollection<IntTuple> result, int n1, int n2)
         {
             if (n1 < n2)
             {
-                result.Add(new IntPair { X = n1, Y = n2 });
+                result.Add(new IntTuple { Tuple = new int[] { n1, n2 } });
             }
             else
             {
-                result.Add(new IntPair { X = n2, Y = n1 });
+                result.Add(new IntTuple { Tuple = new int[] { n2, n1 } });
             }
         }
     }

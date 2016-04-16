@@ -196,11 +196,11 @@ namespace HierarchicalTilingApp.Transformation
             foreach (var shell in shells)
             {
                 List<int[]> indicesArraysInCurrentShell = new List<int[]>();
-                IntPair[] intPairs = shell.getIntPairs();
-                foreach (var intPair in intPairs)
+                IntTuple[] intTuples = shell.getIntTuples();
+                foreach (var intTuple in intTuples)
                 {
                     int[] currentIndicesArray;
-                    if(intPair.determineIdxArrayRelativeTo(histogramResolution, inputIndicesArray, 
+                    if(intTuple.determineIdxArrayRelativeTo(histogramResolution, inputIndicesArray, 
                         out currentIndicesArray))
                     {
                         indicesArraysInCurrentShell.Add(currentIndicesArray);
