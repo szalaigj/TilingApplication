@@ -8,6 +8,13 @@ namespace HierarchicalTilingApp.SumOfSquares
 {
     public class BacktrackingMethod
     {
+        private CornacchiaMethod cornacchiaMethod;
+
+        public BacktrackingMethod(CornacchiaMethod cornacchiaMethod)
+        {
+            this.cornacchiaMethod = cornacchiaMethod;
+        }
+
         /// <summary>
         /// This method return such int tuple where the components of this tuple have ascending order.
         /// </summary>
@@ -16,51 +23,60 @@ namespace HierarchicalTilingApp.SumOfSquares
         /// <returns></returns>
         public IntTuple[] decomposeByBacktracking(int num, int squaresNO)
         {
-            List<IntTuple> decompositions = new List<IntTuple>();
-            List<int> components = new List<int>();
-            innerDecomposeByBacktracking(num, squaresNO, components);
-            // The components contains decomposition in bulk style
-            // therefore it should be partitioned by squaresNO in the followings
-            int idx = 0;
-            int[] tmpDecomposition = new int[squaresNO];
-            foreach (var component in components)
+            IntTuple[] decompositions;
+            if (squaresNO == 1)
             {
-                tmpDecomposition[idx] = component;
-                if (idx == squaresNO - 1)
+                int floorOfSquareOfN = (int)Math.Floor(Math.Sqrt(num));
+                if (floorOfSquareOfN * floorOfSquareOfN == num)
                 {
-                    decompositions.Add(new IntTuple() { Tuple = tmpDecomposition });
-                    tmpDecomposition = new int[squaresNO];
-                    idx = 0;
+                    decompositions = new IntTuple[1];
+                    decompositions[0] = new IntTuple() { Tuple = new int[] {floorOfSquareOfN} };
                 }
                 else
-                    idx++;
+                    decompositions = new IntTuple[0];
             }
-            return decompositions.ToArray();
+            else if (squaresNO >= 2)
+            {
+                decompositions = innerDecomposeByBacktracking(num, squaresNO);
+            }
+            else
+                decompositions = new IntTuple[0];
+            return decompositions;
         }
 
-        private bool innerDecomposeByBacktracking(int num, int squaresNO, List<int> components)
+        private IntTuple[] innerDecomposeByBacktracking(int num, int squaresNO)
         {
-            bool result = true;
-            int floorOfSquareOfN = (int)Math.Floor(Math.Sqrt(num));
-            if (floorOfSquareOfN * floorOfSquareOfN == num)
-                components.Add(floorOfSquareOfN);
-            else if (squaresNO == 1)
-                result = false;
+            IntTuple[] intTuples;
+            if (squaresNO == 2)
+            {
+                intTuples = cornacchiaMethod.applyCornacchiaMethod(num);
+            }
             else
             {
-                // This method return such int tuple where the components of this tuple have ascending order.
-                // Thus num - i * i <= i * i --> sqrt(num/2) <= i.
-                for (int i = floorOfSquareOfN; i >= (double)floorOfSquareOfN / Math.Sqrt(2.0); i--)
+                List<IntTuple> tempIntTuples = new List<IntTuple>();
+                int floorOfSquareOfN = (int)Math.Floor(Math.Sqrt(num));
+                // This method return such int tuple where the components of this tuple has ascending order.
+                // Thus num - i * i <= (squaresNO - 1) * (i * i) --> sqrt(num/squaresNO) <= i.
+                // (E.g. num = x^2 + y^2 + z^2 (x<=y<=z), num - z^2 = x^2 + y^2 <= 2 * z^2 ...)
+                int lowerLimit = (int)(floorOfSquareOfN / Math.Sqrt(squaresNO));
+                for (int lastTerm = floorOfSquareOfN; lastTerm >= lowerLimit; lastTerm--)
                 {
-                    bool subResult = innerDecomposeByBacktracking(num - i * i, squaresNO - 1, components);
-                    if (subResult)
-                    {
-                        components.Add(i);
-                    }
+                    IntTuple[] subIntTuples = innerDecomposeByBacktracking(num - lastTerm * lastTerm, squaresNO - 1);
+                    foreach (var subIntTuple in subIntTuples)
+	                {
+                        // the components of this tuple must have ascending order
+                        if (subIntTuple.Tuple[squaresNO - 2] <= lastTerm)
+                        {
+                            int[] tuple = new int[squaresNO];
+                            subIntTuple.Tuple.CopyTo(tuple, 0);
+                            tuple[squaresNO - 1] = lastTerm;
+                            tempIntTuples.Add(new IntTuple() { Tuple = tuple });
+                        }
+	                }
                 }
-                result = false;
+                intTuples = tempIntTuples.ToArray();
             }
-            return result;
+            return intTuples;
         }
     }
 }
