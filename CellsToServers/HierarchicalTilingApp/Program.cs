@@ -16,13 +16,11 @@ namespace HierarchicalTilingApp
         {
             IntTupleEqualityComparer comparer = new IntTupleEqualityComparer();
             CornacchiaMethod cornacchiaMethod = new CornacchiaMethod(comparer);
-            ShellBuilder shellBuilder = new ShellBuilder(cornacchiaMethod);
+            BacktrackingMethod backtrackingMethod = new BacktrackingMethod(cornacchiaMethod);
+            ShellBuilder shellBuilder = new ShellBuilder(backtrackingMethod);
             Transformator transformator = new Transformator(shellBuilder);
             InputParser inputParser = new InputParser(transformator);
             HeftArrayCreator heftArrayCreator = new HeftArrayCreator(transformator);
-            BacktrackingMethod backtrackingMethod = new BacktrackingMethod();
-            IntTuple[] intPair = cornacchiaMethod.applyCornacchiaMethod(64370);
-            IntTuple[] decompositions = backtrackingMethod.decomposeByBacktracking(64370, 2);
             int kNN = 333;
             double kNNMeasCoeff = 0.1;
             double lbMeasCoeff = 0.9;
@@ -45,15 +43,7 @@ namespace HierarchicalTilingApp
                     out histogramResolution, out array);
             }
             Shell[] shells;
-            if (spaceDimension == 2)
-            {
-                shells = shellBuilder.createShellsInTwoDimSpace(kNN);
-            }
-            else
-            {
-                // TODO: implementation for higher dimension case
-                throw new NotImplementedException();
-            }
+            shells = shellBuilder.createShells(kNN, spaceDimension);
             Console.WriteLine("Point no.: {0}", pointNO);
             Console.WriteLine("Delta: {0}", delta);
             Array heftArray = heftArrayCreator.createHeftArray(spaceDimension, histogramResolution, array);

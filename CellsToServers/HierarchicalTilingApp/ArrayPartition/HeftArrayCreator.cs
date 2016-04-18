@@ -19,42 +19,30 @@ namespace HierarchicalTilingApp.ArrayPartition
                 lengthsHeftArray[idx] = histogramResolution;
             }
             Array heftArray = Array.CreateInstance(typeof(int), lengthsHeftArray);
-            fillHeftArray(spaceDimension, histogramResolution, array, heftArray);
+            fillHeftArray(spaceDimension, array, heftArray);
             return heftArray;
         }
 
-        private void fillHeftArray(int spaceDimension, int histogramResolution, Array array, Array heftArray)
+        private void fillHeftArray(int spaceDimension, Array array, Array heftArray)
         {
-            int cellNO = (int)Math.Pow(histogramResolution, spaceDimension);
-            int[] outerIndicesArray = new int[spaceDimension];
-            int[] innerIndicesArray = new int[spaceDimension];
-            int[] windowIndicesArray = new int[spaceDimension];
-            for (int outerCellIdx = 0; outerCellIdx < cellNO; outerCellIdx++)
+            for (int[] outerIndicesArray = transformator.determineFirstIndicesArray(array);
+                    outerIndicesArray != null;
+                    outerIndicesArray = transformator.determineNextIndicesArray(array, outerIndicesArray))
             {
-                transformator.transformCellIdxToIndicesArray(histogramResolution, outerIndicesArray, outerCellIdx);
-
-                for (int innerCellIdx = outerCellIdx; innerCellIdx < cellNO; innerCellIdx++)
+                for (int[] innerIndicesArray = outerIndicesArray;
+                    innerIndicesArray != null;
+                    innerIndicesArray = transformator.determineNextIndicesArray(array, innerIndicesArray))
                 {
-                    transformator.transformCellIdxToIndicesArray(histogramResolution, innerIndicesArray, innerCellIdx);
-                    int[] heftArrayIndeces;
-                    int cellPoints;
-                    bool validHeftArrayIndeces = transformator.mergeIndicesArrays(spaceDimension, outerIndicesArray,
-                        innerIndicesArray, out heftArrayIndeces, out cellPoints);
-                    if (validHeftArrayIndeces)
+                    int[] heftArrayIndeces = transformator.mergeIndicesArrays(spaceDimension, 
+                        outerIndicesArray, innerIndicesArray);
+                    int binValue = 0;
+                    for (int[] indicesArrayOfBin = transformator.determineFirstIndicesArray(heftArrayIndeces);
+                        indicesArrayOfBin != null;
+                        indicesArrayOfBin = transformator.determineNextIndicesArray(heftArrayIndeces, indicesArrayOfBin))
                     {
-                        int cellValue = 0;
-                        for (int windowIdx = outerCellIdx; windowIdx <= innerCellIdx; windowIdx++)
-                        {
-                            transformator.transformCellIdxToIndicesArray(histogramResolution, windowIndicesArray, windowIdx);
-                            bool validSummableArrayIndeces = transformator.validateIndicesArrays(spaceDimension,
-                                outerIndicesArray, innerIndicesArray, windowIndicesArray);
-                            if (validSummableArrayIndeces)
-                            {
-                                cellValue += (int)array.GetValue(windowIndicesArray);
-                            }
-                        }
-                        heftArray.SetValue(cellValue, heftArrayIndeces);
+                        binValue += (int)array.GetValue(indicesArrayOfBin);
                     }
+                    heftArray.SetValue(binValue, heftArrayIndeces);
                 }
             }
         }

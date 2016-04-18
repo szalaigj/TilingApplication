@@ -46,8 +46,7 @@ namespace HierarchicalTilingApp.ArrayPartition
                 lengthsMaxDiffArray[idx - 1] = histogramResolution;
             }
             this.objectiveValueArray = Array.CreateInstance(typeof(double), lengthsObjectiveValueArray);
-            transformator.initializeObjectiveValueArray(this.spaceDimension, this.histogramResolution, this.serverNO, 
-                this.initializationValue, this.objectiveValueArray);
+            transformator.initializeObjectiveValueArray(this.initializationValue, this.objectiveValueArray);
             this.partitionArray = Array.CreateInstance(typeof(Coords[]), lengthsObjectiveValueArray);
             this.hasEnoughBinsArray = Array.CreateInstance(typeof(bool), lengthsObjectiveValueArray);
             this.maxDiffArray = Array.CreateInstance(typeof(double), lengthsMaxDiffArray);
@@ -174,27 +173,20 @@ namespace HierarchicalTilingApp.ArrayPartition
             double objectiveValue = 0.0;
             int splitNO = extendedIndicesArray[0];
             partition = (Coords[])partitionArray.GetValue(extendedIndicesArray);
-            int cellNO = (int)Math.Pow(histogramResolution, spaceDimension);
-            int[] movingIndicesArray = new int[spaceDimension];
-            for (int movingIdx = 0; movingIdx < cellNO; movingIdx++)
+            for (int splitDimIdx = 0; splitDimIdx < spaceDimension; splitDimIdx++)
             {
-                transformator.transformCellIdxToIndicesArray(histogramResolution, movingIndicesArray, movingIdx);
-                for (int splitDimIdx = 0; splitDimIdx < spaceDimension; splitDimIdx++)
+                for (int componentInSplitDim = indicesArray[2 * splitDimIdx];
+                    componentInSplitDim < indicesArray[2 * splitDimIdx + 1]; componentInSplitDim++)
                 {
-                    bool validMovingIndicesArray = transformator.validateIndicesArrays(spaceDimension, splitDimIdx,
-                        indicesArray, movingIndicesArray);
-                    if (validMovingIndicesArray)
-                    {
-                        fillObjectiveValueWhenMovingIdxArrayIsValid(extendedIndicesArray, indicesArray, ref partition, 
-                            ref objectiveValue, splitNO, movingIndicesArray, splitDimIdx);
-                    }
+                    fillObjectiveValueForSplitComponent(extendedIndicesArray, indicesArray, ref partition,
+                            ref objectiveValue, splitNO, componentInSplitDim, splitDimIdx);
                 }
             }
             return objectiveValue;
         }
 
-        private void fillObjectiveValueWhenMovingIdxArrayIsValid(int[] extendedIndicesArray, int[] indicesArray,
-            ref Coords[] partition, ref double objectiveValue, int splitNO, int[] movingIndicesArray, int splitDimIdx)
+        private void fillObjectiveValueForSplitComponent(int[] extendedIndicesArray, int[] indicesArray,
+            ref Coords[] partition, ref double objectiveValue, int splitNO, int componentInSplitDim, int splitDimIdx)
         {
             int[] firstPartIndicesArray, secondPartIndicesArray;
             int[] firstPartExtendedIndicesArray = new int[2 * spaceDimension + 1];
@@ -202,7 +194,7 @@ namespace HierarchicalTilingApp.ArrayPartition
             Coords[] firstPartPartition, secondPartPartition;
             bool hasEnoughBinsForFirstPart, hasEnoughBinsForSecondPart;
             transformator.splitIndicesArrays(spaceDimension, splitDimIdx, indicesArray,
-                movingIndicesArray, out firstPartIndicesArray, out secondPartIndicesArray);
+                componentInSplitDim, out firstPartIndicesArray, out secondPartIndicesArray);
             for (int firstSplitNO = 0; firstSplitNO <= splitNO - 1; firstSplitNO++)
             {
                 int secondSplitNO = (splitNO - 1) - firstSplitNO;

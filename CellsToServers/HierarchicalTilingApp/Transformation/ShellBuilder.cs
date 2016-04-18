@@ -6,25 +6,26 @@ namespace HierarchicalTilingApp.Transformation
 {
     public class ShellBuilder
     {
-        private CornacchiaMethod cornacchiaMethod;
+        private BacktrackingMethod backtrackingMethod;
 
-        public ShellBuilder(CornacchiaMethod cornacchiaMethod)
+        public ShellBuilder(BacktrackingMethod backtrackingMethod)
         {
-            this.cornacchiaMethod = cornacchiaMethod;
+            this.backtrackingMethod = backtrackingMethod;
         }
 
-        public Shell[] createShellsInTwoDimSpace(int shellNO)
+        public Shell[] createShells(int shellNO, int spaceDimension)
         {
             List<Shell> shells = new List<Shell>();
-            // The shellIdx is only a candidate shell index because of the primes of the form 4k+3
+            // The shellIdx is only a candidate shell index based on Fermat's theorem on sum of two squares
+            // and Legendre's three-square theorem
             int shellIdx = 1;
             while (shells.Count < shellNO)
             {
                 Shell currentShell = new Shell();
-                IntTuple[] currentIntTuples = cornacchiaMethod.applyCornacchiaMethod(shellIdx);
+                IntTuple[] currentIntTuples = backtrackingMethod.decomposeByBacktracking(shellIdx, spaceDimension);
                 if (currentIntTuples.Length != 0)
                 {
-                    currentShell.setIntTuplesWithSwapsAndSignChange(currentIntTuples, cornacchiaMethod.getComparer());
+                    currentShell.setIntTuplesWithSwapsAndSignChange(currentIntTuples, backtrackingMethod.getComparer());
                     shells.Add(currentShell);
                 }
                 shellIdx++;

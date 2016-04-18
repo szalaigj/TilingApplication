@@ -31,86 +31,23 @@ namespace HierarchicalTilingApp.Transformation
                     (int)Math.Pow(histogramResolution, indicesArray.Length - (coordIdx + 1));
             }
         }
-
-        public bool mergeIndicesArrays(int spaceDimension, int[] outerIndicesArray,
-            int[] innerIndicesArray, out int[] mergedArrayIndices, out int cells)
+        
+        public int[] mergeIndicesArrays(int spaceDimension, int[] outerIndicesArray,
+            int[] innerIndicesArray)
         {
-            bool validArrayIndices = true;
-            cells = 1;
+            int[] mergedArrayIndices = new int[2 * spaceDimension];
             mergedArrayIndices = new int[2 * spaceDimension];
             for (int idx = 0; idx < spaceDimension; idx++)
             {
-                int outerIdx = outerIndicesArray[idx];
-                int innerIdx = innerIndicesArray[idx];
-                if (outerIdx <= innerIdx)
-                {
-                    mergedArrayIndices[2 * idx] = outerIdx;
-                    mergedArrayIndices[2 * idx + 1] = innerIdx;
-                    cells *= (innerIdx - outerIdx + 1);
-                }
-                else
-                {
-                    validArrayIndices = false;
-                    break;
-                }
+                mergedArrayIndices[2 * idx] = outerIndicesArray[idx];
+                mergedArrayIndices[2 * idx + 1] = innerIndicesArray[idx];
             }
-            return validArrayIndices;
+            return mergedArrayIndices;
         }
-
-        public bool validateIndicesArrays(int spaceDimension, int[] outerIndicesArray,
-            int[] innerIndicesArray, int[] windowIndicesArray)
-        {
-            bool validArrayIndices = true;
-            for (int idx = 0; idx < spaceDimension; idx++)
-            {
-                int outerIdx = outerIndicesArray[idx];
-                int innerIdx = innerIndicesArray[idx];
-                int windowIdx = windowIndicesArray[idx];
-                if (!((outerIdx <= windowIdx) && (windowIdx <= innerIdx)))
-                {
-                    validArrayIndices = false;
-                    break;
-                }
-            }
-            return validArrayIndices;
-        }
-
-        public bool validateIndicesArrays(int spaceDimension, int[] indicesArrayOfRegion, int[] indicesArrayOfBin)
-        {
-            int[] lowerIndicesArray = new int[spaceDimension];
-            int[] upperIndicesArray = new int[spaceDimension];
-            for (int idx = 0; idx < spaceDimension; idx++)
-            {
-                lowerIndicesArray[idx] = indicesArrayOfRegion[2 * idx];
-                upperIndicesArray[idx] = indicesArrayOfRegion[2 * idx + 1];
-            }
-            return validateIndicesArrays(spaceDimension, lowerIndicesArray, upperIndicesArray, indicesArrayOfBin);
-        }
-
-        public bool validateIndicesArrays(int spaceDimension, int splitDimIdx, int[] indicesArray,
-            int[] movingIndicesArray)
-        {
-            bool validMovingIndicesArray = true;
-            for (int idx = 0; idx < spaceDimension; idx++)
-            {
-                int lowerBound = indicesArray[2 * idx];
-                int upperBound = indicesArray[2 * idx + 1];
-                if (idx == splitDimIdx)
-                {
-                    int movingIdx = movingIndicesArray[idx];
-                    if (!((lowerBound <= movingIdx) && (movingIdx < upperBound)))
-                    {
-                        validMovingIndicesArray = false;
-                        break;
-                    }
-                }
-            }
-            return validMovingIndicesArray;
-        }
-
+        
         public bool validateRegionHasEnoughBins(int spaceDimension, int[] indicesArray, int splitNO)
         {
-            bool validMovingIndicesArray = true;
+            bool hasEnoughBins = true;
             int binNOInThisRegion = 1;
             for (int idx = 0; idx < spaceDimension; idx++)
             {
@@ -120,13 +57,13 @@ namespace HierarchicalTilingApp.Transformation
             }
             if (binNOInThisRegion <= splitNO)
             {
-                validMovingIndicesArray = false;
+                hasEnoughBins = false;
             }
-            return validMovingIndicesArray;
+            return hasEnoughBins;
         }
 
         public void splitIndicesArrays(int spaceDimension, int splitDimIdx, int[] indicesArray,
-            int[] movingIndicesArray, out int[] firstPartIndicesArray, out int[] secondPartIndicesArray)
+            int componentInSplitDim, out int[] firstPartIndicesArray, out int[] secondPartIndicesArray)
         {
             firstPartIndicesArray = new int[2 * spaceDimension];
             secondPartIndicesArray = new int[2 * spaceDimension];
@@ -138,9 +75,8 @@ namespace HierarchicalTilingApp.Transformation
                 secondPartIndicesArray[2 * idx + 1] = upperBound;
                 if (idx == splitDimIdx)
                 {
-                    int movingIdx = movingIndicesArray[idx];
-                    firstPartIndicesArray[2 * idx + 1] = movingIdx;
-                    secondPartIndicesArray[2 * idx] = movingIdx + 1;
+                    firstPartIndicesArray[2 * idx + 1] = componentInSplitDim;
+                    secondPartIndicesArray[2 * idx] = componentInSplitDim + 1;
                 }
                 else
                 {
@@ -150,31 +86,53 @@ namespace HierarchicalTilingApp.Transformation
             }
         }
                
-        public void initializeObjectiveValueArray(int spaceDimension, int histogramResolution, int serverNO,
-            double initializationValue, Array objectiveValueArray)
+        public void initializeObjectiveValueArray(double initializationValue, Array objectiveValueArray)
         {
-            int movingIdxLimit = (int)Math.Pow(histogramResolution, spaceDimension);
-            int[] movingIndicesArray = new int[2 * spaceDimension + 1];
-            int[] tempOuterIndicesArray = new int[spaceDimension];
-            int[] tempInnerIndicesArray = new int[spaceDimension];
-            for (int splitNOIdx = 0; splitNOIdx < serverNO; splitNOIdx++)
+            for (int[] movingIndicesArray = determineFirstIndicesArray(objectiveValueArray); 
+                    movingIndicesArray != null;
+                    movingIndicesArray = determineNextIndicesArray(objectiveValueArray, movingIndicesArray))
             {
-                movingIndicesArray[0] = splitNOIdx;
-                for (int movingIdx = 0; movingIdx < movingIdxLimit; movingIdx++)
-                {
-                    transformCellIdxToIndicesArray(histogramResolution, tempOuterIndicesArray, movingIdx);
-                    for (int subMovingIdx = 0; subMovingIdx < movingIdxLimit; subMovingIdx++)
-                    {
-                        transformCellIdxToIndicesArray(histogramResolution, tempInnerIndicesArray, subMovingIdx);
-                        for (int idx = 0; idx < spaceDimension; idx++)
-                        {
-                            movingIndicesArray[2 * idx + 1] = tempOuterIndicesArray[idx];
-                            movingIndicesArray[2 * idx + 2] = tempInnerIndicesArray[idx];
-                        }
-                        objectiveValueArray.SetValue(initializationValue, movingIndicesArray);
-                    }
-                }
+                objectiveValueArray.SetValue(initializationValue, movingIndicesArray);
             }
+        }
+
+        /// <summary>
+        /// The following implementation is based on 
+        /// stackoverflow.com/questions/9914230/iterate-through-an-array-of-arbitrary-dimension/9914326#9914326
+        /// </summary>
+        /// <param name="array"></param>
+        /// <returns></returns>
+        public int[] determineFirstIndicesArray(Array array)
+        {
+            int spaceDimension = array.Rank;
+            int[] firstIndicesArray = new int[spaceDimension];
+            for (int dimIdx = 0; dimIdx < spaceDimension; dimIdx++)
+            {
+                firstIndicesArray[dimIdx] = array.GetLowerBound(dimIdx);
+            }
+            return firstIndicesArray;
+        }
+
+        /// <summary>
+        /// The following implementation is based on 
+        /// stackoverflow.com/questions/9914230/iterate-through-an-array-of-arbitrary-dimension/9914326#9914326
+        /// </summary>
+        /// <param name="array"></param>
+        /// <param name="previousIndicesArray"></param>
+        /// <returns></returns>
+        public int[] determineNextIndicesArray(Array array, int[] previousIndicesArray)
+        {
+            int spaceDimension = array.Rank;
+            int[] nextIndicesArray = new int[spaceDimension];
+            previousIndicesArray.CopyTo(nextIndicesArray, 0);
+            for (int dimIdx = spaceDimension - 1; dimIdx >= 0; --dimIdx)
+            {
+                nextIndicesArray[dimIdx]++;
+                if (nextIndicesArray[dimIdx] <= array.GetUpperBound(dimIdx))
+                    return nextIndicesArray;
+                nextIndicesArray[dimIdx] = array.GetLowerBound(dimIdx);
+            }
+            return null;
         }
 
         public int[] determineIndicesArray(int spaceDimension, int[] extendedIndicesArray)
@@ -210,6 +168,34 @@ namespace HierarchicalTilingApp.Transformation
                 shellIdx++;
             }
             return result;
+        }
+
+        public int[] determineFirstIndicesArray(int[] indicesArrayOfRegion)
+        {
+            int spaceDimension = indicesArrayOfRegion.Length/2;
+            int[] firstIndicesArray = new int[spaceDimension];
+            for (int dimIdx = 0; dimIdx < spaceDimension; dimIdx++)
+            {
+                firstIndicesArray[dimIdx] = indicesArrayOfRegion[2 * dimIdx];
+            }
+            return firstIndicesArray;
+        }
+
+        public int[] determineNextIndicesArray(int[] indicesArrayOfRegion, int[] previousIndicesArray)
+        {
+            int spaceDimension = indicesArrayOfRegion.Length / 2;
+            int[] nextIndicesArray = new int[spaceDimension];
+            previousIndicesArray.CopyTo(nextIndicesArray, 0);
+            for (int dimIdx = spaceDimension - 1; dimIdx >= 0; --dimIdx)
+            {
+                nextIndicesArray[dimIdx]++;
+                int lowerBoundForCurrentDim = indicesArrayOfRegion[2 * dimIdx];
+                int upperBoundForCurrentDim = indicesArrayOfRegion[2 * dimIdx + 1];
+                if (nextIndicesArray[dimIdx] <= upperBoundForCurrentDim)
+                    return nextIndicesArray;
+                nextIndicesArray[dimIdx] = lowerBoundForCurrentDim;
+            }
+            return null;
         }
     }
 }

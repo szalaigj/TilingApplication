@@ -10,6 +10,11 @@ namespace HierarchicalTilingApp.SumOfSquares
     {
         private IntTuple[] intTuples;
 
+        public IntTuple[] getIntTuples()
+        {
+            return intTuples;
+        }
+
         public void setIntTuplesWithSwapsAndSignChange(IntTuple[] inputIntTuples, IntTupleEqualityComparer comparer)
         {
             HashSet<IntTuple> container = new HashSet<IntTuple>(comparer);
@@ -93,11 +98,6 @@ namespace HierarchicalTilingApp.SumOfSquares
                 }
             }
             return result;
-        }
-
-        public IntTuple[] getIntTuples()
-        {
-            return intTuples;
         }
     }
 }
