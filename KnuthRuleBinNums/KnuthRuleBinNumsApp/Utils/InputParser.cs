@@ -10,12 +10,12 @@ namespace KnuthRuleBinNumsApp.Utils
     {
         private char delimiter = ' ';
 
-        public List<DataRow> parseInputFile(out int spaceDimension, out int pointNO, 
+        public List<DataRow> parseInputFile(out string filename, out int spaceDimension, out int pointNO, 
             out double[] minElems, out double[] maxElems)
         {
             List<DataRow> data = new List<DataRow>();
             Console.WriteLine("Enter input path and filename:");
-            string filename = Console.ReadLine();
+            filename = Console.ReadLine();
             bool exists = File.Exists(filename);
             if (exists)
             {
@@ -59,6 +59,13 @@ namespace KnuthRuleBinNumsApp.Utils
                     maxElems[coordIdx] = coords[coordIdx];
                 }
             }
+        }
+
+        public int parseServerNO()
+        {
+            Console.WriteLine("Enter server number:");
+            int serverNO = int.Parse(Console.ReadLine());
+            return serverNO;
         }
     }
 }
