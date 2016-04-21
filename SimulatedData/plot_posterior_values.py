@@ -9,11 +9,13 @@ from matplotlib.pyplot import *
 parser = argp.ArgumentParser()
 parser.add_argument("data_file_name", help="The path and file name of simulated data file.", type = str)
 parser.add_argument("--data_dir", default = "c:/temp/data/", help="The directory of the results", type=str)
+parser.add_argument("--min_hist_res", default = 2, help="The minimum value of histogram resolution", type = int)
 parser.add_argument("--pdf_format", default = 'True', help="Would you like pdf format and high resolution for the figure output(s)?", type=str)
 args = parser.parse_args()
 
-data_dir = args.data_dir
 data_file_name = args.data_file_name
+data_dir = args.data_dir
+min_hist_res = args.min_hist_res
 pdf_format = eval(args.pdf_format)
 
 post_values = np.loadtxt(data_dir + data_file_name)
@@ -28,11 +30,15 @@ if(pdf_format):
 else:
   rc('savefig', dpi=100)
 
+max_post_est_loc = np.argmax(post_values) + min_hist_res
+
 fig, ax =  subplots()
-binNOs = np.arange(2, len(post_values) + 2)
+binNOs = np.arange(min_hist_res, len(post_values) + min_hist_res)
 ax.scatter(binNOs, post_values, color='r', marker='.')
-ax.plot(binNOs, post_values)
-ax.set_xlim([2, len(post_values) + 2])
+ax.plot(binNOs, post_values, linewidth=2)
+ax.axvline(x = max_post_est_loc, color='black', linewidth=2, linestyle='-')
+ax.annotate(str(max_post_est_loc), xy=(max_post_est_loc, post_values[max_post_est_loc - min_hist_res]),  xycoords='data', xytext=(30, 30), textcoords='offset points', color='black', arrowprops=dict(arrowstyle="->"), zorder=4, fontsize=18)
+ax.set_xlim([min_hist_res, len(post_values) + min_hist_res - 1])
 if(pdf_format):
   savefig(data_dir + 'posterior_values.pdf', format='pdf')
 else:
