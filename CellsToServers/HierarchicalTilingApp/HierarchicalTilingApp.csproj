@@ -41,10 +41,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ArrayPartition\BaseDivider.cs" />
     <Compile Include="ArrayPartition\Coords.cs" />
-    <Compile Include="ArrayPartition\Divider.cs" />
     <Compile Include="ArrayPartition\HeftArrayCreator.cs" />
+    <Compile Include="ArrayPartition\IterativeDivider.cs" />
     <Compile Include="ArrayPartition\NotEnoughBinsException.cs" />
+    <Compile Include="ArrayPartition\RecursiveDivider.cs" />
     <Compile Include="Measure\BaseAuxData.cs" />
     <Compile Include="Measure\BaseMeasure.cs" />
     <Compile Include="Measure\DefaultAuxData.cs" />

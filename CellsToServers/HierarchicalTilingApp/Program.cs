@@ -22,8 +22,8 @@ namespace HierarchicalTilingApp
             InputParser inputParser = new InputParser(transformator);
             HeftArrayCreator heftArrayCreator = new HeftArrayCreator(transformator);
             int kNN = 333;
-            double kNNMeasCoeff = 0.1;
-            double lbMeasCoeff = 0.9;
+            double kNNMeasCoeff = 1.0;//0.1;
+            double lbMeasCoeff = 0.0;//0.9;
 
             int serverNO;
             int pointNO;
@@ -46,10 +46,12 @@ namespace HierarchicalTilingApp
             shells = shellBuilder.createShells(kNN, spaceDimension);
             Console.WriteLine("Point no.: {0}", pointNO);
             Console.WriteLine("Delta: {0}", delta);
+            Console.WriteLine("kNN measurement coefficient: {0}", kNNMeasCoeff);
+            Console.WriteLine("Load balancing measurement coefficient: {0}", lbMeasCoeff);
             Array heftArray = heftArrayCreator.createHeftArray(spaceDimension, histogramResolution, array);
 
-            Divider divider = new Divider(array, heftArray, transformator, spaceDimension, histogramResolution, serverNO,
-                delta, pointNO, kNN, shells, kNNMeasCoeff, lbMeasCoeff);
+            IterativeDivider divider = new IterativeDivider(array, heftArray, transformator, spaceDimension, 
+                histogramResolution, serverNO, delta, pointNO, kNN, shells, kNNMeasCoeff, lbMeasCoeff);
             Coords[] partition;
             double objectiveValue = divider.determineObjectiveValue(out partition);
             Console.WriteLine("Objective value: {0}", objectiveValue);

@@ -32,15 +32,26 @@ namespace HierarchicalTilingApp.Transformation
             }
         }
         
-        public int[] mergeIndicesArrays(int spaceDimension, int[] outerIndicesArray,
-            int[] innerIndicesArray)
+        public int[] mergeIndicesArrays(int spaceDimension, int[] outerIndicesArray, int[] innerIndicesArray)
         {
             int[] mergedArrayIndices = new int[2 * spaceDimension];
-            mergedArrayIndices = new int[2 * spaceDimension];
             for (int idx = 0; idx < spaceDimension; idx++)
             {
                 mergedArrayIndices[2 * idx] = outerIndicesArray[idx];
                 mergedArrayIndices[2 * idx + 1] = innerIndicesArray[idx];
+            }
+            return mergedArrayIndices;
+        }
+
+        public int[] mergeIndicesArrays(int spaceDimension, int splitNO, int[] outerIndicesArray, 
+            int[] innerIndicesArray)
+        {
+            int[] mergedArrayIndices = new int[2 * spaceDimension + 1];
+            mergedArrayIndices[0] = splitNO;
+            for (int idx = 0; idx < spaceDimension; idx++)
+            {
+                mergedArrayIndices[2 * idx + 1] = outerIndicesArray[idx];
+                mergedArrayIndices[2 * idx + 2] = innerIndicesArray[idx];
             }
             return mergedArrayIndices;
         }

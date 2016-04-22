@@ -5,91 +5,23 @@ using System;
 
 namespace HierarchicalTilingApp.ArrayPartition
 {
-    public class Divider
+    public class RecursiveDivider : BaseDivider
     {
-        private Array heftArray;
-        private Array objectiveValueArray;
-        private Array partitionArray;
-        private Array hasEnoughBinsArray;
-        private Array maxDiffArray;
-        private Transformator transformator;
-        KNNMeasure kNNMeasure;
-        LoadBalancingMeasure lbMeasure;
-        private int spaceDimension;
-        private int histogramResolution;
-        private int serverNO;
-        private double delta;
-        private double diffSum;
         private double initializationValue;
-        private double kNNMeasCoeff;
-        private double lbMeasCoeff;
 
-        public Divider(Array array, Array heftArray, Transformator transformator, int spaceDimension, 
+        public RecursiveDivider(Array array, Array heftArray, Transformator transformator, int spaceDimension, 
             int histogramResolution, int serverNO, double delta, int pointNO, int kNN, Shell[] shells,
             double kNNMeasCoeff, double lbMeasCoeff)
+            : base(array, heftArray, transformator, spaceDimension,
+                histogramResolution, serverNO, delta, pointNO, kNN, shells, kNNMeasCoeff, lbMeasCoeff)
         {
-            this.heftArray = heftArray;
-            this.transformator = transformator;
-            this.spaceDimension = spaceDimension;
-            this.histogramResolution = histogramResolution;
-            this.serverNO = serverNO;
-            this.delta = delta;
             this.initializationValue = -1.0;
-            this.kNNMeasCoeff = kNNMeasCoeff;
-            this.lbMeasCoeff = lbMeasCoeff;
-            int[] lengthsMaxDiffArray = new int[2 * spaceDimension];
-            int[] lengthsObjectiveValueArray = new int[2 * spaceDimension + 1];
-            lengthsObjectiveValueArray[0] = serverNO;
-            for (int idx = 1; idx <= 2 * spaceDimension; idx++)
-            {
-                lengthsObjectiveValueArray[idx] = histogramResolution;
-                lengthsMaxDiffArray[idx - 1] = histogramResolution;
-            }
-            this.objectiveValueArray = Array.CreateInstance(typeof(double), lengthsObjectiveValueArray);
             transformator.initializeObjectiveValueArray(this.initializationValue, this.objectiveValueArray);
-            this.partitionArray = Array.CreateInstance(typeof(Coords[]), lengthsObjectiveValueArray);
-            this.hasEnoughBinsArray = Array.CreateInstance(typeof(bool), lengthsObjectiveValueArray);
-            this.maxDiffArray = Array.CreateInstance(typeof(double), lengthsMaxDiffArray);
-            setMeasureInstances(array, pointNO, kNN, shells);
         }
 
-        private void setMeasureInstances(Array array, int pointNO, int kNN, Shell[] shells)
+        public override double determineObjectiveValue(out Coords[] partition)
         {
-            KNNAuxData kNNAuxData = new KNNAuxData()
-            {
-                SpaceDimension = this.spaceDimension,
-                HistogramResolution = this.histogramResolution,
-                ServerNO = this.serverNO,
-                PointNO = pointNO,
-                KNN = kNN,
-                Histogram = array,
-                Shells = shells
-            };
-            this.kNNMeasure = new KNNMeasure(kNNAuxData, this.transformator);
-            
-            LoadBalancingAuxData lbAuxData = new LoadBalancingAuxData()
-            {
-                ServerNO = this.serverNO,
-                PointNO = pointNO,
-                Delta = this.delta
-            };
-            this.lbMeasure = new LoadBalancingMeasure(lbAuxData, this.transformator);
-        }
-
-        public double getDiffSum()
-        {
-            return diffSum;
-        }
-
-        public double determineObjectiveValue(out Coords[] partition)
-        {
-            int[] extendedIndicesArray = new int[2 * spaceDimension + 1];
-            extendedIndicesArray[0] = serverNO - 1;
-            for (int idx = 0; idx < spaceDimension; idx++)
-            {
-                extendedIndicesArray[2 * idx + 1] = 0;
-                extendedIndicesArray[2 * idx + 2] = histogramResolution - 1;
-            }
+            int[] extendedIndicesArray = determineExtendedIndicesArray();
             bool hasEnoughBins;
             double objectiveValue = innerDetermineObjectiveValue(extendedIndicesArray, out partition, out hasEnoughBins);
             if (!hasEnoughBins)
@@ -97,6 +29,7 @@ namespace HierarchicalTilingApp.ArrayPartition
                 throw new NotEnoughBinsException();
             }
             objectiveValue = objectiveValue / (double)serverNO;
+            diffSum = determineCurrentDiffSum(partition);
             double measureOfKNN = kNNMeasure.computeMeasure(partition);
             Console.WriteLine("k-NN measure of the partition: {0}", measureOfKNN);
             double measureOfLB = lbMeasure.computeMeasure(partition);
@@ -221,34 +154,8 @@ namespace HierarchicalTilingApp.ArrayPartition
                     objectiveValue = currentObjectiveValue;
                     partition = new Coords[splitNO + 1];
                     setPartitionByParts(extendedIndicesArray, partition, firstPartPartition, secondPartPartition);
-                    if (splitNO == serverNO - 1)
-                    {
-                        diffSum = determineCurrentDiffSum(firstPartPartition, secondPartPartition);
-                    }
                 }
             }
-        }
-
-        private double determineCurrentDiffSum(Coords[] firstPartPartition, Coords[] secondPartPartition)
-        {
-            double currentDiffSum = 0.0;
-            for (int idx = 0; idx < firstPartPartition.Length; idx++)
-            {
-                currentDiffSum += firstPartPartition[idx].differenceFromDelta(delta);
-            }
-            for (int idx = 0; idx < secondPartPartition.Length; idx++)
-            {
-                currentDiffSum += secondPartPartition[idx].differenceFromDelta(delta);
-            }
-            return currentDiffSum;
-        }
-
-        private void setPartitionByParts(int[] extendedIndicesArray, Coords[] partition,
-            Coords[] firstPartPartition, Coords[] secondPartPartition)
-        {
-            firstPartPartition.CopyTo(partition, 0);
-            secondPartPartition.CopyTo(partition, firstPartPartition.Length);
-            partitionArray.SetValue(partition, extendedIndicesArray);
         }
     }
 }

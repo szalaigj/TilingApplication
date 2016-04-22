@@ -136,8 +136,9 @@ namespace HierarchicalTilingApp
             delta = (double)pointNO / (double)serverNO;
             if (cellMaxValue > delta)
             {
-                throw new ArgumentException("There is a cell which has greater heft value than delta. " +
-                    "You should try to increase histogram resolution for the original data.");
+                Console.WriteLine("WARNING: There is a cell which has greater heft value than delta.");
+                //throw new ArgumentException("There is a cell which has greater heft value than delta. " +
+                //    "You should try to increase histogram resolution for the original data.");
             }
         }
     }
