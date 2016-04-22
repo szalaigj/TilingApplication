@@ -12,7 +12,6 @@ namespace HierarchicalTilingApp.ArrayPartition
         protected Array objectiveValueArray;
         protected Array partitionArray;
         protected Array hasEnoughBinsArray;
-        protected Array maxDiffArray;
         protected Transformator transformator;
         protected KNNMeasure kNNMeasure;
         protected LoadBalancingMeasure lbMeasure;
@@ -36,18 +35,15 @@ namespace HierarchicalTilingApp.ArrayPartition
             this.delta = delta;
             this.kNNMeasCoeff = kNNMeasCoeff;
             this.lbMeasCoeff = lbMeasCoeff;
-            int[] lengthsMaxDiffArray = new int[2 * spaceDimension];
             int[] lengthsObjectiveValueArray = new int[2 * spaceDimension + 1];
             lengthsObjectiveValueArray[0] = serverNO;
             for (int idx = 1; idx <= 2 * spaceDimension; idx++)
             {
                 lengthsObjectiveValueArray[idx] = histogramResolution;
-                lengthsMaxDiffArray[idx - 1] = histogramResolution;
             }
             this.objectiveValueArray = Array.CreateInstance(typeof(double), lengthsObjectiveValueArray);
             this.partitionArray = Array.CreateInstance(typeof(Coords[]), lengthsObjectiveValueArray);
             this.hasEnoughBinsArray = Array.CreateInstance(typeof(bool), lengthsObjectiveValueArray);
-            this.maxDiffArray = Array.CreateInstance(typeof(double), lengthsMaxDiffArray);
             setMeasureInstances(array, pointNO, kNN, shells);
         }
 
