@@ -41,38 +41,113 @@ namespace HierarchicalTilingApp.SumOfSquares
             return intTuples;
         }
 
-        private IntTuple[] applyCornacchiaMethodForPrime(int prime)
+        /// <summary>
+        /// This is an another approach. However, this is slower than the other.
+        /// </summary>
+        /// <param name="limit"></param>
+        /// <returns></returns>
+        public List<IntTuple>[] applyCornacchiaMethodForRange(int limit)
+        {
+            List<IntTuple>[] dictOfSolutions = new List<IntTuple>[limit + 1];
+            for (int num = 2; num <= limit; num++)
+            {
+                IntTuple[] currentTuples = applyCornacchiaMethodPrimitiveSolution(num);
+                if (dictOfSolutions[num] != null)
+                    dictOfSolutions[num].AddRange(currentTuples);
+                else
+                {
+                    dictOfSolutions[num] = new List<IntTuple>(currentTuples);
+                }
+                addNumSquareForLaterNum(limit, dictOfSolutions, num);
+                addNumMultipleForLaterNum(limit, dictOfSolutions, num, currentTuples);
+            }
+            return dictOfSolutions;
+        }
+
+        private void addNumSquareForLaterNum(int limit, List<IntTuple>[] dictOfSolutions, int num)
+        { 
+            if (num <= Math.Sqrt(limit))
+            {
+                int laterNum = num * num;
+                IntTuple tupleForLaterNum = new IntTuple()
+                {
+                    Tuple = new int[] { 0, num }
+                };
+                updateTuplesOfLaterNum(dictOfSolutions, laterNum, tupleForLaterNum);
+            }
+        }
+
+        private void addNumMultipleForLaterNum(int limit, List<IntTuple>[] dictOfSolutions, int num, 
+            IntTuple[] currentTuples)
+        {
+            foreach (var intTuple in currentTuples)
+            {
+                int k = 2;
+                while (num <= (double)limit / (double)(k * k))
+                {
+                    int laterNum = num * k * k;
+                    IntTuple tupleForLaterNum = new IntTuple()
+                    {
+                        Tuple = new int[] { intTuple.Tuple[0] * k, intTuple.Tuple[1] * k }
+                    };
+                    updateTuplesOfLaterNum(dictOfSolutions, laterNum, tupleForLaterNum);
+                    k++;
+                    laterNum = num * k * k;
+                }
+            }
+        }
+
+        private void updateTuplesOfLaterNum(List<IntTuple>[] dictOfSolutions, int laterNum,
+            IntTuple tupleForLaterNum)
+        {
+            if (dictOfSolutions[laterNum] != null)
+                dictOfSolutions[laterNum].Add(tupleForLaterNum);
+            else
+            {
+                dictOfSolutions[laterNum] = new List<IntTuple>();
+                dictOfSolutions[laterNum].Add(tupleForLaterNum);
+            }
+        }
+
+        private IntTuple[] applyCornacchiaMethodPrimitiveSolution(int num)
         {
             List<IntTuple> container = new List<IntTuple>();
-            if (prime == 2)
+            if (num == 2)
             {
                 container.Add(new IntTuple { Tuple = new int[] { 1, 1 } });
             }
             else
             {
-                for (int t = 1; t <= prime / 2; t++)
+                for (int t = 1; t < num / 2; t++)
                 {
-                    innerApplyCornacchiaMethodForPrime(prime, container, t);
+                    if (t * t < int.MaxValue)
+                    {
+                        innerApplyCornacchiaMethodPrimitiveSolution(num, container, t);
+                    }
+                    else
+                    {
+                        throw new NotSupportedException("Number " + num + " is too large.");
+                    }
                 }
             }
             return container.ToArray();
         }
 
-        private void innerApplyCornacchiaMethodForPrime(int prime, List<IntTuple> container, int t)
+        private void innerApplyCornacchiaMethodPrimitiveSolution(int num, List<IntTuple> container, int t)
         {
             int x, y;
-            if ((t * t) % prime == prime - 1)
+            if (t * t % num == num - 1)
             {
-                int r1 = prime;
+                int r1 = num;
                 int r2 = t;
                 int tmp;
-                while (r2 * r2 >= prime)
+                while (r2 * r2 >= num)
                 {
                     tmp = r2;
                     r2 = (r1 % r2);
                     r1 = tmp;
                 }
-                if (r1 * r1 > prime)
+                if (r1 * r1 > num)
                 {
                     x = r2;
                     y = r1 % r2;
@@ -95,7 +170,7 @@ namespace HierarchicalTilingApp.SumOfSquares
                         exponent++;
                         if ((factor % 4 == 1) || (factor == 2))
                         {
-                            intTuplesOfFactors.AddRange(applyCornacchiaMethodForPrime(factor));
+                            intTuplesOfFactors.AddRange(applyCornacchiaMethodPrimitiveSolution(factor));
                         }
                     }
                     // If the prime factor is of the form 4k+3 then its exponent should be even
