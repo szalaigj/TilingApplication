@@ -9,7 +9,7 @@ namespace BinsToServersIntLPApp.LPProblem
         public string createOutputLPFile(int serverNO, int binNO, int pointNO, int[] binHefts, double delta)
         {
             string objFuncExp = createObjectiveFunctionExpression(serverNO);
-            string binDefs = createBinaryVariablesDefinitionExpression(serverNO, binNO);
+            string binDefs = createBinaryVariablesDefinitionExpression(serverNO, binNO, binHefts);
             string constraints = createConstraintsExpression(serverNO, binNO, pointNO, delta, binHefts);
             string output_lp = Properties.Resources.BasicLPFile;
             output_lp = output_lp.Replace(@"${obj_func}", objFuncExp);
@@ -33,14 +33,17 @@ namespace BinsToServersIntLPApp.LPProblem
             return result;
         }
 
-        private string createBinaryVariablesDefinitionExpression(int serverNO, int binNO)
+        private string createBinaryVariablesDefinitionExpression(int serverNO, int binNO, int[] binHefts)
         {
             string result = "";
-            for (int idx = 1; idx <= serverNO; idx++)
+            for (int serverIdx = 1; serverIdx <= serverNO; serverIdx++)
             {
-                for (int subIdx = 1; subIdx <= binNO; subIdx++)
+                for (int binIdx = 1; binIdx <= binNO; binIdx++)
                 {
-                    result += "x" + idx + "_" + subIdx + ",";
+                    if (binHefts[binIdx - 1] != 0)
+                    {
+                        result += "x" + serverIdx + "_" + binIdx + ",";
+                    }
                 }
             }
             result = result.Substring(0, result.Length - 1);
@@ -51,26 +54,32 @@ namespace BinsToServersIntLPApp.LPProblem
         {
             StringBuilder sb = new StringBuilder();
 
-            for (int idx = 1; idx <= serverNO; idx++)
+            for (int serverIdx = 1; serverIdx <= serverNO; serverIdx++)
             {
-                string row = "d" + idx;
-                for (int subIdx = 1; subIdx <= binNO; subIdx++)
+                string row = "d" + serverIdx;
+                for (int binIdx = 1; binIdx <= binNO; binIdx++)
                 {
-                    row += " +" + binHefts[subIdx - 1] + " x" + idx + "_" + subIdx;
+                    if (binHefts[binIdx - 1] != 0)
+                    {
+                        row += " +" + binHefts[binIdx - 1] + " x" + serverIdx + "_" + binIdx;
+                    }
                 }
                 row += " = " + delta.ToString(CultureInfo.CreateSpecificCulture("en-GB")) + ";";
                 sb.AppendLine(row);
             }
-            for (int idx = 1; idx <= binNO; idx++)
+            for (int binIdx = 1; binIdx <= binNO; binIdx++)
             {
-                string row = "";
-                for (int subIdx = 1; subIdx <= serverNO; subIdx++)
+                if (binHefts[binIdx - 1] != 0)
                 {
-                    row += "x" + subIdx + "_" + idx + " +";
+                    string row = "";
+                    for (int serverIdx = 1; serverIdx <= serverNO; serverIdx++)
+                    {
+                        row += "x" + serverIdx + "_" + binIdx + " +";
+                    }
+                    row = row.Substring(0, row.Length - 1);
+                    row += "= 1;";
+                    sb.AppendLine(row);
                 }
-                row = row.Substring(0, row.Length - 1);
-                row += "= 1;";
-                sb.AppendLine(row);
             }
             //double limit = pointNO - delta;
             for (int idx = 1; idx <= serverNO; idx++)

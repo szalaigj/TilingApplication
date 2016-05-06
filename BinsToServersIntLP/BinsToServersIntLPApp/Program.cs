@@ -32,7 +32,9 @@ namespace BinsToServersIntLPApp
             Console.Read();
         }
 
-        private static void binCreationPhase(InputParser inputParser, BinsCreator binsCreator, out int serverNO, out int pointNO, out double delta, out int spaceDimension, out int histogramResolution, out Array array, out int[] binHefts, out int binNO)
+        private static void binCreationPhase(InputParser inputParser, BinsCreator binsCreator, out int serverNO, 
+            out int pointNO, out double delta, out int spaceDimension, out int histogramResolution, out Array array, 
+            out int[] binHefts, out int binNO)
         {
             bool together = inputParser.determineTogetherOrSeparately();
             if (together)
