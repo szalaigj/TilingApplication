@@ -35,6 +35,30 @@ namespace RecursiveBisectionApp.Utils
             return mergedArrayIndices;
         }
 
+        public void splitIndicesArrays(int spaceDimension, int splitDimIdx, int[] indicesArray,
+            int componentInSplitDim, out int[] firstPartIndicesArray, out int[] secondPartIndicesArray)
+        {
+            firstPartIndicesArray = new int[2 * spaceDimension];
+            secondPartIndicesArray = new int[2 * spaceDimension];
+            for (int idx = 0; idx < spaceDimension; idx++)
+            {
+                int lowerBound = indicesArray[2 * idx];
+                int upperBound = indicesArray[2 * idx + 1];
+                firstPartIndicesArray[2 * idx] = lowerBound;
+                secondPartIndicesArray[2 * idx + 1] = upperBound;
+                if (idx == splitDimIdx)
+                {
+                    firstPartIndicesArray[2 * idx + 1] = componentInSplitDim;
+                    secondPartIndicesArray[2 * idx] = componentInSplitDim + 1;
+                }
+                else
+                {
+                    firstPartIndicesArray[2 * idx + 1] = upperBound;
+                    secondPartIndicesArray[2 * idx] = lowerBound;
+                }
+            }
+        }
+
         /// <summary>
         /// The following implementation is based on 
         /// stackoverflow.com/questions/9914230/iterate-through-an-array-of-arbitrary-dimension/9914326#9914326

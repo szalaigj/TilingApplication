@@ -38,6 +38,10 @@ namespace RecursiveBisectionApp.Utils
                 spaceDimension = int.Parse(lines[0]);
                 histogramResolution = int.Parse(lines[1]);
                 serverNO = int.Parse(lines[2]);
+                if (!isPowerOfTwo(serverNO))
+                {
+                    throw new ArgumentException("The number of servers is no power of two.");
+                }
                 Console.WriteLine("Space dim: {0}, resolution: {1}, server no.: {2}", spaceDimension,
                     histogramResolution, serverNO);
                 int[] lengthsArray = new int[spaceDimension];
@@ -47,13 +51,24 @@ namespace RecursiveBisectionApp.Utils
                 }
                 array = Array.CreateInstance(typeof(int), lengthsArray);
                 int cellNO = (int)Math.Pow(histogramResolution, array.Rank);
-                innerParseInputArray(serverNO, histogramResolution, array, cellNO, lines[3], out pointNO);
+                innerParseInputArray(histogramResolution, array, cellNO, lines[3], out pointNO);
             }
             else
             {
                 throw new ArgumentException("The path is not valid.");
             }
             return array;
+        }
+
+        private bool isPowerOfTwo(int num)
+        {
+            int factor = 2;
+            while (num % factor == 0)
+            {
+                num /= factor;
+                factor *= factor;
+            }
+            return num == 1;
         }
 
         private string determineStrategyText(int strategyCode)
@@ -78,6 +93,10 @@ namespace RecursiveBisectionApp.Utils
             histogramResolution = int.Parse(Console.ReadLine());
             Console.WriteLine("Enter server number:");
             serverNO = int.Parse(Console.ReadLine());
+            if (!isPowerOfTwo(serverNO))
+            {
+                throw new ArgumentException("The number of servers is no power of two.");
+            }
         }
 
         public void parseInputArray(int serverNO, int histogramResolution, Array array,
@@ -104,10 +123,10 @@ namespace RecursiveBisectionApp.Utils
             //  array[1, 1, 1]==1
             // So the highest dimension-related index is the lowest index of the array.
             string line = Console.ReadLine();
-            innerParseInputArray(serverNO, histogramResolution, array, cellNO, line, out pointNO);
+            innerParseInputArray(histogramResolution, array, cellNO, line, out pointNO);
         }
 
-        private void innerParseInputArray(int serverNO, int histogramResolution, Array array, int cellNO, string line,
+        private void innerParseInputArray(int histogramResolution, Array array, int cellNO, string line,
             out int pointNO)
         {
             string[] cells = line.Split(' ');

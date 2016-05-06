@@ -16,7 +16,7 @@ namespace RecursiveBisectionApp.Utils
             Console.Write("{0}. tile: [", serialNO);
             for (int idx = 0; idx < spaceDimension; idx++)
             {
-                Console.Write(" {0} {1} ", IndicesArray[2 * idx + 1], IndicesArray[2 * idx + 2]);
+                Console.Write(" {0} {1} ", IndicesArray[2 * idx], IndicesArray[2 * idx + 1]);
             }
             Console.WriteLine("] : {0} heft", HeftOfRegion);
         }
@@ -26,7 +26,7 @@ namespace RecursiveBisectionApp.Utils
             strBldr.Append(HeftOfRegion);
             for (int idx = 0; idx < spaceDimension; idx++)
             {
-                strBldr.Append(" ").Append(IndicesArray[2 * idx + 1]).Append(" ").Append(IndicesArray[2 * idx + 2]);
+                strBldr.Append(" ").Append(IndicesArray[2 * idx]).Append(" ").Append(IndicesArray[2 * idx + 1]);
             }
             strBldr.AppendLine();
         }

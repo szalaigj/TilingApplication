@@ -14,7 +14,6 @@ namespace RecursiveBisectionApp
             Transformator transformator = new Transformator();
             InputParser inputParser = new InputParser(transformator);
             HeftArrayCreator heftArrayCreator = new HeftArrayCreator(transformator);
-            
             int serverNO;
             int pointNO;
             int spaceDimension;
@@ -38,6 +37,8 @@ namespace RecursiveBisectionApp
             Coords[] partition = binaryDecomposer.decompose();
             writeOutTiles(serverNO, spaceDimension, partition);
             writeOutServers(serverNO, partition);
+            Console.WriteLine("Press any key to exit!");
+            Console.Read();
         }
 
         private static void parseInputSeparately(InputParser inputParser, out int serverNO, out int pointNO, 
