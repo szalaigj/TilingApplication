@@ -11,6 +11,11 @@ namespace RecursiveBisectionApp.Utils
         public int[] IndicesArray { get; set; }
         public int HeftOfRegion { get; set; }
 
+        public double differenceFromDelta(double delta)
+        {
+            return Math.Abs(delta - HeftOfRegion);
+        }
+
         public void printCoords(int spaceDimension, int serialNO)
         {
             Console.Write("{0}. tile: [", serialNO);

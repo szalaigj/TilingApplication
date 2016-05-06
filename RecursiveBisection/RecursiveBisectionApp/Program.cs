@@ -30,11 +30,16 @@ namespace RecursiveBisectionApp
                 parseInputSeparately(inputParser, out serverNO, out pointNO, out spaceDimension,
                     out histogramResolution, out array);
             }
+            double delta = (double)pointNO / (double)serverNO;
             Console.WriteLine("Point no.: {0}", pointNO);
+            Console.WriteLine("Delta: {0}", delta);
             Array heftArray = heftArrayCreator.createHeftArray(spaceDimension, histogramResolution, array);
+            LoadBalancingMeasure lbMeasure = new LoadBalancingMeasure(serverNO, pointNO, delta);
             BinaryDecomposer binaryDecomposer = new BinaryDecomposer(array, heftArray, transformator, spaceDimension, 
                 histogramResolution, serverNO, pointNO);
             Coords[] partition = binaryDecomposer.decompose();
+            double measureOfLB = lbMeasure.computeMeasure(partition);
+            Console.WriteLine("Load balancing measure of the partition: {0}", measureOfLB);
             writeOutTiles(serverNO, spaceDimension, partition);
             writeOutServers(serverNO, partition);
             Console.WriteLine("Press any key to exit!");

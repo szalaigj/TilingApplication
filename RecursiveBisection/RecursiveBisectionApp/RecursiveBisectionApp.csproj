@@ -47,6 +47,7 @@
     <Compile Include="Utils\Coords.cs" />
     <Compile Include="Utils\HeftArrayCreator.cs" />
     <Compile Include="Utils\InputParser.cs" />
+    <Compile Include="Utils\LoadBalancingMeasure.cs" />
     <Compile Include="Utils\Transformator.cs" />
   </ItemGroup>
   <ItemGroup>
