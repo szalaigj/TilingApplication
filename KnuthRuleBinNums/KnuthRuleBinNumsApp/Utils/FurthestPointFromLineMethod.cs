@@ -28,9 +28,14 @@ namespace KnuthRuleBinNumsApp.Utils
             return maxDistanceIdx;
         }
 
+        /// <summary>
+        /// Compute the distance from the data point (x0, y0) to a line 
+        /// which is defined by two points (x1, y1) and (x2, y2)
+        /// See: e.g. https://en.wikipedia.org/wiki/Distance_from_a_point_to_a_line
+        /// </summary>
         private double computeDistance(double x0, double y0, double x1, double x2, double y1, double y2)
         {
-            double dist = Math.Abs((x2 - x1)*(y1 - y0) - (x1 - x0)*(y2 - y1));
+            double dist = Math.Abs(x0 * (y2 - y1) - (x2 - x1) * y0 + x2 * y1 - y2 * x1);
             dist /= Math.Sqrt((x2 - x1)*(x2 - x1) + (y2 - y1) * (y2 - y1));
             return dist;
         }

@@ -7,6 +7,13 @@ using System.Threading.Tasks;
 
 namespace KnuthRuleBinNumsApp.Utils
 {
+    /// <summary>
+    /// This class is based on the following article:
+    /// 
+    /// Stan Salvador and Philip Chan (2004)
+    /// Determining the number of clusters/segments in hierarchical clustering/segmentation algorithms
+    /// Tools with Artificial Intelligence, ICTAI 2004. 16th IEEE International Conference on (pp. 576-584)
+    /// </summary>
     public class LMethod
     {
         public int iterativeRefinementOfTheKnee(double[] xData, double[] yData)
