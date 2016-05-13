@@ -94,7 +94,7 @@ namespace SpectralClusteringApplication
             //}
             // Based on documentation (see: http://numerics.mathdotnet.com/api/MathNet.Numerics.LinearAlgebra.Factorization/Evd%601.htm#EigenValues)
             // The property EigenValues of Evd stores eigenvalues of matrix in ascending order
-            for (int idx = evdOfTheta.EigenValues.Count - 2; (idx >= 0) && (cntOfDepth < depth); idx--)
+            for (int idx = evdOfTheta.EigenValues.Count - 1; (idx >= 0) && (cntOfDepth < depth); idx--)
             {
                 Vector<double> currentEigVec = evdOfTheta.EigenVectors.Column(idx);
                 for (int idxOfObj = 0; idxOfObj < nodeNO; idxOfObj++)
@@ -104,7 +104,7 @@ namespace SpectralClusteringApplication
                 cntOfDepth++;
             }
             eigenValuesOfTheta.Reverse();
-            List<double> filteredEigenValuesOfTheta = eigenValuesOfTheta.GetRange(1, depth);
+            List<double> filteredEigenValuesOfTheta = eigenValuesOfTheta.GetRange(0, depth);
             double norm = filteredEigenValuesOfTheta.Sum();
             normedFilteredEigenValuesOfTheta = filteredEigenValuesOfTheta.Select(x => x / norm).ToArray();
             return objCoords;

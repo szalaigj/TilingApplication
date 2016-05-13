@@ -24,8 +24,9 @@ namespace SpectralClusteringApplication
         static void Main(string[] args)
         {
             double alpha = 0.85;
-            int K = 4;
-            int depth = 2;
+            int K = 9;
+            //int depth = 2;
+            int depth = K;
             // The following may be better choice than depth = K:
             //int depth = K - 1;// However, the 'graph-dimension' (histogram dimension) may be enough.
             InputParser parser = new InputParser();
@@ -34,6 +35,8 @@ namespace SpectralClusteringApplication
             NormCutUtils normCutUtils = new NormCutUtils();
             PartitioningBasedOnSpectrumAlgo partitioningBasedOnSpectrumAlgo = new PartitioningBasedOnSpectrumAlgo();
             PartitioningAroundMedoidsAlgo kMedoidsAlgo = new PartitioningAroundMedoidsAlgo();
+            KMeansAlgo kMeansAlgo = new KMeansAlgo();
+            
             int nodeNO;
             Matrix<double> weightMX = parser.parseWeightMatrix(out nodeNO);
             Console.Out.WriteLine("Weight matrix:");
@@ -52,21 +55,25 @@ namespace SpectralClusteringApplication
             //normCutUtils.determineLeaves(nodeNO, theta, pageRankMX, pi);
 
             Dictionary<string, List<int>> dict = partitioningBasedOnSpectrumAlgo.apply(K, nodeNO, theta);
-            printCluster(dict);
+            printCluster<string>(dict);
 
             double[] weights;
             Matrix<double> objCoords = thetaMatrixFormation.determineCoordsBasedOnEigVecs(theta, depth, out weights);
+
+            //Dictionary<int, List<int>> dict = kMeansAlgo.apply(objCoords, K, depth);
+            //printCluster<int>(dict);
+
             //printObjCoords(objCoords, nodeNO, depth);
-            Cluster[] clusters = kMedoidsAlgo.apply(objCoords, K, weights);
-            foreach (var item in clusters)
-            {
-                item.printCluster();
-            }
+            //Cluster[] clusters = kMedoidsAlgo.apply(objCoords, K, weights);
+            //foreach (var item in clusters)
+            //{
+            //    item.printCluster();
+            //}
             Console.WriteLine("Press any key to exit!");
             Console.Read();
         }
 
-        private static void printCluster(Dictionary<string, List<int>> dict)
+        private static void printCluster<T>(Dictionary<T, List<int>> dict)
         {
             foreach (var key in dict.Keys)
             {
