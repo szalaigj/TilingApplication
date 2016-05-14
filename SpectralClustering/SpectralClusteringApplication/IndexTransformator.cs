@@ -26,5 +26,16 @@ namespace SpectralClusteringApplication
                     (int)Math.Pow(histogramResolution, indicesArray.Length - (coordIdx + 1));
             }
         }
+
+        public int transformIndicesArrayToCellIdx(int histogramResolution, int[] indicesArray)
+        {
+            int cellIdx = 0;
+            for (int coordIdx = 0; coordIdx < indicesArray.Length; coordIdx++)
+            {
+                cellIdx += (int)Math.Pow(histogramResolution, indicesArray.Length - (coordIdx + 1)) 
+                    * indicesArray[coordIdx];
+            }
+            return cellIdx;
+        }
     }
 }

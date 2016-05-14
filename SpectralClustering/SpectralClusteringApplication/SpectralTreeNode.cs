@@ -31,15 +31,19 @@ namespace SpectralClusteringApplication
             Console.WriteLine("]");
         }
 
-        public void writeToStringBuilder(StringBuilder strBldr)
+        public void writeToStringBuilder(IndexTransformator transformator, Array array,
+            int spaceDimension, int histogramResolution, StringBuilder strBldr)
         {
-            // TODO: the following is no valid heft for cluster:
             int heft = 0;
-            strBldr.Append(heft);
-            foreach (var vertex in VertexList)
+            string outputOfRelatedServer = "";
+            foreach (var vertexIdx in VertexList)
             {
-                strBldr.Append(" ").Append(vertex);
+                int[] indicesArray = new int[spaceDimension];
+                transformator.transformCellIdxToIndicesArray(histogramResolution, indicesArray, vertexIdx);
+                heft += (int)array.GetValue(indicesArray);
+                outputOfRelatedServer += " " + vertexIdx;
             }
+            strBldr.Append(heft).Append(outputOfRelatedServer);
             strBldr.AppendLine();
         }
     }
