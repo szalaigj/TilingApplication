@@ -31,11 +31,14 @@ namespace SpectralClusteringApplication
             Console.WriteLine("]");
         }
 
-        public void writeToStringBuilder(int spaceDimension, StringBuilder strBldr)
+        public void writeToStringBuilder(StringBuilder strBldr)
         {
+            // TODO: the following is no valid heft for cluster:
+            int heft = 0;
+            strBldr.Append(heft);
             foreach (var vertex in VertexList)
             {
-                strBldr.Append(vertex).Append(" ");
+                strBldr.Append(" ").Append(vertex);
             }
             strBldr.AppendLine();
         }

@@ -68,7 +68,7 @@ namespace SpectralClusteringApplication
             spectralTreeRoot.NormCutValue = normCutValue;
         }
 
-        public void determineBiPartitionOfGraph(Vector<double> secondLargestEigVec, SpectralTreeNode spectralTreeRoot,
+        private void determineBiPartitionOfGraph(Vector<double> secondLargestEigVec, SpectralTreeNode spectralTreeRoot,
             out List<int> firstPartIdx, out List<int> secondPartIdx)
         {
             firstPartIdx = new List<int>();
@@ -94,7 +94,7 @@ namespace SpectralClusteringApplication
             spectralTreeRoot.SecondChild = spectralSecondTreeNode;
         }
 
-        public double determineNormCut(Matrix<double> randomWalkMX, Vector<double> pi,
+        private double determineNormCut(Matrix<double> randomWalkMX, Vector<double> pi,
             List<int> firstPartIdx, List<int> secondPartIdx)
         {
             double result;
@@ -133,7 +133,7 @@ namespace SpectralClusteringApplication
             return transProb;
         }
 
-        public Matrix<double> determinePartOfWeightMX(List<int> verticesOfPart)
+        private Matrix<double> determinePartOfWeightMX(List<int> verticesOfPart)
         {
             Matrix<double> partOfWeightMX = Matrix<double>.Build.Dense(verticesOfPart.Count, verticesOfPart.Count);
             for (int idxOfFromNode = 0; idxOfFromNode < verticesOfPart.Count; idxOfFromNode++)

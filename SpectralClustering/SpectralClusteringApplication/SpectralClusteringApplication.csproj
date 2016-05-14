@@ -58,6 +58,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BisectionAlgo.cs" />
+    <Compile Include="IndexTransformator.cs" />
     <Compile Include="InputParser.cs" />
     <Compile Include="KMeansAlgo.cs" />
     <Compile Include="NormCutLeaf.cs" />
