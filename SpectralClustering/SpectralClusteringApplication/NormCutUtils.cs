@@ -35,6 +35,7 @@ namespace SpectralClusteringApplication
             List<int> secondPart;
             List<int> nodeList = Enumerable.Range(0, nodeNO).ToList();
             determinePotentialParts(signTraces, nodeList, out firstPart, out secondPart);
+            double normCutValue = determineNormCut(randomWalkMX, pi, firstPart, secondPart);
             NormCutComparer normCutComparer = new NormCutComparer();
             SortedDictionary<NormCutLeaf, int> sortedDict = new SortedDictionary<NormCutLeaf, int>(normCutComparer);
             NormCutLeaf firstPartLeaf = determineNormCutLeafForPart(signTraces, firstPart, randomWalkMX, pi);
@@ -64,7 +65,13 @@ namespace SpectralClusteringApplication
             List<int> secondPart;
             determinePotentialParts(signTraces, part, out firstPart, out secondPart);
             double normCutValue = determineNormCut(randomWalkMX, pi, firstPart, secondPart);
-            NormCutLeaf normCutLeaf = new NormCutLeaf(normCutValue, part, firstPart, secondPart);
+            NormCutLeaf normCutLeaf = new NormCutLeaf()
+            { 
+                NormCutValue = normCutValue,
+                NodeList = part,
+                PotentialFirstPart = firstPart,
+                PotentialSecondPart = secondPart 
+            };
             return normCutLeaf;
         }
 

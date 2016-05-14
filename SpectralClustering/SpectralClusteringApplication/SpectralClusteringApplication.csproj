@@ -57,6 +57,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BisectionAlgo.cs" />
     <Compile Include="InputParser.cs" />
     <Compile Include="KMeansAlgo.cs" />
     <Compile Include="NormCutLeaf.cs" />
@@ -65,6 +66,7 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RandomWalkDesigner.cs" />
+    <Compile Include="SpectralTreeNode.cs" />
     <Compile Include="ThetaMatrixFormation.cs" />
   </ItemGroup>
   <ItemGroup>

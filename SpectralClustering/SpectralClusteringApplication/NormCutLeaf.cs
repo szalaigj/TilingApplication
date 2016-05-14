@@ -20,14 +20,5 @@ namespace SpectralClusteringApplication
         public List<int> NodeList { get; set; }
         public List<int> PotentialFirstPart { get; set; }
         public List<int> PotentialSecondPart { get; set; }
-
-        public NormCutLeaf(double normCutValue, List<int> nodeList, 
-            List<int> potentialFirstPart, List<int> potentialSecondPart)
-        {
-            this.NormCutValue = normCutValue;
-            this.NodeList = nodeList;
-            this.PotentialFirstPart = potentialFirstPart;
-            this.PotentialSecondPart = potentialSecondPart;
-        }
     }
 }

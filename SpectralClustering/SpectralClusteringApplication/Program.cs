@@ -24,9 +24,9 @@ namespace SpectralClusteringApplication
         static void Main(string[] args)
         {
             double alpha = 0.85;
-            int K = 9;
+            int serverNO = 9;
             //int depth = 2;
-            int depth = K;
+            int depth = serverNO;
             // The following may be better choice than depth = K:
             //int depth = K - 1;// However, the 'graph-dimension' (histogram dimension) may be enough.
             InputParser parser = new InputParser();
@@ -37,10 +37,17 @@ namespace SpectralClusteringApplication
             PartitioningAroundMedoidsAlgo kMedoidsAlgo = new PartitioningAroundMedoidsAlgo();
             KMeansAlgo kMeansAlgo = new KMeansAlgo();
             
-            int nodeNO;
-            Matrix<double> weightMX = parser.parseWeightMatrix(out nodeNO);
+            int vertexNO;
+            Matrix<double> weightMX = parser.parseWeightMatrix(out vertexNO);
             Console.Out.WriteLine("Weight matrix:");
             Console.Out.WriteLine(weightMX);
+            BisectionAlgo bisectionAlgo = new BisectionAlgo(randomWalkDesigner, thetaMatrixFormation, weightMX, 
+                serverNO, alpha);
+            SpectralTreeNode[] spectralTreeLeaves = bisectionAlgo.apply(vertexNO);
+            for (int leafIdx = 0; leafIdx < spectralTreeLeaves.Length; leafIdx++)
+			{
+			    spectralTreeLeaves[leafIdx].printCoords(leafIdx);
+			}
             Matrix<double> pageRankMX = randomWalkDesigner.createPageRankMX(weightMX, alpha);
             Console.Out.WriteLine("PageRank matrix:");
             Console.Out.WriteLine(pageRankMX);
@@ -54,7 +61,7 @@ namespace SpectralClusteringApplication
             // The following is unused but it may be good for later use:
             //normCutUtils.determineLeaves(nodeNO, theta, pageRankMX, pi);
 
-            Dictionary<string, List<int>> dict = partitioningBasedOnSpectrumAlgo.apply(K, nodeNO, theta);
+            Dictionary<string, List<int>> dict = partitioningBasedOnSpectrumAlgo.apply(serverNO, vertexNO, theta);
             printCluster<string>(dict);
 
             double[] weights;
@@ -63,7 +70,7 @@ namespace SpectralClusteringApplication
             //Dictionary<int, List<int>> dict = kMeansAlgo.apply(objCoords, K, depth);
             //printCluster<int>(dict);
 
-            //printObjCoords(objCoords, nodeNO, depth);
+            //printObjCoords(objCoords, vertexNO, depth);
             //Cluster[] clusters = kMedoidsAlgo.apply(objCoords, K, weights);
             //foreach (var item in clusters)
             //{
@@ -86,9 +93,9 @@ namespace SpectralClusteringApplication
             }
         }
 
-        private static void printObjCoords(Matrix<double> objCoords, int nodeNO, int depth)
+        private static void printObjCoords(Matrix<double> objCoords, int vertexNO, int depth)
         {
-            for (int idxObj = 0; idxObj < nodeNO; idxObj++)
+            for (int idxObj = 0; idxObj < vertexNO; idxObj++)
             {
                 string strCoords = "";
                 for (int idxCoord = 0; idxCoord < depth; idxCoord++)

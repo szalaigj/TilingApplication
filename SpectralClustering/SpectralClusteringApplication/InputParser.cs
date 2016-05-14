@@ -11,7 +11,7 @@ namespace SpectralClusteringApplication
 {
     public class InputParser
     {
-        public Matrix<double> parseWeightMatrix(out int nodeNO)
+        public Matrix<double> parseWeightMatrix(out int vertexNO)
         {
             Matrix<double> weightMX = null;
             Console.WriteLine("Enter the input path and filename:");
@@ -20,8 +20,8 @@ namespace SpectralClusteringApplication
             if (exists)
             {
                 string[] lines = File.ReadAllLines(filename);
-                nodeNO = int.Parse(lines[0].Trim());
-                weightMX = Matrix<double>.Build.Dense(nodeNO, nodeNO);
+                vertexNO = int.Parse(lines[0].Trim());
+                weightMX = Matrix<double>.Build.Dense(vertexNO, vertexNO);
                 for (int idx = 1; idx < lines.Length; idx++)
                 {
                     string[] elements = lines[idx].Split(' ');

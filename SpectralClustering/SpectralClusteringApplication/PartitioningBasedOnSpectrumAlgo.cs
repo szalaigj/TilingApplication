@@ -10,15 +10,15 @@ namespace SpectralClusteringApplication
 {
     public class PartitioningBasedOnSpectrumAlgo
     {
-        public Dictionary<string, List<int>> apply(int K, int nodeNO, Matrix<double> theta)
+        public Dictionary<string, List<int>> apply(int K, int vertexNO, Matrix<double> theta)
         {
             Dictionary<string, List<int>> dict = new Dictionary<string, List<int>>();
             Evd<double> evdOfTheta = theta.Evd();
             int minNecessaryLevel = (int)Math.Log(K, 2.0);
-            for (int levelIdx = minNecessaryLevel; (levelIdx < nodeNO * nodeNO) && (dict.Keys.Count < K); levelIdx++)
+            for (int levelIdx = minNecessaryLevel; (levelIdx < vertexNO * vertexNO) && (dict.Keys.Count < K); levelIdx++)
             {
                 dict.Clear();
-                for (int idx = 0; idx < nodeNO; idx++)
+                for (int idx = 0; idx < vertexNO; idx++)
                 {
                     // The following vector should be reversed because the original ordering of eigen values is ascending:
                     Vector<double> currentRow = evdOfTheta.EigenVectors.Row(idx);
