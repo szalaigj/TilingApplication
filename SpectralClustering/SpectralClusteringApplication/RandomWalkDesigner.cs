@@ -30,19 +30,13 @@ namespace SpectralClusteringApplication
             Matrix<double> degreeDiagInverseMX = createDegreeDiagInverseMX(weightMX);
             return degreeDiagInverseMX.Multiply(weightMX);
         }
-
-        public Matrix<double> createTransProbLazyMX(Matrix<double> transProbMX)
-        {
-            return Matrix<double>.Build.DenseIdentity(transProbMX.RowCount).Add(transProbMX).Divide(2.0);
-        }
-
+        
         public Matrix<double> createPageRankMX(Matrix<double> weightMX, double alpha)
         {
             if ((alpha >= 0.0) && (alpha <= 1.0))
             {
                 Matrix<double> transProbMX = createTransProbMX(weightMX);
-                Matrix<double> transProbLazyMX = createTransProbLazyMX(transProbMX);
-                Matrix<double> pageRankMX = transProbLazyMX.Multiply(alpha).Add((1 - alpha) / weightMX.RowCount);
+                Matrix<double> pageRankMX = transProbMX.Multiply(alpha).Add((1 - alpha) / weightMX.RowCount);
                 return pageRankMX;
             }
             else
