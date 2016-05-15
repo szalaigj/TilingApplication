@@ -38,22 +38,17 @@ namespace SpectralClusteringApplication
                 transformator.transformCellIdxToIndicesArray(histogramResolution, 
                     hstgramIndicesOfFromNode, idxOfFromNode);
                 int heftOfFromNode = (int)array.GetValue(hstgramIndicesOfFromNode);
-                if (heftOfFromNode - 1 >= kNN)
+                if (heftOfFromNode == 0)
                 {
-                    double edgeWeight = kNN;
-                    weightMX[idxOfFromNode, idxOfFromNode] = edgeWeight;
-                }
-                else if (heftOfFromNode == 0)
-                {
-                    foreach (var vertexWithoutZeroHeft in verticesWithoutZeroHeft)
+                   foreach (var vertexWithoutZeroHeft in verticesWithoutZeroHeft)
                     {
                         double edgeWeight = kNN;
                         weightMX[idxOfFromNode, vertexWithoutZeroHeft] = edgeWeight;
-                    }
+                    } 
                 }
-                else
+                else if (heftOfFromNode - 1 < kNN)
                 {
-                    determineEdgeWeightNoLoopEdgeCase(weightMX, idxOfFromNode, 
+                    determineEdgeWeightNoLoopEdgeCase(weightMX, idxOfFromNode,
                         hstgramIndicesOfFromNode, heftOfFromNode);
                 }
             }

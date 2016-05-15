@@ -28,12 +28,12 @@ namespace SpectralClusteringApplication
         static void Main(string[] args)
         {
             double alpha = 0.85;
-            int kNN = 100;
             int serverNO;
             int pointNO;
             double delta;
             int spaceDimension;
             int histogramResolution;
+            int cellMaxValue;
             Array array;
             
             IndexTransformator transformator = new IndexTransformator();
@@ -49,13 +49,14 @@ namespace SpectralClusteringApplication
             if (together)
             {
                 array = inputParser.parseInputFile(out spaceDimension, out histogramResolution, out serverNO,
-                    out pointNO, out delta);
+                    out pointNO, out delta, out cellMaxValue);
             }
             else
             {
                 parseInputSeparately(inputParser, out serverNO, out pointNO, out delta, out spaceDimension,
-                    out histogramResolution, out array);
+                    out histogramResolution, out cellMaxValue, out array);
             }
+            int kNN = 2 * cellMaxValue;
             //int depth = 2;
             int depth = serverNO;
             // The following may be better choice than depth = K:
@@ -106,7 +107,7 @@ namespace SpectralClusteringApplication
         }
 
         private static void parseInputSeparately(InputParser inputParser, out int serverNO, out int pointNO, 
-            out double delta, out int spaceDimension, out int histogramResolution, out Array array)
+            out double delta, out int spaceDimension, out int histogramResolution, out int cellMaxValue, out Array array)
         {
             inputParser.parseInputSizes(out spaceDimension, out histogramResolution, out serverNO);
             Console.WriteLine("Space dim: {0}, resolution: {1}, server no.: {2}", spaceDimension,
@@ -117,7 +118,7 @@ namespace SpectralClusteringApplication
                 lengthsArray[idx] = histogramResolution;
             }
             array = Array.CreateInstance(typeof(int), lengthsArray);
-            inputParser.parseInputArray(serverNO, histogramResolution, array, out pointNO, out delta);
+            inputParser.parseInputArray(serverNO, histogramResolution, array, out pointNO, out delta, out cellMaxValue);
         }
 
         private static void writeOutFiles(SpectralTreeNode[] spectralTreeLeaves, IndexTransformator transformator,
