@@ -1,6 +1,8 @@
 ﻿using KMedoids;
 using MathNet.Numerics.LinearAlgebra;
 using MathNet.Numerics.LinearAlgebra.Factorization;
+using SpectralClusteringApplication.SumOfSquares;
+using SpectralClusteringApplication.Transformation;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -27,7 +29,7 @@ namespace SpectralClusteringApplication
         /// </summary>
         static void Main(string[] args)
         {
-            double alpha = 0.85;
+            double alpha = 0.99;
             int serverNO;
             int pointNO;
             double delta;
@@ -44,7 +46,11 @@ namespace SpectralClusteringApplication
             PartitioningBasedOnSpectrumAlgo partitioningBasedOnSpectrumAlgo = new PartitioningBasedOnSpectrumAlgo();
             PartitioningAroundMedoidsAlgo kMedoidsAlgo = new PartitioningAroundMedoidsAlgo();
             KMeansAlgo kMeansAlgo = new KMeansAlgo();
-            
+            IntTupleEqualityComparer comparer = new IntTupleEqualityComparer();
+            CornacchiaMethod cornacchiaMethod = new CornacchiaMethod(comparer);
+            BacktrackingMethod backtrackingMethod = new BacktrackingMethod(cornacchiaMethod);
+            ShellBuilder shellBuilder = new ShellBuilder(backtrackingMethod);
+
             bool together = inputParser.determineTogetherOrSeparately();
             if (together)
             {
@@ -57,10 +63,17 @@ namespace SpectralClusteringApplication
                     out histogramResolution, out cellMaxValue, out array);
             }
             int kNN = 2 * cellMaxValue;
+            Console.WriteLine("kNN: {0}", kNN);
+            //int kNN = (int)Math.Ceiling(delta);
+            //int kNN = pointNO;
             //int depth = 2;
             int depth = serverNO;
             // The following may be better choice than depth = K:
             //int depth = K - 1;// However, the 'graph-dimension' (histogram dimension) may be enough.
+            Shell[] shells;
+            shells = shellBuilder.createShells(kNN, spaceDimension);
+            KNNMeasure kNNMeasure = new KNNMeasure(transformator, array, shells, spaceDimension, 
+                histogramResolution, serverNO, pointNO, kNN);
             Console.WriteLine("Point no.: {0}", pointNO);
             Console.WriteLine("Delta: {0}", delta);
             EdgesTransformator edgesTransformator = new EdgesTransformator(transformator, array, spaceDimension, 
@@ -72,6 +85,8 @@ namespace SpectralClusteringApplication
             BisectionAlgo bisectionAlgo = new BisectionAlgo(randomWalkDesigner, thetaMatrixFormation, weightMX, 
                 serverNO, alpha);
             SpectralTreeNode[] spectralTreeLeaves = bisectionAlgo.apply(vertexNO);
+            double measureOfKNN = kNNMeasure.computeMeasure(spectralTreeLeaves);
+            Console.WriteLine("k-NN measure of the partition: {0}", measureOfKNN);
             writeOutFiles(spectralTreeLeaves, transformator, array, spaceDimension, histogramResolution, vertexNO);
 
             Matrix<double> pageRankMX = randomWalkDesigner.createPageRankMX(weightMX, alpha);

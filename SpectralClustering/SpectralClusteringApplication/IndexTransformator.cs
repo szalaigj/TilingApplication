@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SpectralClusteringApplication.SumOfSquares;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -36,6 +37,30 @@ namespace SpectralClusteringApplication
                     * indicesArray[coordIdx];
             }
             return cellIdx;
+        }
+
+        public Dictionary<int, List<int[]>> convertIntPairsOfShellsToListOfIdxArrays(int histogramResolution,
+            int[] inputIndicesArray, Shell[] shells)
+        {
+            Dictionary<int, List<int[]>> result = new Dictionary<int, List<int[]>>();
+            int shellIdx = 0;
+            foreach (var shell in shells)
+            {
+                List<int[]> indicesArraysInCurrentShell = new List<int[]>();
+                IntTuple[] intTuples = shell.getIntTuples();
+                foreach (var intTuple in intTuples)
+                {
+                    int[] currentIndicesArray;
+                    if (intTuple.determineIdxArrayRelativeTo(histogramResolution, inputIndicesArray,
+                        out currentIndicesArray))
+                    {
+                        indicesArraysInCurrentShell.Add(currentIndicesArray);
+                    }
+                }
+                result.Add(shellIdx, indicesArraysInCurrentShell);
+                shellIdx++;
+            }
+            return result;
         }
     }
 }
