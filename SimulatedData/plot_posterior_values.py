@@ -14,6 +14,7 @@ parser.add_argument("--pdf_format", default = 'True', help="Would you like pdf f
 parser.add_argument("--knee_points", default = 'False', help="Would you like to add knee points (L method and furthest point from line method) for the figure output(s)?", type=str)
 parser.add_argument("--knee_point_l_method", default = 2, help="The knee point from L method", type = int)
 parser.add_argument("--knee_point_fpfl_method", default = 2, help="The knee point from furthest point from line method", type = int)
+parser.add_argument("--max_hist_res", default = 0, help="The knee point from furthest point from line method", type = int)
 args = parser.parse_args()
 
 data_file_name = args.data_file_name
@@ -23,8 +24,12 @@ pdf_format = eval(args.pdf_format)
 knee_points = eval(args.knee_points)
 knee_point_l_method = args.knee_point_l_method
 knee_point_fpfl_method = args.knee_point_fpfl_method
+max_hist_res = args.max_hist_res
 
 post_values = np.loadtxt(data_dir + data_file_name)
+
+if (max_hist_res == 0):
+  max_hist_res = len(post_values) + min_hist_res - 1
 
 rc('font', size=18)  # default for labels (not axis labels)
 rc('font', family='serif')  # default for labels (not axis labels)
@@ -49,7 +54,7 @@ if knee_points:
   ax.annotate(str(knee_point_l_method), xy=(knee_point_l_method, post_values[knee_point_l_method - min_hist_res]),  xycoords='data', xytext=(30, 30), textcoords='offset points', color='brown', arrowprops=dict(arrowstyle="->"), zorder=4, fontsize=18)
   ax.axvline(x = knee_point_fpfl_method, color='green', linewidth=2, linestyle='-')
   ax.annotate(str(knee_point_fpfl_method), xy=(knee_point_fpfl_method, post_values[knee_point_fpfl_method - min_hist_res]),  xycoords='data', xytext=(30, 30), textcoords='offset points', color='green', arrowprops=dict(arrowstyle="->"), zorder=4, fontsize=18)
-ax.set_xlim([min_hist_res, len(post_values) + min_hist_res - 1])
+ax.set_xlim([min_hist_res, max_hist_res])
 if(pdf_format):
   savefig(data_dir + 'posterior_values.pdf', format='pdf')
 else:
