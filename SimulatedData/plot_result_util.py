@@ -22,7 +22,10 @@ class PlotResultUtil:
     self.space_dim = args.space_dim
     self.nhst_resolution = args.nhst_resolution
     self.suffix = args.suffix
-    self.pdf_format = args.pdf_format
+    self.pdf_format = eval(args.pdf_format)
+    self.direct_color = eval(args.direct_color)
+    if (self.direct_color):
+      self.colors_of_servers = [eval(x) for x in args.color_tuples.split()]
     rc('font', size=18)  # default for labels (not axis labels)
     rc('font', family='serif')  # default for labels (not axis labels)
     rc('figure.subplot', bottom=.14, top=.86, right=.75, left=0.04)
@@ -146,7 +149,10 @@ class PlotResultUtil:
       tile_center_y = tile_y + (height/2.0)
       ax.add_patch(patches.Rectangle((tile_x, tile_y),width,height,fill=False,linewidth=3,linestyle='solid',edgecolor='k',zorder = 2))
       related_server_idx = tiles_to_servers[tileCoord_idx]
-      related_color = server_to_colors[related_server_idx][1:]
+      if (self.direct_color):
+        related_color = self.colors_of_servers[related_server_idx]
+      else:
+        related_color = server_to_colors[related_server_idx][1:]
       ax.text(tile_center_x, tile_center_y, str(related_server_idx + 1), color='k',horizontalalignment='center', verticalalignment='center', fontweight='bold', fontsize=22)
       rect1 = patches.Rectangle((tile_x, tile_y),width,height,linewidth=0,alpha=0.6,facecolor=related_color,edgecolor='w',zorder = 2)
       ax.add_patch(rect1)
