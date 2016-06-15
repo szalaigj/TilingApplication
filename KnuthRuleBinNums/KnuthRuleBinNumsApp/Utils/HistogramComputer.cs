@@ -28,24 +28,29 @@ namespace KnuthRuleBinNumsApp.Utils
             int[] binHefts = new int[(int)Math.Pow(histogramResolution, spaceDimension)];
             foreach (var dataRow in data)
             {
-                //int[] lengthsIndicesArray = Enumerable.Repeat(histogramResolution, spaceDimension).ToArray();
-                //int[] indicesArray = (int[])Array.CreateInstance(typeof(int), lengthsIndicesArray);
-                int binHeftIdx = 0;
-                for (int coordIdx = 0; coordIdx < spaceDimension; coordIdx++)
-                {
-                    int normedCoordIdx;
-                    if (dataRow.Tuple[coordIdx] == maxElems[coordIdx])
-                        // the expression in else branch would be histogramResolution
-                        // so we need to change assignment in this case
-                        normedCoordIdx = histogramResolution - 1;
-                    else
-                        normedCoordIdx = (int)(((dataRow.Tuple[coordIdx] - minElems[coordIdx]) 
-                        / (maxElems[coordIdx] - minElems[coordIdx])) * histogramResolution);
-                    binHeftIdx += normedCoordIdx * (int)Math.Pow(histogramResolution, coordIdx);
-                }
-                binHefts[binHeftIdx]++;
+                buildHistogramForDataRowTuple(histogramResolution, spaceDimension, minElems, maxElems, 
+                    binHefts, dataRow.Tuple);
             }
             return binHefts;
+        }
+
+        public void buildHistogramForDataRowTuple(int histogramResolution, int spaceDimension, 
+            double[] minElems, double[] maxElems, int[] binHefts, double[] dataRowTuple)
+        {
+            int binHeftIdx = 0;
+            for (int coordIdx = 0; coordIdx < spaceDimension; coordIdx++)
+            {
+                int normedCoordIdx;
+                if (dataRowTuple[coordIdx] == maxElems[coordIdx])
+                    // the expression in else branch would be histogramResolution
+                    // so we need to change assignment in this case
+                    normedCoordIdx = histogramResolution - 1;
+                else
+                    normedCoordIdx = (int)(((dataRowTuple[coordIdx] - minElems[coordIdx])
+                    / (maxElems[coordIdx] - minElems[coordIdx])) * histogramResolution);
+                binHeftIdx += normedCoordIdx * (int)Math.Pow(histogramResolution, coordIdx);
+            }
+            binHefts[binHeftIdx]++;
         }
     }
 }
