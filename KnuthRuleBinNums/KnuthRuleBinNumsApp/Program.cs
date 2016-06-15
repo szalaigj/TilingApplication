@@ -24,7 +24,7 @@ namespace KnuthRuleBinNumsApp
             double posteriorSum;
             Console.WriteLine("How would you like to execute histogram building? " + 
                 "Would you like to apply stream mode?");
-            Console.WriteLine("(Please choose this mode only if you have prior information about" +
+            Console.WriteLine("(Please choose this mode only if you have prior information about " +
                 "object number and bounding box)");
             bool streamMode = bool.Parse(Console.ReadLine());
             if (streamMode)
@@ -202,7 +202,7 @@ namespace KnuthRuleBinNumsApp
             {
                 strBldr.Append(binHeft).Append(" ");
             }
-            string hstgramOutput = @"u:\temp\data\hstgram_for_input_res_" + histogramResolution + ".dat";
+            string hstgramOutput = @"c:\temp\data\hstgram_for_input_res_" + histogramResolution + ".dat";
             System.IO.File.WriteAllText(hstgramOutput, strBldr.ToString());
         }
 
@@ -219,7 +219,7 @@ namespace KnuthRuleBinNumsApp
             }
             strBldr.Append(binHefts[binHefts.Length - 1]);
             filename = Path.GetFileNameWithoutExtension(filename);
-            string inputSizesOutput = @"u:\temp\data\" + filename + "_input_sizes_serv_" + serverNO 
+            string inputSizesOutput = @"c:\temp\data\" + filename + "_input_sizes_serv_" + serverNO 
                 + "_res_" + histogramResolution + ".dat";
             System.IO.File.WriteAllText(inputSizesOutput, strBldr.ToString());
         }
@@ -233,7 +233,7 @@ namespace KnuthRuleBinNumsApp
                 strBldr.AppendFormat(ci, "{0}", posteriorValue).AppendLine();
                 //strBldr.Append(posteriorValue).AppendLine();
             }
-            string posteriorValuesOutput = @"u:\temp\data\posterior_values.dat";
+            string posteriorValuesOutput = @"c:\temp\data\posterior_values.dat";
             System.IO.File.WriteAllText(posteriorValuesOutput, strBldr.ToString());
         }
 
