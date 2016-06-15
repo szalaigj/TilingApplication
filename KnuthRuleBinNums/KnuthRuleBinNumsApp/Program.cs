@@ -39,7 +39,7 @@ namespace KnuthRuleBinNumsApp
                     out pointNO, out serverNO, out upperBoundOfPostVals, out initialHistRes, out minElems, out maxElems,
                     out posteriorValues, out centralDiffs, out posteriorSum);
             }
-            writeOutStats(lMethod, furthestPointFromLineMethod, pointNO, upperBoundOfPostVals, initialHistRes, 
+            writeOutStats(lMethod, furthestPointFromLineMethod, upperBoundOfPostVals, initialHistRes, 
                 posteriorValues, centralDiffs, posteriorSum);
             Console.WriteLine("Press any key to continue...");
             Console.Read();
@@ -104,8 +104,17 @@ namespace KnuthRuleBinNumsApp
                 foreach (var line in lines)
                 {
                     string[] lineParts = line.Split(InputParser.delimiter);
-                    if (lineParts.Length != spaceDimension)
+                    if (lineParts.Length < spaceDimension)
                         throw new ArgumentException("The line " + lineIdx + " has invalid dimension!");
+                    else if (lineParts.Length > spaceDimension)
+                    {
+                        string[] tempLineParts = new string[spaceDimension];
+                        for (int idx = 0; idx < spaceDimension; idx++)
+                        {
+                            tempLineParts[idx] = lineParts[idx];
+                        }
+                        lineParts = tempLineParts;
+                    }
                     double[] coords = new double[spaceDimension];
                     for (int coordIdx = 0; coordIdx < lineParts.Length; coordIdx++)
                     {
@@ -171,11 +180,11 @@ namespace KnuthRuleBinNumsApp
             }
         }
 
-        private static int determineMaxCentralDiffIdx(int pointNO, double[] centralDiffs)
+        private static int determineMaxCentralDiffIdx(int upperBoundOfPostVals, double[] centralDiffs)
         {
             int maxCentralDiffIdx = 0;
             double maxCentralDiff = 0.0;
-            for (int centralDiffIdx = 0; centralDiffIdx < (int)(Math.Sqrt(pointNO)) - 1; centralDiffIdx++)
+            for (int centralDiffIdx = 0; centralDiffIdx < upperBoundOfPostVals - 1; centralDiffIdx++)
             {
                 if (Math.Abs(centralDiffs[centralDiffIdx]) > maxCentralDiff)
                 {
@@ -228,10 +237,12 @@ namespace KnuthRuleBinNumsApp
             System.IO.File.WriteAllText(posteriorValuesOutput, strBldr.ToString());
         }
 
-        private static void writeOutStats(LMethod lMethod, FurthestPointFromLineMethod furthestPointFromLineMethod, int pointNO, int upperBoundOfPostVals, int initialHistRes, double[] posteriorValues, double[] centralDiffs, double posteriorSum)
+        private static void writeOutStats(LMethod lMethod, FurthestPointFromLineMethod furthestPointFromLineMethod, 
+            int upperBoundOfPostVals, int initialHistRes, double[] posteriorValues, double[] centralDiffs, 
+            double posteriorSum)
         {
             Console.WriteLine("Posterior mean: {0}", (posteriorSum) / ((double)posteriorValues.Length));
-            int maxCentralDiffIdx = determineMaxCentralDiffIdx(pointNO, centralDiffs);
+            int maxCentralDiffIdx = determineMaxCentralDiffIdx(upperBoundOfPostVals, centralDiffs);
             Console.WriteLine("Maximum central difference: {0}", maxCentralDiffIdx + initialHistRes);
             double[] xData = Enumerable.Range(initialHistRes, upperBoundOfPostVals - 1).Select(x => (double)x).ToArray();
             int kneePointIdx = lMethod.findBestKneePoint(xData, posteriorValues, xData.Length);

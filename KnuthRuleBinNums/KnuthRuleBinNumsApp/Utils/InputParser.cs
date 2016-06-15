@@ -28,8 +28,17 @@ namespace KnuthRuleBinNumsApp.Utils
                 foreach (var line in lines)
                 {
                     string[] lineParts = line.Split(InputParser.delimiter);
-                    if (lineParts.Length != spaceDimension)
+                    if (lineParts.Length < spaceDimension)
                         throw new ArgumentException("The line " + lineIdx + " has invalid dimension!");
+                    else if (lineParts.Length > spaceDimension)
+                    {
+                        string[] tempLineParts = new string[spaceDimension];
+                        for (int idx = 0; idx < spaceDimension; idx++)
+                        {
+                            tempLineParts[idx] = lineParts[idx];
+                        }
+                        lineParts = tempLineParts;
+                    }
                     double[] coords = new double[spaceDimension];
                     handleNewLine(lineParts, coords, minElems, maxElems);
                     DataRow dataRow = new DataRow();
