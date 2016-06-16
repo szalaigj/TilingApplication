@@ -25,14 +25,26 @@ class PlotResultUtil:
     self.pdf_format = eval(args.pdf_format)
     self.data_color = eval(args.data_color)
     self.data_alpha = args.data_alpha
+    self.rectangle_edges = eval(args.rectangle_edges)
     self.direct_color = eval(args.direct_color)
     if (self.direct_color):
       self.colors_of_servers = [eval(x) for x in args.color_tuples.split()]
-    rc('font', size=18)  # default for labels (not axis labels)
-    rc('font', family='serif')  # default for labels (not axis labels)
-    rc('figure.subplot', bottom=.14, top=.86, right=.75, left=0.04)
-    # Use square shape
-    rc('figure', figsize=(14, 10))
+    self.direct_server_idx_location = eval(args.direct_server_idx_location)
+    if (self.direct_server_idx_location):
+      self.server_idx_location_tuples = [eval(x) for x in args.server_idx_location_tuples.split()]
+    self.font_size_server_idx = args.font_size_server_idx
+    self.legend_on = eval(args.legend_on)
+    if(self.legend_on):
+      rc('font', size=18)  # default for labels (not axis labels)
+      rc('font', family='serif')  # default for labels (not axis labels)
+      rc('figure.subplot', bottom=.14, top=.86, right=.75, left=0.04)
+      rc('figure', figsize=(14, 10))
+    else:
+      rc('font', size=24)  # default for labels (not axis labels)
+      rc('font', family='serif')  # default for labels (not axis labels)
+      rc('figure.subplot', bottom=.125, top=.875, right=.885, left=0.175)
+      # Use square shape
+      rc('figure', figsize=(10, 10))
     if(self.pdf_format):
       rc('savefig', dpi=150)
     else:
@@ -129,7 +141,23 @@ class PlotResultUtil:
       server_to_colors[server_idx][3] /= server_to_colors[server_idx][0]
     return server_to_colors
 
+  def _update_server_center(self, related_server_idx, tile_center_x, tile_center_y, server_center_sum_x, server_center_cnt_x, server_center_sum_y, server_center_cnt_y):
+    if (related_server_idx in server_center_sum_x):
+      server_center_sum_x[related_server_idx] += tile_center_x
+      server_center_sum_y[related_server_idx] += tile_center_y
+      server_center_cnt_x[related_server_idx] += 1.0
+      server_center_cnt_y[related_server_idx] += 1.0
+    else:
+      server_center_sum_x[related_server_idx] = tile_center_x
+      server_center_sum_y[related_server_idx] = tile_center_y
+      server_center_cnt_x[related_server_idx] = 1.0
+      server_center_cnt_y[related_server_idx] = 1.0
+
   def _draw_tiles(self, ax, coordsMaxs, coordsMins, nserver, tiles_to_servers, tilesCoords):
+    server_center_sum_x = dict()
+    server_center_cnt_x = dict()
+    server_center_sum_y = dict()
+    server_center_cnt_y = dict()
     stepx = np.abs(coordsMaxs[0] - coordsMins[0]) / float(self.nhst_resolution)
     stepy = np.abs(coordsMaxs[1] - coordsMins[1]) / float(self.nhst_resolution)
     leg_labels_to_objs = {}
@@ -147,19 +175,29 @@ class PlotResultUtil:
       tile_y = coordsMins[1] + stepy * tilesCoords[tileCoord_idx][3]
       width = stepx * (tilesCoords[tileCoord_idx][2] + 1 - tilesCoords[tileCoord_idx][1])
       height = stepy * (tilesCoords[tileCoord_idx][4] + 1 - tilesCoords[tileCoord_idx][3])
-      tile_center_x = tile_x + (width/2.0)
-      tile_center_y = tile_y + (height/2.0)
-      ax.add_patch(patches.Rectangle((tile_x, tile_y),width,height,fill=False,linewidth=3,linestyle='solid',edgecolor='k',zorder = 2))
+      if(self.rectangle_edges):
+        ax.add_patch(patches.Rectangle((tile_x, tile_y),width,height,fill=False,linewidth=3,linestyle='solid',edgecolor='k',zorder = 2))
       related_server_idx = tiles_to_servers[tileCoord_idx]
       if (self.direct_color):
         related_color = self.colors_of_servers[related_server_idx]
       else:
         related_color = server_to_colors[related_server_idx][1:]
-      ax.text(tile_center_x, tile_center_y, str(related_server_idx + 1), color='k',horizontalalignment='center', verticalalignment='center', fontweight='bold', fontsize=22)
+      if (self.direct_server_idx_location == False):
+        tile_center_x = tile_x + (width/2.0)
+        tile_center_y = tile_y + (height/2.0)
+        self._update_server_center(related_server_idx, tile_center_x, tile_center_y, server_center_sum_x, server_center_cnt_x, server_center_sum_y, server_center_cnt_y)
+#        print str(related_server_idx + 1), tile_center_x, tile_center_y
+        ax.text(tile_center_x, tile_center_y, str(related_server_idx + 1), color='k',horizontalalignment='center', verticalalignment='center', fontweight='bold', fontsize=self.font_size_server_idx)
       rect1 = patches.Rectangle((tile_x, tile_y),width,height,linewidth=0,alpha=0.6,facecolor=related_color,edgecolor='w',zorder = 2)
       ax.add_patch(rect1)
       if (related_server_idx + 1) not in leg_labels_to_objs:
         leg_labels_to_objs[(related_server_idx + 1)] = rect1
+    print "Centers of tiles:"
+    for related_server_idx in server_center_sum_x:
+      print str(related_server_idx), str(server_center_sum_x[related_server_idx]/server_center_cnt_x[related_server_idx]), str(server_center_sum_y[related_server_idx]/server_center_cnt_y[related_server_idx])
+    print "Server colors:"
+    for related_server_idx in server_to_colors:
+      print str(related_server_idx), str(tuple(server_to_colors[related_server_idx][1:]))
     return leg_labels_to_objs
 
   def _determine_legend(self, leg_labels_to_objs, hefts_of_servers):
@@ -171,6 +209,13 @@ class PlotResultUtil:
       leg_labels_extended.append("server " + str(key) + " (heft: " + str(hefts_of_servers[key-1]) + ")")
       leg_objs_sorted.append(leg_labels_to_objs[key])
     return leg_labels_extended, leg_objs_sorted
+
+  def _plot_server_indices(self, ax):
+    for server_idx_location_tuple in self.server_idx_location_tuples:
+      related_server_idx = server_idx_location_tuple[0]
+      loc_x = server_idx_location_tuple[1]
+      loc_y = server_idx_location_tuple[2]
+      ax.text(loc_x, loc_y, str(related_server_idx + 1), color='k',horizontalalignment='center', verticalalignment='center', fontweight='bold', fontsize=self.font_size_server_idx, zorder = 4)
 
   def plot_two_dimensional_data(self, coords, tilesCoords, nserver, tiles_to_servers, hefts_of_servers):
     x_coord,y_coord = coords.T
@@ -186,12 +231,21 @@ class PlotResultUtil:
     ax.scatter(x_coord,y_coord, c=self.data_color, marker = ".", linewidth=0, alpha=current_alpha, zorder = 3)
     self._draw_borders(ax, borders)
     leg_labels_to_objs = self._draw_tiles(ax, coordsMaxs, coordsMins, nserver, tiles_to_servers, tilesCoords)
-    leg_labels_extended, leg_objs_sorted = self._determine_legend(leg_labels_to_objs, hefts_of_servers)
     xlim([coordsMins[0], coordsMaxs[0]])
     ylim([coordsMins[1], coordsMaxs[1]])
-    lgd = ax.legend(leg_objs_sorted, leg_labels_extended, bbox_to_anchor=(1.075, 1.0), fontsize="small", mode="expand", borderaxespad=0.)
+    if(self.legend_on):
+      leg_labels_extended, leg_objs_sorted = self._determine_legend(leg_labels_to_objs, hefts_of_servers)
+      lgd = ax.legend(leg_objs_sorted, leg_labels_extended, bbox_to_anchor=(1.075, 1.0), fontsize="small", mode="expand", borderaxespad=0.)
+    if (self.direct_server_idx_location):
+      self._plot_server_indices(ax)
     #legend(leg_objs_sorted, leg_labels_extended)
     if(self.pdf_format):
-      savefig(self.data_dir + 'fig_result' + self.suffix + '.pdf', bbox_extra_artists=(lgd,), format='pdf')
+      if(self.legend_on):
+        savefig(self.data_dir + 'fig_result' + self.suffix + '.pdf', bbox_extra_artists=(lgd,), format='pdf')
+      else:
+        savefig(self.data_dir + 'fig_result' + self.suffix + '.pdf', format='pdf')
     else:
-      savefig(self.data_dir + 'fig_result' + self.suffix + '.png', bbox_extra_artists=(lgd,))
+      if(self.legend_on):
+        savefig(self.data_dir + 'fig_result' + self.suffix + '.png', bbox_extra_artists=(lgd,))
+      else:
+        savefig(self.data_dir + 'fig_result' + self.suffix + '.png')

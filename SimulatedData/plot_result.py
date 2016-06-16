@@ -18,8 +18,13 @@ parser.add_argument("--suffix", default = "", help="The suffix of sample-related
 parser.add_argument("--pdf_format", default = 'True', help="Would you like pdf format and high resolution for the figure output(s)?", type=str)
 parser.add_argument("--data_color", default = "(0.0,0.0,1.0)", help="The data color. The default color is blue.", type=str)
 parser.add_argument("--data_alpha", default = 0.0, help="The alpha value for plot", type=float)
+parser.add_argument("--rectangle_edges", default = 'False', help="Would you like rectangle edges?", type=str)
+parser.add_argument("--legend_on", default = 'False', help="Would you like legend about servers?", type=str)
 parser.add_argument("--direct_color", default = 'False', help="Would you like give the server colors?", type=str)
 parser.add_argument("--color_tuples", default = "", help="The string of the server color tuples. The delimiter is the space character. So this is a good input: '(0.886,0.29,0.2) (0.46,0.46,0.46)' but this is a bad: '(0.886, 0.29, 0.2) (0.46, 0.46, 0.46)' for two servers", type=str)
+parser.add_argument("--direct_server_idx_location", default = 'False', help="Would you like give the server index locations?", type=str)
+parser.add_argument("--server_idx_location_tuples", default = "", help="The string of the server index location tuples. Note: the first coord of a tuple is related server. Note2: a server index can be repeated (e.g. because of outlier bins). The delimiter is the space character. So this is a good input: '(0,0.0,1.0) (1,1.0,0.0)' but this is a bad: '(0, 0.0, 1.0) (1, 1.0, 0.0)' for two servers", type=str)
+parser.add_argument("--font_size_server_idx", default = "22", help="The font size of the server indices.", type=int)
 args = parser.parse_args()
 
 data_io = DataIOUtil(args.data_dir)
