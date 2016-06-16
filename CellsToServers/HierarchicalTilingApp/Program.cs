@@ -4,6 +4,7 @@ using HierarchicalTilingApp.SumOfSquares;
 using HierarchicalTilingApp.Transformation;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -14,6 +15,7 @@ namespace HierarchicalTilingApp
     {
         static void Main(string[] args)
         {
+            Stopwatch stopwatch = new Stopwatch();
             IntTupleEqualityComparer comparer = new IntTupleEqualityComparer();
             CornacchiaMethod cornacchiaMethod = new CornacchiaMethod(comparer);
             BacktrackingMethod backtrackingMethod = new BacktrackingMethod(cornacchiaMethod);
@@ -21,9 +23,9 @@ namespace HierarchicalTilingApp
             Transformator transformator = new Transformator(shellBuilder);
             InputParser inputParser = new InputParser(transformator);
             HeftArrayCreator heftArrayCreator = new HeftArrayCreator(transformator);
-            int kNN = 333;
-            double kNNMeasCoeff = 1.0;//0.1;
-            double lbMeasCoeff = 0.0;//0.9;
+            //int kNN = 274;
+            double kNNMeasCoeff = 0.0;//0.1;
+            double lbMeasCoeff = 1.0;//0.9;
 
             int serverNO;
             int pointNO;
@@ -43,11 +45,15 @@ namespace HierarchicalTilingApp
                     out histogramResolution, out array);
             }
             Shell[] shells;
+            int kNN = (int)Math.Ceiling(delta);
             shells = shellBuilder.createShells(kNN, spaceDimension);
             Console.WriteLine("Point no.: {0}", pointNO);
             Console.WriteLine("Delta: {0}", delta);
             Console.WriteLine("kNN measurement coefficient: {0}", kNNMeasCoeff);
             Console.WriteLine("Load balancing measurement coefficient: {0}", lbMeasCoeff);
+            
+            stopwatch.Start();
+            
             Array heftArray = heftArrayCreator.createHeftArray(spaceDimension, histogramResolution, array);
 
             IterativeDivider divider = new IterativeDivider(array, heftArray, transformator, spaceDimension, 
@@ -59,6 +65,10 @@ namespace HierarchicalTilingApp
             writeOutTiles(serverNO, spaceDimension, partition);
             writeOutServers(serverNO, partition);
             writeOutCellsToServers(histogramResolution, serverNO, partition);
+
+            stopwatch.Stop();
+            Console.WriteLine("Elapsed time: {0} minutes", stopwatch.Elapsed.Minutes);
+
             Console.WriteLine("Press any key to exit!");
             Console.Read();
         }
