@@ -23,6 +23,8 @@ class PlotResultUtil:
     self.nhst_resolution = args.nhst_resolution
     self.suffix = args.suffix
     self.pdf_format = eval(args.pdf_format)
+    self.data_color = eval(args.data_color)
+    self.data_alpha = args.data_alpha
     self.direct_color = eval(args.direct_color)
     if (self.direct_color):
       self.colors_of_servers = [eval(x) for x in args.color_tuples.split()]
@@ -177,8 +179,11 @@ class PlotResultUtil:
     borders = self._determine_borders(coordsMaxs, coordsMins)
     fig = figure()
     ax = subplot(111, aspect='equal')
-    current_alpha = np.minimum(1.0, 1000.0 / coords.shape[0])
-    ax.scatter(x_coord,y_coord, c=(0.0,0.0,1.0), marker = ".", linewidth=0, alpha=current_alpha, zorder = 3)
+    if(self.data_alpha == 0.0):
+      current_alpha = np.minimum(1.0, 1000.0 / coords.shape[0])
+    else:
+      current_alpha = self.data_alpha
+    ax.scatter(x_coord,y_coord, c=self.data_color, marker = ".", linewidth=0, alpha=current_alpha, zorder = 3)
     self._draw_borders(ax, borders)
     leg_labels_to_objs = self._draw_tiles(ax, coordsMaxs, coordsMins, nserver, tiles_to_servers, tilesCoords)
     leg_labels_extended, leg_objs_sorted = self._determine_legend(leg_labels_to_objs, hefts_of_servers)
