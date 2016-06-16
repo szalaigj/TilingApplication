@@ -5,6 +5,7 @@ using SpectralClusteringApplication.SumOfSquares;
 using SpectralClusteringApplication.Transformation;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -29,6 +30,9 @@ namespace SpectralClusteringApplication
         /// </summary>
         static void Main(string[] args)
         {
+            Stopwatch stopwatch = new Stopwatch();
+            stopwatch.Start();
+
             double alpha = 0.99;
             int serverNO;
             int pointNO;
@@ -62,9 +66,9 @@ namespace SpectralClusteringApplication
                 parseInputSeparately(inputParser, out serverNO, out pointNO, out delta, out spaceDimension,
                     out histogramResolution, out cellMaxValue, out array);
             }
-            int kNN = 2 * cellMaxValue;
+            //int kNN = 2 * cellMaxValue;
+            int kNN = (int)Math.Ceiling(delta);
             Console.WriteLine("kNN: {0}", kNN);
-            //int kNN = (int)Math.Ceiling(delta);
             //int kNN = pointNO;
             //int depth = 2;
             int depth = serverNO;
@@ -89,34 +93,38 @@ namespace SpectralClusteringApplication
             Console.WriteLine("k-NN measure of the partition: {0}", measureOfKNN);
             writeOutFiles(spectralTreeLeaves, transformator, array, spaceDimension, histogramResolution, vertexNO);
 
-            Matrix<double> pageRankMX = randomWalkDesigner.createPageRankMX(weightMX, alpha);
-            Console.Out.WriteLine("PageRank matrix:");
-            Console.Out.WriteLine(pageRankMX);
-            Vector<double> pi = randomWalkDesigner.createStationaryDistributionOf(pageRankMX);
-            Console.Out.WriteLine("Stationary distribution of the random walk:");
-            Console.Out.WriteLine(pi);
-            Matrix<double> theta = thetaMatrixFormation.createThetaMX(pageRankMX, pi);
-            Console.Out.WriteLine("Theta matrix:");
-            Console.Out.WriteLine(theta);
+            //Matrix<double> pageRankMX = randomWalkDesigner.createPageRankMX(weightMX, alpha);
+            //Console.Out.WriteLine("PageRank matrix:");
+            //Console.Out.WriteLine(pageRankMX);
+            //Vector<double> pi = randomWalkDesigner.createStationaryDistributionOf(pageRankMX);
+            //Console.Out.WriteLine("Stationary distribution of the random walk:");
+            //Console.Out.WriteLine(pi);
+            //Matrix<double> theta = thetaMatrixFormation.createThetaMX(pageRankMX, pi);
+            //Console.Out.WriteLine("Theta matrix:");
+            //Console.Out.WriteLine(theta);
 
-            // The following is unused but it may be good for later use:
-            //normCutUtils.determineLeaves(nodeNO, theta, pageRankMX, pi);
+            //// The following is unused but it may be good for later use:
+            ////normCutUtils.determineLeaves(nodeNO, theta, pageRankMX, pi);
 
-            Dictionary<string, List<int>> dict = partitioningBasedOnSpectrumAlgo.apply(serverNO, vertexNO, theta);
-            printCluster<string>(dict);
+            //Dictionary<string, List<int>> dict = partitioningBasedOnSpectrumAlgo.apply(serverNO, vertexNO, theta);
+            //printCluster<string>(dict);
 
-            double[] weights;
-            Matrix<double> objCoords = thetaMatrixFormation.determineCoordsBasedOnEigVecs(theta, depth, out weights);
+            //double[] weights;
+            //Matrix<double> objCoords = thetaMatrixFormation.determineCoordsBasedOnEigVecs(theta, depth, out weights);
 
-            //Dictionary<int, List<int>> dict = kMeansAlgo.apply(objCoords, K, depth);
-            //printCluster<int>(dict);
+            ////Dictionary<int, List<int>> dict = kMeansAlgo.apply(objCoords, K, depth);
+            ////printCluster<int>(dict);
 
-            //printObjCoords(objCoords, vertexNO, depth);
-            //Cluster[] clusters = kMedoidsAlgo.apply(objCoords, K, weights);
-            //foreach (var item in clusters)
-            //{
-            //    item.printCluster();
-            //}
+            ////printObjCoords(objCoords, vertexNO, depth);
+            ////Cluster[] clusters = kMedoidsAlgo.apply(objCoords, K, weights);
+            ////foreach (var item in clusters)
+            ////{
+            ////    item.printCluster();
+            ////}
+
+            stopwatch.Stop();
+            Console.WriteLine("Elapsed time: {0} minutes", stopwatch.Elapsed.Minutes);
+
             Console.WriteLine("Press any key to exit!");
             Console.Read();
         }

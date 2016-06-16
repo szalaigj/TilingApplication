@@ -16,6 +16,8 @@ namespace HierarchicalTilingApp
         static void Main(string[] args)
         {
             Stopwatch stopwatch = new Stopwatch();
+            stopwatch.Start();
+
             IntTupleEqualityComparer comparer = new IntTupleEqualityComparer();
             CornacchiaMethod cornacchiaMethod = new CornacchiaMethod(comparer);
             BacktrackingMethod backtrackingMethod = new BacktrackingMethod(cornacchiaMethod);
@@ -51,8 +53,6 @@ namespace HierarchicalTilingApp
             Console.WriteLine("Delta: {0}", delta);
             Console.WriteLine("kNN measurement coefficient: {0}", kNNMeasCoeff);
             Console.WriteLine("Load balancing measurement coefficient: {0}", lbMeasCoeff);
-            
-            stopwatch.Start();
             
             Array heftArray = heftArrayCreator.createHeftArray(spaceDimension, histogramResolution, array);
 
