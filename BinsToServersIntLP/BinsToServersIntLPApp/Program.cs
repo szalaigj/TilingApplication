@@ -25,17 +25,19 @@ namespace BinsToServersIntLPApp
             Array array;
             int[] binHefts;
             int binNO;
-            binCreationPhase(inputParser, binsCreator, out serverNO, out pointNO, out delta, out spaceDimension, 
-                out histogramResolution, out array, out binHefts, out binNO);
-            lpProblemPhase(inputParser, serverNO, pointNO, delta, binNO, binHefts, lpModelFileCreator, lpSolver);
+            double explicitLimit;
+            binCreationPhase(inputParser, binsCreator, out serverNO, out pointNO, out delta, out spaceDimension,
+                out histogramResolution, out array, out binHefts, out binNO, out explicitLimit);
+            lpProblemPhase(inputParser, serverNO, pointNO, delta, binNO, binHefts, explicitLimit, lpModelFileCreator, lpSolver);
             Console.WriteLine("Press any key to exit!");
             Console.Read();
         }
 
         private static void binCreationPhase(InputParser inputParser, BinsCreator binsCreator, out int serverNO, 
-            out int pointNO, out double delta, out int spaceDimension, out int histogramResolution, out Array array, 
-            out int[] binHefts, out int binNO)
+            out int pointNO, out double delta, out int spaceDimension, out int histogramResolution, out Array array,
+            out int[] binHefts, out int binNO, out double explicitLimit)
         {
+            explicitLimit = inputParser.determineExplicitOrImplicitLimit();
             bool together = inputParser.determineTogetherOrSeparately();
             if (together)
             {
@@ -85,13 +87,13 @@ namespace BinsToServersIntLPApp
         }
 
         private static void lpProblemPhase(InputParser inputParser, int serverNO, int pointNO, double delta,
-            int binNO, int[] binHefts, LPModelFileCreator lpModelFileCreator, LPSolver lpSolver)
+            int binNO, int[] binHefts, double explicitLimit, LPModelFileCreator lpModelFileCreator, LPSolver lpSolver)
         {
             int timeoutSec = inputParser.parseInputTimeout();
             bool deleteOutputLP = inputParser.parseInputDeleteOutputLP();
 
             string outputFilename = lpModelFileCreator.createOutputLPFile(serverNO, binNO, pointNO,
-                binHefts, delta);
+                binHefts, delta, explicitLimit);
 
             lpSolver.solveLP(serverNO, binNO, binHefts, timeoutSec, outputFilename);
 

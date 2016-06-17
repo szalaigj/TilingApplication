@@ -6,11 +6,12 @@ namespace BinsToServersIntLPApp.LPProblem
 {
     public class LPModelFileCreator
     {
-        public string createOutputLPFile(int serverNO, int binNO, int pointNO, int[] binHefts, double delta)
+        public string createOutputLPFile(int serverNO, int binNO, int pointNO, int[] binHefts, double delta, 
+            double explicitLimit)
         {
             string objFuncExp = createObjectiveFunctionExpression(serverNO);
             string binDefs = createBinaryVariablesDefinitionExpression(serverNO, binNO, binHefts);
-            string constraints = createConstraintsExpression(serverNO, binNO, pointNO, delta, binHefts);
+            string constraints = createConstraintsExpression(serverNO, binNO, pointNO, delta, explicitLimit, binHefts);
             string output_lp = Properties.Resources.BasicLPFile;
             output_lp = output_lp.Replace(@"${obj_func}", objFuncExp);
             output_lp = output_lp.Replace(@"${bin_vars}", binDefs);
@@ -50,7 +51,8 @@ namespace BinsToServersIntLPApp.LPProblem
             return result;
         }
 
-        private string createConstraintsExpression(int serverNO, int binNO, int pointNO, double delta, int[] binHefts)
+        private string createConstraintsExpression(int serverNO, int binNO, int pointNO, double delta, 
+            double explicitLimit, int[] binHefts)
         {
             StringBuilder sb = new StringBuilder();
 
@@ -88,8 +90,16 @@ namespace BinsToServersIntLPApp.LPProblem
                 sb.AppendLine("-d" + idx + " <= dAbs" + idx + ";");
                 //sb.AppendLine("d" + idx + " <= " + limit.ToString(CultureInfo.CreateSpecificCulture("en-GB")) + ";");
                 //sb.AppendLine("-d" + idx + " <= " + limit.ToString(CultureInfo.CreateSpecificCulture("en-GB")) + ";");
-                sb.AppendLine("d" + idx + " <= " + delta.ToString(CultureInfo.CreateSpecificCulture("en-GB")) + ";");
-                sb.AppendLine("-d" + idx + " <= " + delta.ToString(CultureInfo.CreateSpecificCulture("en-GB")) + ";");
+                if (explicitLimit >= 0)
+                {
+                    sb.AppendLine("d" + idx + " <= " + explicitLimit.ToString(CultureInfo.CreateSpecificCulture("en-GB")) + ";");
+                    sb.AppendLine("-d" + idx + " <= " + explicitLimit.ToString(CultureInfo.CreateSpecificCulture("en-GB")) + ";");    
+                }
+                else
+                {
+                    sb.AppendLine("d" + idx + " <= " + delta.ToString(CultureInfo.CreateSpecificCulture("en-GB")) + ";");
+                    sb.AppendLine("-d" + idx + " <= " + delta.ToString(CultureInfo.CreateSpecificCulture("en-GB")) + ";");    
+                }
             }
             return sb.ToString();
         }

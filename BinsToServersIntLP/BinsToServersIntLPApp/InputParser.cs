@@ -26,6 +26,24 @@ namespace BinsToServersIntLPApp
             return together;
         }
 
+        public double determineExplicitOrImplicitLimit()
+        {
+            double explicitLimit = -1.0;
+            bool isExplicitLimit;
+            Console.WriteLine("Would you like to provide an explicit limit "
+                + "for constraints of LP problem (true or false)?");
+            while (!bool.TryParse(Console.ReadLine(), out isExplicitLimit))
+            {
+                Console.WriteLine("Enter true or false:");
+            }
+            if (isExplicitLimit)
+            {
+                Console.WriteLine("Explicit limit:");
+                explicitLimit = Double.Parse(Console.ReadLine(), NumberStyles.Float, CultureInfo.InvariantCulture);
+            }
+            return explicitLimit;
+        }
+
         public Array parseInputFile(out int spaceDimension, out int histogramResolution, out int serverNO,
             out int pointNO, out double delta)
         {
