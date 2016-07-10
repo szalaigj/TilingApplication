@@ -6,32 +6,11 @@ using System.Collections.Generic;
 
 namespace HierarchicalTilingApp.Measure
 {
-    public class KNNMeasure : BaseMeasure<KNNAuxData>
+    public class KNNMeasure : SimilarityMeasure<KNNAuxData>
     {
         public KNNMeasure(KNNAuxData auxData, Transformator transformator)
             : base(auxData, transformator)
         {
-        }
-
-        public override double computeMeasureForRegion(Coords coords)
-        {
-            double measureForRegion = 0.0;
-            int[] indicesArrayOfRegion =
-                    transformator.determineIndicesArray(AuxData.SpaceDimension, coords.ExtendedIndicesArray);
-            int binNOInRegionWithoutZeroHeft = 0;
-            for (int[] indicesArrayOfBin = transformator.determineFirstIndicesArray(indicesArrayOfRegion); 
-                    indicesArrayOfBin != null;
-                    indicesArrayOfBin = transformator.determineNextIndicesArray(indicesArrayOfRegion, indicesArrayOfBin))
-            {
-                int binValue = (int)AuxData.Histogram.GetValue(indicesArrayOfBin);
-                if (binValue > 0)
-                {
-                    binNOInRegionWithoutZeroHeft++;
-                    measureForRegion += computeMeasureForBin(indicesArrayOfBin, indicesArrayOfRegion);
-                }
-            }
-            measureForRegion = measureForRegion / (double)binNOInRegionWithoutZeroHeft;
-            return measureForRegion;
         }
 
         public override double computeMeasureForBin(int[] indicesArrayOfBin, int[] indicesArrayOfRegion)
@@ -101,21 +80,6 @@ namespace HierarchicalTilingApp.Measure
                     tmpNNOutServer += currentBinValue;
                 }
             }
-        }
-
-        private bool isIdxArrayInTheRegion(int[] idxArray, int[] indicesArrayOfRegion)
-        {
-            bool result = true;
-            for (int idx = 0; idx < idxArray.Length; idx++)
-            {
-                int lowerBound = indicesArrayOfRegion[2 * idx];
-                int upperBound = indicesArrayOfRegion[2 * idx + 1];
-                if (!((lowerBound <= idxArray[idx]) && (idxArray[idx] <= upperBound)))
-                {
-                    result = false;
-                }
-            }
-            return result;
         }
     }
 }

@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 
 namespace HierarchicalTilingApp.Measure
 {
-    public class KNNAuxData : SimilarityAuxData
+    public class RangeAuxData : SimilarityAuxData
     {
-        public int KNN { get; set; }
+        public int Range { get; set; }
     }
 }
