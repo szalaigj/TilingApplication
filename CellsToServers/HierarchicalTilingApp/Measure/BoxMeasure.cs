@@ -12,7 +12,7 @@ namespace HierarchicalTilingApp.Measure
         {
         }
 
-        public override double averageAllMeasures(Coords[] partition)
+        public double averageAllMeasures(Coords[] partition)
         {
             double result = 0.0;
             for (int[] outerIndicesArray = transformator.determineFirstIndicesArray(AuxData.Array);

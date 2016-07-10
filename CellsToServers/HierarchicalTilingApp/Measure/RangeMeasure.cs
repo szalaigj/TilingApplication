@@ -13,7 +13,7 @@ namespace HierarchicalTilingApp.Measure
         {
         }
 
-        public override double averageAllMeasures(Coords[] partition)
+        public double averageAllMeasures(Coords[] partition)
         {
             double result = 0.0;
             int maxRange = determineMaxRange();
