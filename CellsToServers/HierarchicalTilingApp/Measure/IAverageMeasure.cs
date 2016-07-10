@@ -6,6 +6,6 @@ namespace HierarchicalTilingApp.Measure
 {
     public interface IAverageMeasure
     {
-        public double averageAllMeasures(Coords[] partition);
+        double averageAllMeasures(Coords[] partition);
     }
 }
