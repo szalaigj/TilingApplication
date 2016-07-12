@@ -1,0 +1,82 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="DataUtilHandling">
+      <UniqueIdentifier>{9b850474-2e7a-4932-ab8a-67a5fd277623}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="DataUtilHandling\Sources">
+      <UniqueIdentifier>{cc1b1909-c59e-4324-aa5c-a5a15f075a91}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="DataUtilHandling\Headers">
+      <UniqueIdentifier>{3dce8be8-1a05-47cc-aef0-ec297e3ab935}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Program">
+      <UniqueIdentifier>{c94ad84e-f4d3-492a-ae4e-f4e25ee908a3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Transformation">
+      <UniqueIdentifier>{57a974c2-8432-477b-a1b5-3ee251446a66}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SumOfSquares">
+      <UniqueIdentifier>{69fba474-d12b-4518-abd8-9bac986a4cec}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Measure">
+      <UniqueIdentifier>{2741f0f0-5f1b-483e-afea-253deded9cb4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ArrayPartition">
+      <UniqueIdentifier>{bd01010b-f30c-4e48-8222-a0ac4e522122}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ArrayPartition\Headers">
+      <UniqueIdentifier>{0b8faef1-cac7-47b3-8632-cda424747752}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Measure\Headers">
+      <UniqueIdentifier>{5ed65f77-b4fd-4371-baf5-4c284f71ee50}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SumOfSquares\Headers">
+      <UniqueIdentifier>{6ce691fe-8d44-4160-85bc-0115eb5408ed}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Transformation\Headers">
+      <UniqueIdentifier>{54815626-cf7e-4a9d-b4cd-679efe277b86}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Measure\Sources">
+      <UniqueIdentifier>{d05a6332-2e53-4fdc-af3a-9ad7bb26a2bb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ArrayPartition\Sources">
+      <UniqueIdentifier>{8e0e9abe-5a58-401e-b8fe-0d492328f1f2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SumOfSquares\Sources">
+      <UniqueIdentifier>{c38d1a26-8119-4755-a1fc-9d6c6b131214}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Transformation\Sources">
+      <UniqueIdentifier>{0f122088-5e7c-49ce-af3c-609390c6f6ec}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="DataHandlingUtil\InputParser.hpp">
+      <Filter>DataUtilHandling\Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="DataHandlingUtil\ParsedData.hpp">
+      <Filter>DataUtilHandling\Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="IntTuple.hpp">
+      <Filter>SumOfSquares\Headers</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="DataHandlingUtil\ParsedData.cpp">
+      <Filter>DataUtilHandling\Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="DataHandlingUtil\InputParser.cpp">
+      <Filter>DataUtilHandling\Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="Program.cpp">
+      <Filter>Program</Filter>
+    </ClCompile>
+    <ClCompile Include="IntTuple.cpp">
+      <Filter>SumOfSquares\Sources</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>
