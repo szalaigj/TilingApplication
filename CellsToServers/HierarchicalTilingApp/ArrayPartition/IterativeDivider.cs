@@ -8,11 +8,11 @@ namespace HierarchicalTilingApp.ArrayPartition
 {
     public class IterativeDivider : BaseDivider
     {
-        public IterativeDivider(Array array, Array heftArray, Transformator transformator, int spaceDimension, 
-            int histogramResolution, int serverNO, double delta, int pointNO, int kNN, Shell[] shells,
-            double kNNMeasCoeff, double lbMeasCoeff)
-            : base(array, heftArray, transformator, spaceDimension,
-                histogramResolution, serverNO, delta, pointNO, kNN, shells, kNNMeasCoeff, lbMeasCoeff)
+        public IterativeDivider(Array array, Array heftArray, Transformator transformator, int spaceDimension,
+            int histogramResolution, int serverNO, double delta, int pointNO, int kNN, int maxRange,
+            Shell[] shellsForKNN, Shell[] shellsForRange, double kNNMeasCoeff, double lbMeasCoeff)
+            : base(array, heftArray, transformator, spaceDimension, histogramResolution, serverNO, delta, 
+                pointNO, kNN, maxRange, shellsForKNN, shellsForRange, kNNMeasCoeff, lbMeasCoeff)
         {
         }
 
@@ -33,8 +33,12 @@ namespace HierarchicalTilingApp.ArrayPartition
             diffSum = determineCurrentDiffSum(partition);
             double measureOfKNN = kNNMeasure.computeMeasure(partition);
             Console.WriteLine("k-NN measure of the partition: {0}", measureOfKNN);
+            double measureOfRange = rangeMeasure.averageAllMeasures(partition);
+            Console.WriteLine("Range measure of the partition: {0}", measureOfRange);
             double measureOfLB = lbMeasure.computeMeasure(partition);
             Console.WriteLine("Load balancing measure of the partition: {0}", measureOfLB);
+            double measureOfBox = boxMeasure.averageAllMeasures(partition);
+            Console.WriteLine("Box measure of the partition: {0}", measureOfBox);
             return objectiveValue;
         }
 

@@ -15,6 +15,8 @@ namespace HierarchicalTilingApp.ArrayPartition
         protected Transformator transformator;
         protected KNNMeasure kNNMeasure;
         protected LoadBalancingMeasure lbMeasure;
+        protected RangeMeasure rangeMeasure;
+        protected BoxMeasure boxMeasure;
         protected int spaceDimension;
         protected int histogramResolution;
         protected int serverNO;
@@ -24,8 +26,8 @@ namespace HierarchicalTilingApp.ArrayPartition
         protected double lbMeasCoeff;
 
         public BaseDivider(Array array, Array heftArray, Transformator transformator, int spaceDimension, 
-            int histogramResolution, int serverNO, double delta, int pointNO, int kNN, Shell[] shells,
-            double kNNMeasCoeff, double lbMeasCoeff)
+            int histogramResolution, int serverNO, double delta, int pointNO, int kNN, int maxRange, 
+            Shell[] shellsForKNN, Shell[] shellsForRange, double kNNMeasCoeff, double lbMeasCoeff)
         {
             this.heftArray = heftArray;
             this.transformator = transformator;
@@ -44,10 +46,11 @@ namespace HierarchicalTilingApp.ArrayPartition
             this.objectiveValueArray = Array.CreateInstance(typeof(double), lengthsObjectiveValueArray);
             this.partitionArray = Array.CreateInstance(typeof(Coords[]), lengthsObjectiveValueArray);
             this.hasEnoughBinsArray = Array.CreateInstance(typeof(bool), lengthsObjectiveValueArray);
-            setMeasureInstances(array, pointNO, kNN, shells);
+            setMeasureInstances(array, pointNO, kNN, maxRange, shellsForKNN, shellsForRange);
         }
 
-        private void setMeasureInstances(Array array, int pointNO, int kNN, Shell[] shells)
+        private void setMeasureInstances(Array array, int pointNO, int kNN, int maxRange, 
+            Shell[] shellsForKNN, Shell[] shellsForRange)
         {
             KNNAuxData kNNAuxData = new KNNAuxData()
             {
@@ -57,10 +60,22 @@ namespace HierarchicalTilingApp.ArrayPartition
                 PointNO = pointNO,
                 KNN = kNN,
                 Histogram = array,
-                Shells = shells
+                Shells = shellsForKNN
             };
             this.kNNMeasure = new KNNMeasure(kNNAuxData, this.transformator);
-            
+
+            RangeAuxData rangeAuxData = new RangeAuxData()
+            {
+                SpaceDimension = this.spaceDimension,
+                HistogramResolution = this.histogramResolution,
+                ServerNO = this.serverNO,
+                PointNO = pointNO,
+                MaxRange = maxRange,
+                Histogram = array,
+                Shells = shellsForRange
+            };
+            this.rangeMeasure = new RangeMeasure(rangeAuxData, transformator);
+
             LoadBalancingAuxData lbAuxData = new LoadBalancingAuxData()
             {
                 ServerNO = this.serverNO,
@@ -68,6 +83,16 @@ namespace HierarchicalTilingApp.ArrayPartition
                 Delta = this.delta
             };
             this.lbMeasure = new LoadBalancingMeasure(lbAuxData, this.transformator);
+
+            BoxAuxData boxAuxData = new BoxAuxData()
+            {
+                SpaceDimension = this.spaceDimension,
+                HistogramResolution = this.histogramResolution,
+                ServerNO = this.serverNO,
+                Histogram = array,
+                HeftArray = this.heftArray
+            };
+            this.boxMeasure = new BoxMeasure(boxAuxData, this.transformator);
         }
 
         public double getDiffSum()

@@ -208,5 +208,47 @@ namespace HierarchicalTilingApp.Transformation
             }
             return null;
         }
+
+        /// <summary>
+        /// The following method is based on the space diagonal of the hypercube.
+        /// The maximum distance between bins is the space diagonal in the histogram. 
+        /// We can determine the shell number between the half of its both ends via 
+        /// contained bins by proper simplex.
+        /// </summary>
+        /// <param name="spaceDimension"></param>
+        /// <param name="histogramResolution"></param>
+        /// <returns></returns>
+        public int determineMaxRange(int spaceDimension, int histogramResolution)
+        {
+            double halfHistogramResolution = histogramResolution / 2.0;
+            int result;
+            if (spaceDimension == 2)
+            {
+                result = (int)((Math.Pow(halfHistogramResolution, 2) + halfHistogramResolution) / 2.0) - 1;
+            }
+            else if (spaceDimension == 3)
+            {
+                double temp = Math.Pow(halfHistogramResolution, 3) / 6.0;
+                temp += Math.Pow(halfHistogramResolution, 2) / 2.0;
+                temp += (double)(halfHistogramResolution) / 3.0;
+                result = (int)temp - 1;
+            }
+            else if (spaceDimension == 4)
+            {
+                double temp = Math.Pow(halfHistogramResolution, 4) / 24.0;
+                temp += Math.Pow(halfHistogramResolution, 3) / 4.0;
+                temp += (11.0 / 24.0) * Math.Pow(halfHistogramResolution, 2);
+                temp += halfHistogramResolution / 4.0;
+                result = (int)temp - 1;
+            }
+            else
+            {
+                // TODO: (sum_{i_1=1}^{n}sum_{i_2=1}^{i_1}...sum_{i_{D-1}=1}^{i_{D-2}}i_{D-1}) - 1 = X
+                // general formula can be given for X based on 
+                // https://en.wikipedia.org/wiki/Faulhaber%27s_formula#Faulhaber_polynomials
+                throw new NotImplementedException();
+            }
+            return result;
+        }
     }
 }

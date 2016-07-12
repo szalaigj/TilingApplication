@@ -26,8 +26,8 @@ namespace HierarchicalTilingApp
             InputParser inputParser = new InputParser(transformator);
             HeftArrayCreator heftArrayCreator = new HeftArrayCreator(transformator);
             //int kNN = 274;
-            double kNNMeasCoeff = 0.0;//0.1;
-            double lbMeasCoeff = 1.0;//0.9;
+            double kNNMeasCoeff = 1.0;//0.1;
+            double lbMeasCoeff = 0.0;//0.9;
 
             int serverNO;
             int pointNO;
@@ -46,9 +46,10 @@ namespace HierarchicalTilingApp
                 parseInputSeparately(inputParser, out serverNO, out pointNO, out delta, out spaceDimension,
                     out histogramResolution, out array);
             }
-            Shell[] shells;
             int kNN = (int)Math.Ceiling(delta);
-            shells = shellBuilder.createShells(kNN, spaceDimension);
+            Shell[] shellsForKNN = shellBuilder.createShells(kNN, spaceDimension);
+            int maxRange = transformator.determineMaxRange(spaceDimension, histogramResolution);
+            Shell[] shellsForRange = shellBuilder.createShells(maxRange, spaceDimension);
             Console.WriteLine("Point no.: {0}", pointNO);
             Console.WriteLine("Delta: {0}", delta);
             Console.WriteLine("kNN measurement coefficient: {0}", kNNMeasCoeff);
@@ -56,8 +57,9 @@ namespace HierarchicalTilingApp
             
             Array heftArray = heftArrayCreator.createHeftArray(spaceDimension, histogramResolution, array);
 
-            IterativeDivider divider = new IterativeDivider(array, heftArray, transformator, spaceDimension, 
-                histogramResolution, serverNO, delta, pointNO, kNN, shells, kNNMeasCoeff, lbMeasCoeff);
+            IterativeDivider divider = new IterativeDivider(array, heftArray, transformator, spaceDimension,
+                histogramResolution, serverNO, delta, pointNO, kNN, maxRange, shellsForKNN, shellsForRange, 
+                kNNMeasCoeff, lbMeasCoeff);
             Coords[] partition;
             double objectiveValue = divider.determineObjectiveValue(out partition);
             Console.WriteLine("Objective value: {0}", objectiveValue);
@@ -67,7 +69,8 @@ namespace HierarchicalTilingApp
             writeOutCellsToServers(histogramResolution, serverNO, partition);
 
             stopwatch.Stop();
-            Console.WriteLine("Elapsed time: {0} minutes", stopwatch.Elapsed.Minutes);
+            // Write hours, minutes and seconds.
+            Console.WriteLine("Elapsed time: {0:hh\\:mm\\:ss}", stopwatch.Elapsed);
 
             Console.WriteLine("Press any key to exit!");
             Console.Read();
@@ -96,7 +99,7 @@ namespace HierarchicalTilingApp
                 partition[idx].printCoords(spaceDimension, idx + 1);
                 partition[idx].writeToStringBuilder(spaceDimension, strBldr);
             }
-            string tilesOutput = @"c:\temp\data\tiles.dat";
+            string tilesOutput = @"c:\temp\data\hier_tiling\tiles.dat";
             System.IO.File.WriteAllText(tilesOutput, strBldr.ToString());
         }
 
@@ -108,7 +111,7 @@ namespace HierarchicalTilingApp
                 strBldr.Append(partition[tileIdx].HeftOfRegion).Append(" " + tileIdx);
                 strBldr.AppendLine();
             }
-            string serversOutput = @"c:\temp\data\servers.dat";
+            string serversOutput = @"c:\temp\data\hier_tiling\servers.dat";
             System.IO.File.WriteAllText(serversOutput, strBldr.ToString());
         }
 
@@ -132,7 +135,7 @@ namespace HierarchicalTilingApp
                 }
                 strBldr.AppendLine();
             }
-            string serversOutput = @"c:\temp\data\cells_to_servers.dat";
+            string serversOutput = @"c:\temp\data\hier_tiling\cells_to_servers.dat";
             System.IO.File.WriteAllText(serversOutput, strBldr.ToString());
         }
     }

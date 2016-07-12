@@ -12,7 +12,7 @@ namespace HierarchicalTilingApp.Measure
 
         public int HistogramResolution { get; set; }
 
-        public Array Array { get; set; }
+        public Array Histogram { get; set; }
 
         public Array HeftArray { get; set; }
 

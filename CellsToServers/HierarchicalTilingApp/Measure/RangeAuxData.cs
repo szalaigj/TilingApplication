@@ -8,6 +8,7 @@ namespace HierarchicalTilingApp.Measure
 {
     public class RangeAuxData : SimilarityAuxData
     {
+        public int MaxRange { get; set; }
         public int Range { get; set; }
     }
 }

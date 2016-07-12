@@ -15,13 +15,13 @@ namespace HierarchicalTilingApp.Measure
         public double averageAllMeasures(Coords[] partition)
         {
             double result = 0.0;
-            for (int[] outerIndicesArray = transformator.determineFirstIndicesArray(AuxData.Array);
+            for (int[] outerIndicesArray = transformator.determineFirstIndicesArray(AuxData.Histogram);
                     outerIndicesArray != null;
-                    outerIndicesArray = transformator.determineNextIndicesArray(AuxData.Array, outerIndicesArray))
+                    outerIndicesArray = transformator.determineNextIndicesArray(AuxData.Histogram, outerIndicesArray))
             {
                 for (int[] innerIndicesArray = outerIndicesArray;
                     innerIndicesArray != null;
-                    innerIndicesArray = transformator.determineNextIndicesArray(AuxData.Array, innerIndicesArray))
+                    innerIndicesArray = transformator.determineNextIndicesArray(AuxData.Histogram, innerIndicesArray))
                 {
                     AuxData.IndicesArrayOfQueryRegion = transformator.mergeIndicesArrays(AuxData.SpaceDimension,
                         outerIndicesArray, innerIndicesArray);
@@ -29,7 +29,7 @@ namespace HierarchicalTilingApp.Measure
                     result += computeMeasure(partition);
                 }
             }
-            result /= (2.0 / (Math.Pow(AuxData.HistogramResolution, AuxData.SpaceDimension) * 
+            result /= (Math.Pow(2, AuxData.SpaceDimension) / (Math.Pow(AuxData.HistogramResolution, AuxData.SpaceDimension) * 
                 Math.Pow(AuxData.HistogramResolution + 1, AuxData.SpaceDimension)));
             return result;
         }
@@ -41,7 +41,7 @@ namespace HierarchicalTilingApp.Measure
             {
                 int lowerBoundForCurrentDim = AuxData.IndicesArrayOfQueryRegion[2 * dimIdx];
                 int upperBoundForCurrentDim = AuxData.IndicesArrayOfQueryRegion[2 * dimIdx + 1];
-                volumeOfQueryRegion *= (upperBoundForCurrentDim - lowerBoundForCurrentDim);
+                volumeOfQueryRegion *= (upperBoundForCurrentDim - lowerBoundForCurrentDim + 1);
             }
             return volumeOfQueryRegion;
         }
