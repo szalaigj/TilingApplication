@@ -19,9 +19,9 @@ namespace HierarchicalTilingApp.Measure
             int[] indicesArrayOfRegion =
                     transformator.determineIndicesArray(AuxData.SpaceDimension, coords.ExtendedIndicesArray);
             int binNOInRegionWithoutZeroHeft = 0;
-            for (int[] indicesArrayOfBin = transformator.determineFirstIndicesArray(indicesArrayOfRegion);
+            for (int[] indicesArrayOfBin = transformator.determineFirstContainedIndicesArray(indicesArrayOfRegion);
                     indicesArrayOfBin != null;
-                    indicesArrayOfBin = transformator.determineNextIndicesArray(indicesArrayOfRegion, indicesArrayOfBin))
+                    indicesArrayOfBin = transformator.determineNextContainedIndicesArray(indicesArrayOfRegion, indicesArrayOfBin))
             {
                 int binValue = (int)AuxData.Histogram.GetValue(indicesArrayOfBin);
                 if (binValue > 0)

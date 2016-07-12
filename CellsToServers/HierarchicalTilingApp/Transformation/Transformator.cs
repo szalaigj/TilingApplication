@@ -146,6 +146,21 @@ namespace HierarchicalTilingApp.Transformation
             return null;
         }
 
+        public int[] determineNextIndicesArray(Array array, int[] lowerBoundArray, int[] previousIndicesArray)
+        {
+            int spaceDimension = array.Rank;
+            int[] nextIndicesArray = new int[spaceDimension];
+            previousIndicesArray.CopyTo(nextIndicesArray, 0);
+            for (int dimIdx = spaceDimension - 1; dimIdx >= 0; --dimIdx)
+            {
+                nextIndicesArray[dimIdx]++;
+                if (nextIndicesArray[dimIdx] <= array.GetUpperBound(dimIdx))
+                    return nextIndicesArray;
+                nextIndicesArray[dimIdx] = lowerBoundArray[dimIdx];
+            }
+            return null;
+        }
+
         public int[] determineIndicesArray(int spaceDimension, int[] extendedIndicesArray)
         {
             int[] indicesArray = new int[2 * spaceDimension];
@@ -181,7 +196,7 @@ namespace HierarchicalTilingApp.Transformation
             return result;
         }
 
-        public int[] determineFirstIndicesArray(int[] indicesArrayOfRegion)
+        public int[] determineFirstContainedIndicesArray(int[] indicesArrayOfRegion)
         {
             int spaceDimension = indicesArrayOfRegion.Length/2;
             int[] firstIndicesArray = new int[spaceDimension];
@@ -192,7 +207,7 @@ namespace HierarchicalTilingApp.Transformation
             return firstIndicesArray;
         }
 
-        public int[] determineNextIndicesArray(int[] indicesArrayOfRegion, int[] previousIndicesArray)
+        public int[] determineNextContainedIndicesArray(int[] indicesArrayOfRegion, int[] previousIndicesArray)
         {
             int spaceDimension = indicesArrayOfRegion.Length / 2;
             int[] nextIndicesArray = new int[spaceDimension];

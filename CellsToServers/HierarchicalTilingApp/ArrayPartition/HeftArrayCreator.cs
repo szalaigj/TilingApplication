@@ -31,14 +31,14 @@ namespace HierarchicalTilingApp.ArrayPartition
             {
                 for (int[] innerIndicesArray = outerIndicesArray;
                     innerIndicesArray != null;
-                    innerIndicesArray = transformator.determineNextIndicesArray(array, innerIndicesArray))
+                    innerIndicesArray = transformator.determineNextIndicesArray(array, outerIndicesArray, innerIndicesArray))
                 {
                     int[] heftArrayIndeces = transformator.mergeIndicesArrays(spaceDimension, 
                         outerIndicesArray, innerIndicesArray);
                     int binValue = 0;
-                    for (int[] indicesArrayOfBin = transformator.determineFirstIndicesArray(heftArrayIndeces);
+                    for (int[] indicesArrayOfBin = transformator.determineFirstContainedIndicesArray(heftArrayIndeces);
                         indicesArrayOfBin != null;
-                        indicesArrayOfBin = transformator.determineNextIndicesArray(heftArrayIndeces, indicesArrayOfBin))
+                        indicesArrayOfBin = transformator.determineNextContainedIndicesArray(heftArrayIndeces, indicesArrayOfBin))
                     {
                         binValue += (int)array.GetValue(indicesArrayOfBin);
                     }

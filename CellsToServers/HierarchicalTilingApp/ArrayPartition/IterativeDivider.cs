@@ -52,7 +52,7 @@ namespace HierarchicalTilingApp.ArrayPartition
                 {
                     for (int[] innerIndicesArray = outerIndicesArray;
                         innerIndicesArray != null;
-                        innerIndicesArray = determineNextIndicesArray(innerIndicesArray))
+                        innerIndicesArray = determineNextIndicesArray(outerIndicesArray, innerIndicesArray))
                     {
                         int[] extendedIndicesArray = transformator.mergeIndicesArrays(spaceDimension, splitNO,
                             outerIndicesArray, innerIndicesArray);
@@ -88,6 +88,20 @@ namespace HierarchicalTilingApp.ArrayPartition
                 if (nextIndicesArray[dimIdx] < histogramResolution)
                     return nextIndicesArray;
                 nextIndicesArray[dimIdx] = 0;
+            }
+            return null;
+        }
+
+        private int[] determineNextIndicesArray(int[] lowerBoundArray, int[] previousIndicesArray)
+        {
+            int[] nextIndicesArray = new int[spaceDimension];
+            previousIndicesArray.CopyTo(nextIndicesArray, 0);
+            for (int dimIdx = spaceDimension - 1; dimIdx >= 0; --dimIdx)
+            {
+                nextIndicesArray[dimIdx]++;
+                if (nextIndicesArray[dimIdx] < histogramResolution)
+                    return nextIndicesArray;
+                nextIndicesArray[dimIdx] = lowerBoundArray[dimIdx];
             }
             return null;
         }

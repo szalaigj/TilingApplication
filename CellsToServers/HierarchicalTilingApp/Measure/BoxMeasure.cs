@@ -21,7 +21,7 @@ namespace HierarchicalTilingApp.Measure
             {
                 for (int[] innerIndicesArray = outerIndicesArray;
                     innerIndicesArray != null;
-                    innerIndicesArray = transformator.determineNextIndicesArray(AuxData.Histogram, innerIndicesArray))
+                    innerIndicesArray = transformator.determineNextIndicesArray(AuxData.Histogram, outerIndicesArray, innerIndicesArray))
                 {
                     AuxData.IndicesArrayOfQueryRegion = transformator.mergeIndicesArrays(AuxData.SpaceDimension,
                         outerIndicesArray, innerIndicesArray);
@@ -29,7 +29,7 @@ namespace HierarchicalTilingApp.Measure
                     result += computeMeasure(partition);
                 }
             }
-            result /= (Math.Pow(2, AuxData.SpaceDimension) / (Math.Pow(AuxData.HistogramResolution, AuxData.SpaceDimension) * 
+            result *= (Math.Pow(2, AuxData.SpaceDimension) / (Math.Pow(AuxData.HistogramResolution, AuxData.SpaceDimension) *
                 Math.Pow(AuxData.HistogramResolution + 1, AuxData.SpaceDimension)));
             return result;
         }
@@ -48,11 +48,16 @@ namespace HierarchicalTilingApp.Measure
 
         public override double computeMeasureForRegion(Coords coords)
         {
-            double entireVolume = Math.Pow(AuxData.HistogramResolution, AuxData.SpaceDimension);
+            //double entireVolume = Math.Pow(AuxData.HistogramResolution, AuxData.SpaceDimension);
+            //int[] indicesArrayOfServer = transformator.determineIndicesArray(AuxData.SpaceDimension, 
+            //    coords.ExtendedIndicesArray);
+            //int heftOfIntersection = computeHeftOfIntersection(indicesArrayOfServer, AuxData.IndicesArrayOfQueryRegion);
+            //return (entireVolume * heftOfIntersection) / (AuxData.VolumeOfQueryRegion * coords.HeftOfRegion);
+
             int[] indicesArrayOfServer = transformator.determineIndicesArray(AuxData.SpaceDimension, 
                 coords.ExtendedIndicesArray);
             int heftOfIntersection = computeHeftOfIntersection(indicesArrayOfServer, AuxData.IndicesArrayOfQueryRegion);
-            return (entireVolume * heftOfIntersection) / (AuxData.VolumeOfQueryRegion * coords.HeftOfRegion);
+            return 1 - (double)heftOfIntersection / (double)coords.HeftOfRegion;
         }
 
         private int computeHeftOfIntersection(int[] indicesArrayOfServer, int[] indicesArrayOfQueryRegion)
