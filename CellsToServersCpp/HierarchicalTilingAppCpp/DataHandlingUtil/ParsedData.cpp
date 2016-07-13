@@ -2,6 +2,11 @@
 
 namespace DataUtilHandling
 {
+	ParsedData::~ParsedData()
+	{
+		// TODO
+	}
+
 	int ParsedData::getSpaceDimension()
 	{
 		return spaceDimension;

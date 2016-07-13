@@ -6,6 +6,7 @@ namespace SumOfSquares
 	class IntTuple
 	{
 	public:
+		~IntTuple();
 		bool determineIdxArrayRelativeTo(int histogramResolution, int * inputIndicesArray,
 			int * outputIndicesArray);
 		int * getTuple() const;

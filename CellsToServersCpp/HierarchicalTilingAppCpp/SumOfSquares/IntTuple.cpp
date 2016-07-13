@@ -2,6 +2,11 @@
 
 namespace SumOfSquares
 {
+	IntTuple::~IntTuple()
+	{
+		//TODO
+	}
+
 	bool IntTuple::determineIdxArrayRelativeTo(int histogramResolution,	int * inputIndicesArray, 
 		int * outputIndicesArray)
 	{

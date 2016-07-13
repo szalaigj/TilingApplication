@@ -11,6 +11,7 @@ namespace DataUtilHandling
 			serverNO(serverNO), pointNO(pointNO), delta(delta), histogram(histogram)
 		{
 		}
+		~ParsedData();
 
 		int getSpaceDimension();
 		int getHistogramResolution();
