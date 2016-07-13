@@ -118,7 +118,7 @@ namespace HierarchicalTilingApp.SumOfSquares
             }
             else
             {
-                for (int t = 1; t < num / 2; t++)
+                for (int t = 1; t <= num / 2; t++)
                 {
                     if (t * t < int.MaxValue)
                     {
