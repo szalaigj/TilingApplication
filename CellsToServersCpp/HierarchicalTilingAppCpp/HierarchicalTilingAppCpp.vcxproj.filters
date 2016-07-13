@@ -61,7 +61,10 @@
     <ClInclude Include="DataHandlingUtil\ParsedData.hpp">
       <Filter>DataUtilHandling\Headers</Filter>
     </ClInclude>
-    <ClInclude Include="IntTuple.hpp">
+    <ClInclude Include="SumOfSquares\Shell.hpp">
+      <Filter>SumOfSquares\Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="SumOfSquares\IntTuple.hpp">
       <Filter>SumOfSquares\Headers</Filter>
     </ClInclude>
   </ItemGroup>
@@ -75,7 +78,10 @@
     <ClCompile Include="Program.cpp">
       <Filter>Program</Filter>
     </ClCompile>
-    <ClCompile Include="IntTuple.cpp">
+    <ClCompile Include="SumOfSquares\Shell.cpp">
+      <Filter>SumOfSquares\Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="SumOfSquares\IntTuple.cpp">
       <Filter>SumOfSquares\Sources</Filter>
     </ClCompile>
   </ItemGroup>
