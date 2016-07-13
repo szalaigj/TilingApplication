@@ -2,9 +2,26 @@
 
 namespace SumOfSquares
 {
+	IntTuple::IntTuple()
+	{
+	}
+
+	IntTuple::IntTuple(int spaceDimension, int * tuple)
+	{
+		this->spaceDimension = spaceDimension;
+		this->tuple = new int[spaceDimension];
+		for (int idx = 0; idx < spaceDimension; idx++)
+		{
+			this->tuple[idx] = tuple[idx];
+		}
+	}
+
 	IntTuple::~IntTuple()
 	{
-		//TODO
+		if (tuple)
+		{
+			delete [] tuple;
+		}
 	}
 
 	bool IntTuple::determineIdxArrayRelativeTo(int histogramResolution,	int * inputIndicesArray, 
@@ -42,19 +59,13 @@ namespace SumOfSquares
 		return spaceDimension;
 	}
 
-	void IntTuple::setTuple(int spaceDimension, int * tuple)
-	{
-		this->spaceDimension = spaceDimension;
-		this->tuple = tuple;
-	}
-
 	namespace IntTupleEqualityComparer
 	{
-		size_t GetHashCodeFn::operator() (IntTuple const& it) const
+		size_t GetHashCodeFn::operator() (IntTuple const * it) const
 		{
-			int * tuple = it.getTuple();
+			int * tuple = it->getTuple();
 			size_t hCode = tuple[0];
-			for (int idx = 1; idx < it.getSpaceDimension(); idx++)
+			for (int idx = 1; idx < it->getSpaceDimension(); idx++)
 			{
 				hCode ^= tuple[idx];
 			}
@@ -63,19 +74,19 @@ namespace SumOfSquares
 			return num * 1566083941;
 		}
 
-		bool EqualsFn::operator() (IntTuple const& it1, IntTuple const& it2) const
+		bool EqualsFn::operator() (IntTuple const * it1, IntTuple const * it2) const
 		{
 			bool isEqual = false;
-			if (!(&it1) && !(&it2))
+			if (!it1 && !it2)
 				isEqual = true;
-			else if ((&it1) && (&it2))
+			else if (it1 && it2)
 			{
-				if (it1.getSpaceDimension() == it2.getSpaceDimension())
+				if (it1->getSpaceDimension() == it2->getSpaceDimension())
 				{
 					isEqual = true;
-					int * tuple1 = it1.getTuple();
-					int * tuple2 = it2.getTuple();
-					for (int idx = 0; idx < it1.getSpaceDimension(); idx++)
+					int * tuple1 = it1->getTuple();
+					int * tuple2 = it2->getTuple();
+					for (int idx = 0; idx < it1->getSpaceDimension(); idx++)
 					{
 						if (tuple1[idx] != tuple2[idx])
 						{

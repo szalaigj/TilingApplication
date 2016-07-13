@@ -4,7 +4,10 @@ namespace DataUtilHandling
 {
 	ParsedData::~ParsedData()
 	{
-		// TODO
+		if (histogram)
+		{
+			delete [] histogram;
+		}
 	}
 
 	int ParsedData::getSpaceDimension()

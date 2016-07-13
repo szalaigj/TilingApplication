@@ -67,6 +67,12 @@
     <ClInclude Include="SumOfSquares\IntTuple.hpp">
       <Filter>SumOfSquares\Headers</Filter>
     </ClInclude>
+    <ClInclude Include="SumOfSquares\CornacchiaMethod.hpp">
+      <Filter>SumOfSquares\Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="SumOfSquares\BacktrackingMethod.hpp">
+      <Filter>SumOfSquares\Headers</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DataHandlingUtil\ParsedData.cpp">
@@ -82,6 +88,12 @@
       <Filter>SumOfSquares\Sources</Filter>
     </ClCompile>
     <ClCompile Include="SumOfSquares\IntTuple.cpp">
+      <Filter>SumOfSquares\Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="SumOfSquares\CornacchiaMethod.cpp">
+      <Filter>SumOfSquares\Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="SumOfSquares\BacktrackingMethod.cpp">
       <Filter>SumOfSquares\Sources</Filter>
     </ClCompile>
   </ItemGroup>
