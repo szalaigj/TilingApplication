@@ -236,18 +236,41 @@ namespace HierarchicalTilingApp.Transformation
         /// <returns></returns>
         public int determineMaxRange(int spaceDimension, int histogramResolution)
         {
-            int result;
-            if ((spaceDimension % 2) == 0)
+            double temp = Math.Pow(histogramResolution, spaceDimension);
+            temp /= (factorial(spaceDimension) * doubleFactorial(spaceDimension));
+            temp *= Math.Pow(Math.PI * spaceDimension / 2.0, spaceDimension / 2.0);
+            int result = (int)Math.Ceiling(temp);
+            return result;
+        }
+
+        private int factorial(int input)
+        { 
+            int result = 1;
+            for (int idx = 1; idx <= input; idx++)
             {
-                double temp = Math.Pow(histogramResolution, spaceDimension) / (2.0 * spaceDimension);
-                temp *= Math.Pow(Math.PI * spaceDimension / 2.0, spaceDimension / 2.0);
-                result = (int)Math.Ceiling(temp);
+                result *= idx;
+            }
+            return result;
+        }
+
+        private int doubleFactorial(int input)
+        {
+            int result;
+            if ((input % 2) == 0)
+            {
+                result = 1;
+                for (int idx = 1; idx <= input/2; idx++)
+                {
+                    result *= 2 * idx;
+                }
             }
             else
             {
-                double temp = Math.Pow(histogramResolution, spaceDimension) / Math.Sqrt(spaceDimension);
-                temp *= Math.Pow(Math.PI * spaceDimension / 2.0, (spaceDimension - 1) / 2.0);
-                result = (int)Math.Ceiling(temp);
+                result = 1;
+                for (int idx = 1; idx <= (input + 1) / 2; idx++)
+                {
+                    result *= (2 * idx - 1);
+                }
             }
             return result;
         }
