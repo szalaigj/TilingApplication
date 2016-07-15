@@ -236,7 +236,6 @@ namespace HierarchicalTilingApp.Transformation
         /// <returns></returns>
         public int determineMaxRange(int spaceDimension, int histogramResolution)
         {
-            double halfHistogramResolution = histogramResolution / 2.0;
             int result;
             if ((spaceDimension % 2) == 0)
             {
