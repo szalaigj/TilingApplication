@@ -73,6 +73,12 @@
     <ClInclude Include="SumOfSquares\BacktrackingMethod.hpp">
       <Filter>SumOfSquares\Headers</Filter>
     </ClInclude>
+    <ClInclude Include="SumOfSquares\ShellBuilder.hpp">
+      <Filter>SumOfSquares\Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Transformation\Transformator.hpp">
+      <Filter>Transformation\Headers</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DataHandlingUtil\ParsedData.cpp">
@@ -95,6 +101,12 @@
     </ClCompile>
     <ClCompile Include="SumOfSquares\BacktrackingMethod.cpp">
       <Filter>SumOfSquares\Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="SumOfSquares\ShellBuilder.cpp">
+      <Filter>SumOfSquares\Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="Transformation\Transformator.cpp">
+      <Filter>Transformation\Sources</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

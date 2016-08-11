@@ -5,6 +5,10 @@
 
 #include "IntTuple.hpp"
 
+const int tuple_1_0[2] = { 1, 0 };
+const int tuple_0_1[2] = { 0, 1 };
+const int tuple_1_1[2] = { 1, 1 };
+
 namespace SumOfSquares
 {
 	class CornacchiaMethod

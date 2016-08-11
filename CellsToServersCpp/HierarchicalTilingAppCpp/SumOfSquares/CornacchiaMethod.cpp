@@ -1,5 +1,7 @@
 #include "CornacchiaMethod.hpp"
 
+
+
 namespace SumOfSquares
 {
 	Vector_t& CornacchiaMethod::applyCornacchiaMethod(int num)
@@ -7,11 +9,9 @@ namespace SumOfSquares
 		Vector_t * intTuples = new Vector_t();
 		if (num == 1)
 		{
-			int tuple1[2] = { 1, 0 };
-			IntTuple * intTuple1 = new IntTuple(2, tuple1);
+			IntTuple * intTuple1 = new IntTuple(2, tuple_1_0);
 			intTuples->push_back(intTuple1);
-			int tuple2[2] = { 0, 1 };
-			IntTuple * intTuple2 = new IntTuple(2, tuple2);
+			IntTuple * intTuple2 = new IntTuple(2, tuple_0_1);
 			intTuples->push_back(intTuple2);
 		} 
 		else
@@ -78,8 +78,7 @@ namespace SumOfSquares
 		List_t * container = new List_t();
 		if (num == 2)
 		{
-			int newTuple[2] = { 1, 1 };
-			IntTuple * newIntTuple = new IntTuple(2, newTuple);
+			IntTuple * newIntTuple = new IntTuple(2, tuple_1_1);
 			container->push_back(newIntTuple);
 		}
 		else
@@ -171,13 +170,13 @@ namespace SumOfSquares
 	{
 		if (n1 < n2)
 		{
-			int newTuple[2] = { n1, n2 };
+			int * newTuple = new int[2]; newTuple[0] = n1; newTuple[1] = n2;
 			IntTuple * newIntTuple = new IntTuple(2, newTuple);
 			result->push_back(newIntTuple);
 		}
 		else
 		{
-			int newTuple[2] = { n2, n1 };
+			int * newTuple = new int[2]; newTuple[0] = n2; newTuple[1] = n1;
 			IntTuple * newIntTuple = new IntTuple(2, newTuple);
 			result->push_back(newIntTuple);
 		}
@@ -187,13 +186,13 @@ namespace SumOfSquares
 	{
 		if (n1 < n2)
 		{
-			int newTuple[2] = { n1, n2 };
+			int * newTuple = new int[2]; newTuple[0] = n1; newTuple[1] = n2;
 			IntTuple * newIntTuple = new IntTuple(2, newTuple);
 			result->insert(newIntTuple);
 		}
 		else
 		{
-			int newTuple[2] = { n2, n1 };
+			int * newTuple = new int[2]; newTuple[0] = n2; newTuple[1] = n1;
 			IntTuple * newIntTuple = new IntTuple(2, newTuple);
 			result->insert(newIntTuple);
 		}

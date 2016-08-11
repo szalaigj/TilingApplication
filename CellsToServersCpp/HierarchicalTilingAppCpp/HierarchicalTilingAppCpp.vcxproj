@@ -80,15 +80,23 @@
   <ItemGroup>
     <ClInclude Include="DataHandlingUtil\InputParser.hpp" />
     <ClInclude Include="DataHandlingUtil\ParsedData.hpp" />
+    <ClInclude Include="SumOfSquares\BacktrackingMethod.hpp" />
+    <ClInclude Include="SumOfSquares\CornacchiaMethod.hpp" />
     <ClInclude Include="SumOfSquares\IntTuple.hpp" />
     <ClInclude Include="SumOfSquares\Shell.hpp" />
+    <ClInclude Include="SumOfSquares\ShellBuilder.hpp" />
+    <ClInclude Include="Transformation\Transformator.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DataHandlingUtil\InputParser.cpp" />
     <ClCompile Include="DataHandlingUtil\ParsedData.cpp" />
     <ClCompile Include="Program.cpp" />
+    <ClCompile Include="SumOfSquares\BacktrackingMethod.cpp" />
+    <ClCompile Include="SumOfSquares\CornacchiaMethod.cpp" />
     <ClCompile Include="SumOfSquares\IntTuple.cpp" />
     <ClCompile Include="SumOfSquares\Shell.cpp" />
+    <ClCompile Include="SumOfSquares\ShellBuilder.cpp" />
+    <ClCompile Include="Transformation\Transformator.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -12,11 +12,11 @@ namespace SumOfSquares
 		Vector_t * decompositions = new Vector_t();
 		if (squaresNO == 1)
 		{
-			int floorOfSquareOfN = floor(sqrt(num));
+			int floorOfSquareOfN = (int)floor(sqrt(num));
 			if (floorOfSquareOfN * floorOfSquareOfN == num)
 			{
-				int newTuple[2] = { floorOfSquareOfN };
-				IntTuple * newIntTuple = new IntTuple(2, newTuple);
+				int * newTuple = new int[1]; newTuple[0] = floorOfSquareOfN;
+				IntTuple * newIntTuple = new IntTuple(1, newTuple);
 				decompositions->push_back(newIntTuple);
 			}
 		}
@@ -54,7 +54,7 @@ namespace SumOfSquares
 	{
 		Vector_t * intTuples = new Vector_t();
 		List_t * tempIntTuples = new List_t();
-		int floorOfSquareOfN = floor(sqrt(num));
+		int floorOfSquareOfN = (int)floor(sqrt(num));
 		// This method return such int tuple where the components of this tuple has ascending order.
 		// Thus num-lastTerm*lastTerm <= (squaresNO-1)*(lastTerm*lastTerm) 
 		// --> sqrt(num/squaresNO) <= lastTerm.

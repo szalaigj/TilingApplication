@@ -6,7 +6,7 @@ namespace SumOfSquares
 	{
 	}
 
-	IntTuple::IntTuple(int spaceDimension, int * tuple)
+	IntTuple::IntTuple(int spaceDimension, const int * tuple)
 	{
 		this->spaceDimension = spaceDimension;
 		this->tuple = new int[spaceDimension];

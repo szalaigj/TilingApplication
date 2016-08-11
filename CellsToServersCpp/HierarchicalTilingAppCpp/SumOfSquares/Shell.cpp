@@ -2,18 +2,33 @@
 
 namespace SumOfSquares
 {
+	Shell::Shell() : intTuples(createIntTuples())
+	{
+	}
+
+	Vector_t& Shell::createIntTuples()
+	{
+		Vector_t * result = new Vector_t();
+		return *result;
+	}
+
+	Vector_t& Shell::getIntTuples()
+	{
+		return this->intTuples;
+	}
+
 	void Shell::setIntTuplesWithSwapsAndSignChange(Vector_t& inputIntTuples)
 	{
 		Uset_t container;
 		int spaceDimension = inputIntTuples[0]->getSpaceDimension();
-		for (int idx = 0; idx < sizeof(inputIntTuples) / sizeof(inputIntTuples[0]); idx++)
+		for (int idx = 0; idx < inputIntTuples.size(); idx++)
 		{
 			IntTuple * intTuple = inputIntTuples[idx];
 			container.insert(intTuple);
 			addOppositeElements(container, intTuple);
 			addSwapElements(container, spaceDimension);
 		}
-		this->intTuples = Vector_t();
+		//this->intTuples = Vector_t();
 		for (Uset_t::iterator itr = container.begin(); itr != container.end(); itr++)
 		{
 			this->intTuples.push_back(*itr);
@@ -80,8 +95,8 @@ namespace SumOfSquares
 			int firstElement = *itr;
 			std::advance(itr, 1);
 			int secondElement = *itr;
-			int perm1[2] = { firstElement, secondElement };
-			int perm2[2] = { secondElement, firstElement };
+			int * perm1 = new int[2]; perm1[0] = firstElement; perm1[1] = secondElement;
+			int * perm2 = new int[2]; perm2[0] = secondElement; perm2[1] = firstElement;
 			result->push_back(perm1);
 			result->push_back(perm2);
 		}
