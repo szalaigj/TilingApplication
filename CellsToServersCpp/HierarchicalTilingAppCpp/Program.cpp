@@ -10,6 +10,7 @@
 #include "SumOfSquares/BacktrackingMethod.hpp"
 #include "SumOfSquares/ShellBuilder.hpp"
 #include "Transformation/Transformator.hpp"
+#include "ArrayPartition/HeftArrayCreator.hpp"
 
 int main(int argc, char** argv)
 {
@@ -21,15 +22,12 @@ int main(int argc, char** argv)
     Transformation::Transformator transformator;
     begin = clock();
     DataUtilHandling::ParsedData parsedData = parser.parseInputFile();
-    //SumOfSquares::Vector_t intTuples = backtrackingMethod.decomposeByBacktracking(14, 3);
-    //for (size_t idx = 0; idx < intTuples.size(); idx++)
-    //{
-    //    int * tuple = intTuples[idx]->getTuple();
-    //    std::cout << "(" << tuple[0] << "," << tuple[1] << "," << tuple[2] << ")" << std::endl;
-    //}
-    SumOfSquares::ShellBuilder shellBuilder(backtrackingMethod);
+	SumOfSquares::ShellBuilder shellBuilder(backtrackingMethod);
+	ArrayPartition::HeftArrayCreator heftArrayCreator(transformator);
     int spaceDimension = parsedData.getSpaceDimension();
     int histogramResolution = parsedData.getHistogramResolution();
+	int * histogram = parsedData.getHistogram();
+    int * heftArray = heftArrayCreator.createHeftArray(spaceDimension, histogramResolution, histogram);
     size_t kNN = (size_t)ceil(parsedData.getDelta());
     size_t maxShellNO = transformator.determineMaxRange(spaceDimension, histogramResolution);
     size_t maxRange = transformator.determineMaxRange(spaceDimension, histogramResolution / 2);
@@ -48,8 +46,6 @@ int main(int argc, char** argv)
     end = clock();
     elapsed_secs = double(end - begin) / CLOCKS_PER_SEC;
     std::cout << "Elapsed time (in min) of the input parsing" << " " << (elapsed_secs / 60.0) << std::endl;
-    int * histogram = parsedData.getHistogram();
-    int bin = histogram[0];
     std::cout << "Press any character and press enter to continue..." << std::endl;
     char chr;
     std::cin >> chr;

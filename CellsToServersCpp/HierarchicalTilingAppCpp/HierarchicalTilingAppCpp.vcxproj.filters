@@ -79,6 +79,9 @@
     <ClInclude Include="Transformation\Transformator.hpp">
       <Filter>Transformation\Headers</Filter>
     </ClInclude>
+    <ClInclude Include="ArrayPartition\HeftArrayCreator.hpp">
+      <Filter>ArrayPartition\Headers</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DataHandlingUtil\ParsedData.cpp">
@@ -107,6 +110,9 @@
     </ClCompile>
     <ClCompile Include="Transformation\Transformator.cpp">
       <Filter>Transformation\Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="ArrayPartition\HeftArrayCreator.cpp">
+      <Filter>ArrayPartition\Sources</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

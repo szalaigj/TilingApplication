@@ -78,6 +78,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="ArrayPartition\HeftArrayCreator.hpp" />
     <ClInclude Include="DataHandlingUtil\InputParser.hpp" />
     <ClInclude Include="DataHandlingUtil\ParsedData.hpp" />
     <ClInclude Include="SumOfSquares\BacktrackingMethod.hpp" />
@@ -88,6 +89,7 @@
     <ClInclude Include="Transformation\Transformator.hpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="ArrayPartition\HeftArrayCreator.cpp" />
     <ClCompile Include="DataHandlingUtil\InputParser.cpp" />
     <ClCompile Include="DataHandlingUtil\ParsedData.cpp" />
     <ClCompile Include="Program.cpp" />
