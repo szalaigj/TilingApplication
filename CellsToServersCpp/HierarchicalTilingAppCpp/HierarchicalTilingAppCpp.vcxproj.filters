@@ -124,6 +124,12 @@
     <ClInclude Include="Measure\KNNMeasure.hpp">
       <Filter>Measure\Headers</Filter>
     </ClInclude>
+    <ClInclude Include="Measure\RangeMeasure.hpp">
+      <Filter>Measure\Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Measure\BoxMeasure.hpp">
+      <Filter>Measure\Headers</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DataHandlingUtil\ParsedData.cpp">

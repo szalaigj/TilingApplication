@@ -85,6 +85,7 @@
     <ClInclude Include="Measure\BaseAuxData.hpp" />
     <ClInclude Include="Measure\BaseMeasure.hpp" />
     <ClInclude Include="Measure\BoxAuxData.hpp" />
+    <ClInclude Include="Measure\BoxMeasure.hpp" />
     <ClInclude Include="Measure\DefaultAuxData.hpp" />
     <ClInclude Include="Measure\IAverageMeasure.hpp" />
     <ClInclude Include="Measure\IMeasure.hpp" />
@@ -93,6 +94,7 @@
     <ClInclude Include="Measure\LoadBalancingAuxData.hpp" />
     <ClInclude Include="Measure\LoadBalancingMeasure.hpp" />
     <ClInclude Include="Measure\RangeAuxData.hpp" />
+    <ClInclude Include="Measure\RangeMeasure.hpp" />
     <ClInclude Include="Measure\SimilarityAuxData.hpp" />
     <ClInclude Include="Measure\SimilarityMeasure.hpp" />
     <ClInclude Include="SumOfSquares\BacktrackingMethod.hpp" />

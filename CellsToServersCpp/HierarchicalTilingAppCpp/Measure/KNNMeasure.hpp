@@ -1,5 +1,5 @@
 #ifndef KNN_MEASURE_HPP_
-#define KNN_MEASURE_HPP
+#define KNN_MEASURE_HPP_
 
 #include "SimilarityMeasure.hpp"
 #include "KNNAuxData.hpp"
