@@ -35,12 +35,12 @@ namespace HierarchicalTilingApp.Measure
                 Array.Copy(AuxData.Shells, currentShells, AuxData.Range);
                 var dictOfShells = transformator.convertIntPairsOfShellsToListOfIdxArrays(
                         AuxData.HistogramResolution, indicesArrayOfBin, currentShells);
-                measureForBin = iterateOverShells(indicesArrayOfRegion, measureForBin, dictOfShells);
+                measureForBin = iterateOverShells(indicesArrayOfRegion, dictOfShells);
             }
             return measureForBin;
         }
 
-        private double iterateOverShells(int[] indicesArrayOfRegion, double measureForBin, Dictionary<int, List<int[]>> dictOfShells)
+        private double iterateOverShells(int[] indicesArrayOfRegion, Dictionary<int, List<int[]>> dictOfShells)
         {
             int pointsInServer = 0;
             int pointsOutServer = 0;
@@ -60,7 +60,7 @@ namespace HierarchicalTilingApp.Measure
                     }
                 }
             }
-            measureForBin = (double)pointsInServer / (double)(pointsInServer + pointsOutServer);
+            double measureForBin = (double)pointsInServer / (double)(pointsInServer + pointsOutServer);
             return measureForBin;
         }
     }
