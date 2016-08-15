@@ -89,6 +89,43 @@ namespace Transformation
 		return mergedArrayIndices;
 	}
 
+	int * Transformator::determineIndicesArray(int spaceDimension, int * extendedIndicesArray)
+	{
+		int * indicesArray = new int[2 * spaceDimension];
+		for (int idx = 0; idx < spaceDimension; idx++)
+		{
+			indicesArray[2 * idx] = extendedIndicesArray[2 * idx + 1];
+			indicesArray[2 * idx + 1] = extendedIndicesArray[2 * idx + 2];
+		}
+		return indicesArray;
+	}
+
+	Dictionary_s * Transformator::convertIntPairsOfShellsToListOfIdxArrays(int histogramResolution,
+			int * inputIndicesArray, Vector_s shells)
+	{
+		Dictionary_s * result = new Dictionary_s();
+		int shellIdx = 0;
+		for (Vector_s::iterator itr = shells.begin(); itr != shells.end(); itr++)
+		{
+			Shell * shell = *itr;
+			Shell_idxs * indicesArraysInCurrentShell = new Shell_idxs();
+			Vector_t intTuples = shell->getIntTuples();
+			for (Vector_t::iterator subItr = intTuples.begin(); subItr != intTuples.end(); subItr++)
+			{
+				IntTuple * intTuple = *subItr;
+				int * currentIndicesArray = nullptr;
+				if(intTuple->determineIdxArrayRelativeTo(histogramResolution, inputIndicesArray,
+					currentIndicesArray))
+				{
+					indicesArraysInCurrentShell->push_back(currentIndicesArray);
+				}
+			}
+			result->insert( std::pair<int, Shell_idxs *>(shellIdx, indicesArraysInCurrentShell) );
+			shellIdx++;
+		}
+		return result;
+	}
+
 	int Transformator::determineMaxRange(int spaceDimension, int histogramResolution)
 	{
 		double temp = pow((double)histogramResolution, (double)spaceDimension);

@@ -11,6 +11,10 @@
 #include "SumOfSquares/ShellBuilder.hpp"
 #include "Transformation/Transformator.hpp"
 #include "ArrayPartition/HeftArrayCreator.hpp"
+#include "Measure/LoadBalancingAuxData.hpp"
+#include "Measure/LoadBalancingMeasure.hpp"
+#include "Measure/KNNAuxData.hpp"
+#include "Measure/KNNMeasure.hpp"
 
 int main(int argc, char** argv)
 {
@@ -26,9 +30,18 @@ int main(int argc, char** argv)
 	ArrayPartition::HeftArrayCreator heftArrayCreator(transformator);
     int spaceDimension = parsedData.getSpaceDimension();
     int histogramResolution = parsedData.getHistogramResolution();
+	double delta = parsedData.getDelta();
+	int pointNO = parsedData.getPointNO();
+	int serverNO = parsedData.getServerNO();
 	int * histogram = parsedData.getHistogram();
     int * heftArray = heftArrayCreator.createHeftArray(spaceDimension, histogramResolution, histogram);
-    size_t kNN = (size_t)ceil(parsedData.getDelta());
+	Measure::LoadBalancingAuxData lbAuxData;
+	lbAuxData.setDelta(delta);
+	lbAuxData.setPointNO(pointNO);
+	lbAuxData.setServerNO(serverNO);
+	Measure::LoadBalancingMeasure lbMeasure(lbAuxData, transformator);
+
+    size_t kNN = (size_t)ceil(delta);
     size_t maxShellNO = transformator.determineMaxRange(spaceDimension, histogramResolution);
     size_t maxRange = transformator.determineMaxRange(spaceDimension, histogramResolution / 2);
     SumOfSquares::Vector_s shellsForKNN = shellBuilder.createShells(maxShellNO, spaceDimension);
@@ -43,6 +56,16 @@ int main(int argc, char** argv)
             std::cout << "(" << tuple[0] << "," << tuple[1] << ")" << std::endl;
         }
     }
+
+	Measure::KNNAuxData kNNAuxData(shellsForKNN);
+	kNNAuxData.setHistogram(histogram);
+	kNNAuxData.setHistogramResolution(histogramResolution);
+	kNNAuxData.setKNN(kNN);
+	kNNAuxData.setPointNO(pointNO);
+	kNNAuxData.setServerNO(serverNO);
+	kNNAuxData.setSpaceDimension(spaceDimension);
+	Measure::KNNMeasure(kNNAuxData, transformator);
+
     end = clock();
     elapsed_secs = double(end - begin) / CLOCKS_PER_SEC;
     std::cout << "Elapsed time (in min) of the input parsing" << " " << (elapsed_secs / 60.0) << std::endl;

@@ -82,6 +82,48 @@
     <ClInclude Include="ArrayPartition\HeftArrayCreator.hpp">
       <Filter>ArrayPartition\Headers</Filter>
     </ClInclude>
+    <ClInclude Include="Measure\IMeasure.hpp">
+      <Filter>Measure\Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="ArrayPartition\Coords.hpp">
+      <Filter>ArrayPartition\Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Measure\BaseAuxData.hpp">
+      <Filter>Measure\Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Measure\BaseMeasure.hpp">
+      <Filter>Measure\Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Measure\DefaultAuxData.hpp">
+      <Filter>Measure\Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Measure\LoadBalancingAuxData.hpp">
+      <Filter>Measure\Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Measure\LoadBalancingMeasure.hpp">
+      <Filter>Measure\Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Measure\SimilarityAuxData.hpp">
+      <Filter>Measure\Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Measure\KNNAuxData.hpp">
+      <Filter>Measure\Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Measure\RangeAuxData.hpp">
+      <Filter>Measure\Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Measure\BoxAuxData.hpp">
+      <Filter>Measure\Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Measure\IAverageMeasure.hpp">
+      <Filter>Measure\Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Measure\SimilarityMeasure.hpp">
+      <Filter>Measure\Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Measure\KNNMeasure.hpp">
+      <Filter>Measure\Headers</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DataHandlingUtil\ParsedData.cpp">
@@ -113,6 +155,30 @@
     </ClCompile>
     <ClCompile Include="ArrayPartition\HeftArrayCreator.cpp">
       <Filter>ArrayPartition\Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="ArrayPartition\Coords.cpp">
+      <Filter>ArrayPartition\Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="Measure\BaseAuxData.cpp">
+      <Filter>Measure\Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="Measure\DefaultAuxData.cpp">
+      <Filter>Measure\Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="Measure\LoadBalancingAuxData.cpp">
+      <Filter>Measure\Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="Measure\SimilarityAuxData.cpp">
+      <Filter>Measure\Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="Measure\KNNAuxData.cpp">
+      <Filter>Measure\Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="Measure\RangeAuxData.cpp">
+      <Filter>Measure\Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="Measure\BoxAuxData.cpp">
+      <Filter>Measure\Sources</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

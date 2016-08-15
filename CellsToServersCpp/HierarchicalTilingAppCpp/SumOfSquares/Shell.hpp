@@ -1,6 +1,7 @@
 #ifndef SHELL_HPP_
 #define SHELL_HPP_
 #include <math.h>
+#include <map>
 
 #include "IntTuple.hpp"
 
@@ -22,6 +23,8 @@ namespace SumOfSquares
 	};
 
 	typedef std::vector<Shell *> Vector_s;
+	typedef std::vector<int *> Shell_idxs;
+	typedef std::map<int, Shell_idxs *> Dictionary_s;
 }
 
 #endif /* SHELL_HPP_ */

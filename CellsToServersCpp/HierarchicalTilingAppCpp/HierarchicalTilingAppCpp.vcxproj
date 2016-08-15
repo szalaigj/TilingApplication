@@ -78,9 +78,23 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="ArrayPartition\Coords.hpp" />
     <ClInclude Include="ArrayPartition\HeftArrayCreator.hpp" />
     <ClInclude Include="DataHandlingUtil\InputParser.hpp" />
     <ClInclude Include="DataHandlingUtil\ParsedData.hpp" />
+    <ClInclude Include="Measure\BaseAuxData.hpp" />
+    <ClInclude Include="Measure\BaseMeasure.hpp" />
+    <ClInclude Include="Measure\BoxAuxData.hpp" />
+    <ClInclude Include="Measure\DefaultAuxData.hpp" />
+    <ClInclude Include="Measure\IAverageMeasure.hpp" />
+    <ClInclude Include="Measure\IMeasure.hpp" />
+    <ClInclude Include="Measure\KNNAuxData.hpp" />
+    <ClInclude Include="Measure\KNNMeasure.hpp" />
+    <ClInclude Include="Measure\LoadBalancingAuxData.hpp" />
+    <ClInclude Include="Measure\LoadBalancingMeasure.hpp" />
+    <ClInclude Include="Measure\RangeAuxData.hpp" />
+    <ClInclude Include="Measure\SimilarityAuxData.hpp" />
+    <ClInclude Include="Measure\SimilarityMeasure.hpp" />
     <ClInclude Include="SumOfSquares\BacktrackingMethod.hpp" />
     <ClInclude Include="SumOfSquares\CornacchiaMethod.hpp" />
     <ClInclude Include="SumOfSquares\IntTuple.hpp" />
@@ -89,9 +103,17 @@
     <ClInclude Include="Transformation\Transformator.hpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="ArrayPartition\Coords.cpp" />
     <ClCompile Include="ArrayPartition\HeftArrayCreator.cpp" />
     <ClCompile Include="DataHandlingUtil\InputParser.cpp" />
     <ClCompile Include="DataHandlingUtil\ParsedData.cpp" />
+    <ClCompile Include="Measure\BaseAuxData.cpp" />
+    <ClCompile Include="Measure\BoxAuxData.cpp" />
+    <ClCompile Include="Measure\DefaultAuxData.cpp" />
+    <ClCompile Include="Measure\KNNAuxData.cpp" />
+    <ClCompile Include="Measure\LoadBalancingAuxData.cpp" />
+    <ClCompile Include="Measure\RangeAuxData.cpp" />
+    <ClCompile Include="Measure\SimilarityAuxData.cpp" />
     <ClCompile Include="Program.cpp" />
     <ClCompile Include="SumOfSquares\BacktrackingMethod.cpp" />
     <ClCompile Include="SumOfSquares\CornacchiaMethod.cpp" />

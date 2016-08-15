@@ -3,6 +3,10 @@
 #define _USE_MATH_DEFINES
 #include <math.h>
 
+#include "../SumOfSquares/Shell.hpp"
+
+using namespace SumOfSquares;
+
 namespace Transformation
 {
 	class Transformator
@@ -18,6 +22,9 @@ namespace Transformation
 		int * determineNextContainedIndicesArray(int spaceDimension, int * indicesArrayOfRegion,
 			int * previousIndicesArray);
 		int * mergeIndicesArrays(int spaceDimension, int * outerIndicesArray, int * innerIndicesArray);
+		int * determineIndicesArray(int spaceDimension, int * extendedIndicesArray);
+		Dictionary_s * convertIntPairsOfShellsToListOfIdxArrays(int histogramResolution,
+			int * inputIndicesArray, Vector_s shells);
 		int determineMaxRange(int spaceDimension, int histogramResolution);
 	private:
 		int factorial(int input);
