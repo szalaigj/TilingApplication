@@ -13,7 +13,7 @@ namespace SumOfSquares
 		IntTuple(int spaceDimension, const int * tuple);
 		~IntTuple();
 		bool determineIdxArrayRelativeTo(int histogramResolution, int * inputIndicesArray,
-			int * outputIndicesArray);
+			int *& outputIndicesArray);
 		int * getTuple() const;
 		int getSpaceDimension() const;
 	private:

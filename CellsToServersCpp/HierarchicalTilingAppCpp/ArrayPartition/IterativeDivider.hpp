@@ -36,11 +36,11 @@ namespace ArrayPartition
 			int firstSplitNO, int secondSplitNO);
 		void getValuesFromParts(int * firstPartIndicesArray, int * secondPartIndicesArray,
 			int firstSplitNO, int secondSplitNO, double& objectiveValueForFirstPart,
-			Vector_coords * firstPartPartition, bool& hasEnoughBinsForFirstPart, 
-			double& objectiveValueForSecondPart, Vector_coords * secondPartPartition, 
+			Vector_coords *& firstPartPartition, bool& hasEnoughBinsForFirstPart, 
+			double& objectiveValueForSecondPart, Vector_coords *& secondPartPartition, 
 			bool& hasEnoughBinsForSecondPart);
-		void setPartitionByParts(int * extendedIndicesArray, Vector_coords * partition,
-            Vector_coords& firstPartPartition, Vector_coords& secondPartPartition);
+		void setPartitionByParts(int * extendedIndicesArray, Vector_coords& firstPartPartition,
+			Vector_coords& secondPartPartition);
 
 		int * determineExtendedIndicesArray();
 		int * determineNextIndicesArray(int * previousIndicesArray);

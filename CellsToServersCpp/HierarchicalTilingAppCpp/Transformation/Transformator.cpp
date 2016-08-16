@@ -178,7 +178,7 @@ namespace Transformation
 	}
 
 	void Transformator::splitIndicesArrays(int spaceDimension, int splitDimIdx, int * indicesArray,
-		int componentInSplitDim, int * firstPartIndicesArray, int * secondPartIndicesArray)
+		int componentInSplitDim, int *& firstPartIndicesArray, int *& secondPartIndicesArray)
 	{
 		firstPartIndicesArray = new int[2 * spaceDimension];
 		secondPartIndicesArray = new int[2 * spaceDimension];

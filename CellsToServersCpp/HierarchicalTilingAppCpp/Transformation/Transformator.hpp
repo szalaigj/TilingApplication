@@ -32,7 +32,7 @@ namespace Transformation
 			int * inputIndicesArray, Vector_s shells);
 		bool validateRegionHasEnoughBins(int spaceDimension, int * indicesArray, int splitNO);
 		void splitIndicesArrays(int spaceDimension, int splitDimIdx, int * indicesArray,
-            int componentInSplitDim, int * firstPartIndicesArray, int * secondPartIndicesArray);
+            int componentInSplitDim, int *& firstPartIndicesArray, int *& secondPartIndicesArray);
 		int determineMaxRange(int spaceDimension, int histogramResolution);
 	private:
 		int factorial(int input);

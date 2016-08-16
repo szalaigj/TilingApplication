@@ -13,45 +13,45 @@ namespace ArrayPartition
 		int serverNO = parsedData.getServerNO();
 		int sizeOfArrays = serverNO * (int)pow((double)histogramResolution, 2 * spaceDimension);
 		this->objectiveValueArray = new double[sizeOfArrays]();
-		this->partitionArray = new Vector_coords*[sizeOfArrays];
-		this->hasEnoughBinsArray = new bool[sizeOfArrays];
+		this->partitionArray = new Vector_coords*[sizeOfArrays]();
+		this->hasEnoughBinsArray = new bool[sizeOfArrays]();
 		this->setMeasureInstances(histogram, kNN, maxRange, shellsForKNN, shellsForRange);
 	}
 
 	void IterativeDivider::setMeasureInstances(int * histogram, int kNN, int maxRange,
             Vector_s& shellsForKNN, Vector_s& shellsForRange)
 	{
-		KNNAuxData kNNAuxData(shellsForKNN);
-		kNNAuxData.setKNN(kNN);
-		kNNAuxData.setHistogram(histogram);
-		kNNAuxData.setHistogramResolution(parsedData.getHistogramResolution());
-		kNNAuxData.setPointNO(parsedData.getPointNO());
-		kNNAuxData.setServerNO(parsedData.getServerNO());
-		kNNAuxData.setSpaceDimension(parsedData.getSpaceDimension());
-		this->kNNMeasure = new KNNMeasure(kNNAuxData, transformator);
+		KNNAuxData * kNNAuxData = new KNNAuxData(shellsForKNN);
+		kNNAuxData->setKNN(kNN);
+		kNNAuxData->setHistogram(histogram);
+		kNNAuxData->setHistogramResolution(parsedData.getHistogramResolution());
+		kNNAuxData->setPointNO(parsedData.getPointNO());
+		kNNAuxData->setServerNO(parsedData.getServerNO());
+		kNNAuxData->setSpaceDimension(parsedData.getSpaceDimension());
+		this->kNNMeasure = new KNNMeasure(*kNNAuxData, transformator);
 
-		RangeAuxData rangeAuxData(shellsForRange);
-		rangeAuxData.setMaxRange(maxRange);
-		rangeAuxData.setHistogram(histogram);
-		rangeAuxData.setHistogramResolution(parsedData.getHistogramResolution());
-		rangeAuxData.setPointNO(parsedData.getPointNO());
-		rangeAuxData.setServerNO(parsedData.getServerNO());
-		rangeAuxData.setSpaceDimension(parsedData.getSpaceDimension());
-		this->rangeMeasure = new RangeMeasure(rangeAuxData, transformator);
+		RangeAuxData * rangeAuxData = new RangeAuxData(shellsForRange);
+		rangeAuxData->setMaxRange(maxRange);
+		rangeAuxData->setHistogram(histogram);
+		rangeAuxData->setHistogramResolution(parsedData.getHistogramResolution());
+		rangeAuxData->setPointNO(parsedData.getPointNO());
+		rangeAuxData->setServerNO(parsedData.getServerNO());
+		rangeAuxData->setSpaceDimension(parsedData.getSpaceDimension());
+		this->rangeMeasure = new RangeMeasure(*rangeAuxData, transformator);
 
-		LoadBalancingAuxData lbAuxData;
-		lbAuxData.setDelta(parsedData.getDelta());
-		lbAuxData.setPointNO(parsedData.getPointNO());
-		lbAuxData.setServerNO(parsedData.getServerNO());
-		this->lbMeasure = new LoadBalancingMeasure(lbAuxData, transformator);
+		LoadBalancingAuxData * lbAuxData = new LoadBalancingAuxData();
+		lbAuxData->setDelta(parsedData.getDelta());
+		lbAuxData->setPointNO(parsedData.getPointNO());
+		lbAuxData->setServerNO(parsedData.getServerNO());
+		this->lbMeasure = new LoadBalancingMeasure(*lbAuxData, transformator);
 
-		BoxAuxData boxAuxData;
-		boxAuxData.setHeftArray(this->heftArray);
-		boxAuxData.setHistogram(histogram);
-		boxAuxData.setHistogramResolution(parsedData.getHistogramResolution());
-		boxAuxData.setServerNO(parsedData.getServerNO());
-		boxAuxData.setSpaceDimension(parsedData.getSpaceDimension());
-		this->boxMeasure = new BoxMeasure(boxAuxData, transformator);
+		BoxAuxData * boxAuxData = new BoxAuxData();
+		boxAuxData->setHeftArray(this->heftArray);
+		boxAuxData->setHistogram(histogram);
+		boxAuxData->setHistogramResolution(parsedData.getHistogramResolution());
+		boxAuxData->setServerNO(parsedData.getServerNO());
+		boxAuxData->setSpaceDimension(parsedData.getSpaceDimension());
+		this->boxMeasure = new BoxMeasure(*boxAuxData, transformator);
 	}
 
 	double IterativeDivider::getDiffSum() const
@@ -129,7 +129,6 @@ namespace ArrayPartition
 						parsedData.getHistogramResolution(), extendedIndicesArray);
 					objectiveValueArray[extendedCellIdx] = objectiveValue;
 					hasEnoughBinsArray[extendedCellIdx] = hasEnoughBins;
-					delete [] extendedIndicesArray;
 					delete [] indicesArray;
 				}
 				delete [] innerIndicesArray;
@@ -186,9 +185,9 @@ namespace ArrayPartition
 			int secondSplitNO = (splitNO - 1) - firstSplitNO;
 			fillObjectiveValueForFixedSplitNOComposition(extendedIndicesArray, objectiveValue, 
 				splitNO, firstPartIndicesArray, secondPartIndicesArray, firstSplitNO, secondSplitNO);
-			delete [] firstPartIndicesArray;
-			delete [] secondPartIndicesArray;
 		}
+		delete [] firstPartIndicesArray;
+		delete [] secondPartIndicesArray;
 	}
 
 	void IterativeDivider::fillObjectiveValueForFixedSplitNOComposition(int * extendedIndicesArray,
@@ -214,16 +213,14 @@ namespace ArrayPartition
 			&& hasEnoughBinsForFirstPart && hasEnoughBinsForSecondPart)
 		{
 			objectiveValue = currentObjectiveValue;
-			Vector_coords * partition = new Vector_coords();
-			setPartitionByParts(extendedIndicesArray, partition, *firstPartPartition, 
-				*secondPartPartition);
+			setPartitionByParts(extendedIndicesArray, *firstPartPartition, *secondPartPartition);
 		}
 	}
 
 	void IterativeDivider::getValuesFromParts(int * firstPartIndicesArray, int * secondPartIndicesArray,
 		int firstSplitNO, int secondSplitNO, double& objectiveValueForFirstPart,
-		Vector_coords * firstPartPartition, bool& hasEnoughBinsForFirstPart, 
-		double& objectiveValueForSecondPart, Vector_coords * secondPartPartition, 
+		Vector_coords *& firstPartPartition, bool& hasEnoughBinsForFirstPart, 
+		double& objectiveValueForSecondPart, Vector_coords *& secondPartPartition, 
 		bool& hasEnoughBinsForSecondPart)
 	{
 		int spaceDimension = parsedData.getSpaceDimension();
@@ -233,7 +230,7 @@ namespace ArrayPartition
 		firstPartExtendedIndicesArray[0] = firstSplitNO;
 		int * secondPartExtendedIndicesArray = transformator.extendIndicesArray(spaceDimension,
 			secondPartIndicesArray);
-		firstPartExtendedIndicesArray[0] = secondSplitNO;
+		secondPartExtendedIndicesArray[0] = secondSplitNO;
 		int firstExtendedCellIdx = transformator.calculateExtendedCellIdx(2 * spaceDimension + 1,
 			histogramResolution, firstPartExtendedIndicesArray);
 		int secondExtendedCellIdx = transformator.calculateExtendedCellIdx(2 * spaceDimension + 1,
@@ -248,9 +245,10 @@ namespace ArrayPartition
 		delete [] secondPartExtendedIndicesArray;
 	}
 
-	void IterativeDivider::setPartitionByParts(int * extendedIndicesArray, Vector_coords * partition,
-           Vector_coords& firstPartPartition, Vector_coords& secondPartPartition)
+	void IterativeDivider::setPartitionByParts(int * extendedIndicesArray,
+		Vector_coords& firstPartPartition, Vector_coords& secondPartPartition)
 	{
+		Vector_coords * partition = new Vector_coords();
 		for(Vector_coords::iterator itr = firstPartPartition.begin(); itr != firstPartPartition.end();
 			itr++)
 		{

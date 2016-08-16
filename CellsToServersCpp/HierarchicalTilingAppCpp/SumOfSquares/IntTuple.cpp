@@ -25,7 +25,7 @@ namespace SumOfSquares
 	}
 
 	bool IntTuple::determineIdxArrayRelativeTo(int histogramResolution,	int * inputIndicesArray, 
-		int * outputIndicesArray)
+		int *& outputIndicesArray)
 	{
 		outputIndicesArray = new int[spaceDimension];
 		for (int dimIdx = 0; dimIdx < spaceDimension; dimIdx++)

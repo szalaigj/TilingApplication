@@ -38,19 +38,21 @@ int main(int argc, char** argv)
     size_t maxRange = transformator.determineMaxRange(spaceDimension, histogramResolution / 2);
     SumOfSquares::Vector_s shellsForKNN = shellBuilder.createShells(maxShellNO, spaceDimension);
 	SumOfSquares::Vector_s shellsForRange = shellBuilder.createShells(maxRange, spaceDimension);
-    for (size_t idx = 0; idx < shellsForKNN.size(); idx++)
-    {
-        std::cout << "Shell " << idx << ":" << std::endl;
-        SumOfSquares::Vector_t currentIntTuples = shellsForKNN[idx]->getIntTuples();
-        for (size_t subidx = 0; subidx < currentIntTuples.size(); subidx++)
-        {
-            int * tuple = currentIntTuples[subidx]->getTuple();
-            std::cout << "(" << tuple[0] << "," << tuple[1] << ")" << std::endl;
-        }
-    }
+    //for (size_t idx = 0; idx < shellsForKNN.size(); idx++)
+    //{
+    //    std::cout << "Shell " << idx << ":" << std::endl;
+    //    SumOfSquares::Vector_t currentIntTuples = shellsForKNN[idx]->getIntTuples();
+    //    for (size_t subidx = 0; subidx < currentIntTuples.size(); subidx++)
+    //    {
+    //        int * tuple = currentIntTuples[subidx]->getTuple();
+    //        std::cout << "(" << tuple[0] << "," << tuple[1] << ")" << std::endl;
+    //    }
+    //}
 
 	ArrayPartition::IterativeDivider iterativeDivider(histogram, heftArray, transformator, parsedData,
 		kNN, maxRange, shellsForKNN, shellsForRange);
+	Vector_coords * partition = nullptr;
+	double objectiveValue = iterativeDivider.determineObjectiveValue(partition);
 
     end = clock();
     elapsed_secs = double(end - begin) / CLOCKS_PER_SEC;
