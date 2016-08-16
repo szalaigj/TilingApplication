@@ -61,24 +61,5 @@ namespace ArrayPartition
 			delete [] innerIndicesArray;
 		}
 		delete [] outerIndicesArray;
-		// initializing the elements of the indicesArray to zeros:
-		// int * indicesArray = new int[spaceDimension]();
-		/*int currentCellIdx = 0;
-		while (currentCellIdx < cellNO)
-		{
-			for (int dimIdx = 0; dimIdx < spaceDimension; dimIdx++)
-			{
-
-			}
-			currentCellIdx = transformator.calculateCellIdx(spaceDimension, indicesArray);
-		}*/
-
-
-		//for (int startCellIdx = 0; startCellIdx < cellNO; startCellIdx++)
-		//{
-			//for (int innerCellIdx = outerCellIdx; innerCellIdx < cellNO; innerCellIdx++)
-			//{
-			//}
-		//}
 	}
 }

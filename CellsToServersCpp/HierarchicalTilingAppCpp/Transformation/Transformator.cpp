@@ -12,12 +12,33 @@ namespace Transformation
 		return cellIdx;
 	}
 
+	int Transformator::calculateExtendedCellIdx(int arrayRank, int arrayResolution,
+		int * extendedIndicesArray)
+	{
+		int extendedCellIdx = extendedIndicesArray[0];
+		for (int dimIdx = 1; dimIdx < arrayRank; dimIdx++)
+		{
+			extendedCellIdx += extendedIndicesArray[dimIdx] * (int)pow((double)arrayResolution, dimIdx);
+		}
+		return extendedCellIdx;
+	}
+
 	int * Transformator::copyIndicesArray(int spaceDimension, int * inputIndicesArray)
 	{
 		int * result = new int[spaceDimension];
 		for (int idx = 0; idx < spaceDimension; idx++)
 		{
 			result[idx] = inputIndicesArray[idx];
+		}
+		return result;
+	}
+
+	int * Transformator::extendIndicesArray(int spaceDimension, int * inputIndicesArray)
+	{
+		int * result = new int[2 * spaceDimension + 1];
+		for (int idx = 0; idx < 2 * spaceDimension; idx++)
+		{
+			result[idx + 1] = inputIndicesArray[idx];
 		}
 		return result;
 	}
@@ -89,6 +110,19 @@ namespace Transformation
 		return mergedArrayIndices;
 	}
 
+	int * Transformator::mergeIndicesArrays(int spaceDimension, int splitNO, int * outerIndicesArray,
+			int * innerIndicesArray)
+	{
+		int * mergedArrayIndices = new int[2 * spaceDimension + 1];
+		mergedArrayIndices[0] = splitNO;
+		for (int dimIdx = 0; dimIdx < spaceDimension; dimIdx++)
+		{
+			mergedArrayIndices[2 * dimIdx + 1] = outerIndicesArray[dimIdx];
+			mergedArrayIndices[2 * dimIdx + 2] = innerIndicesArray[dimIdx];
+		}
+		return mergedArrayIndices;
+	}
+
 	int * Transformator::determineIndicesArray(int spaceDimension, int * extendedIndicesArray)
 	{
 		int * indicesArray = new int[2 * spaceDimension];
@@ -124,6 +158,47 @@ namespace Transformation
 			shellIdx++;
 		}
 		return result;
+	}
+
+	bool Transformator::validateRegionHasEnoughBins(int spaceDimension, int * indicesArray, int splitNO)
+	{
+		bool hasEnoughBins = true;
+		int binNOInThisRegion = 1;
+		for (int idx = 0; idx < spaceDimension; idx++)
+		{
+			int lowerBound = indicesArray[2 * idx];
+			int upperBound = indicesArray[2 * idx + 1];
+			binNOInThisRegion *= (upperBound - lowerBound + 1);
+		}
+		if (binNOInThisRegion <= splitNO)
+		{
+			hasEnoughBins = false;
+		}
+		return hasEnoughBins;
+	}
+
+	void Transformator::splitIndicesArrays(int spaceDimension, int splitDimIdx, int * indicesArray,
+		int componentInSplitDim, int * firstPartIndicesArray, int * secondPartIndicesArray)
+	{
+		firstPartIndicesArray = new int[2 * spaceDimension];
+		secondPartIndicesArray = new int[2 * spaceDimension];
+		for (int idx = 0; idx < spaceDimension; idx++)
+		{
+			int lowerBound = indicesArray[2 * idx];
+			int upperBound = indicesArray[2 * idx + 1];
+			firstPartIndicesArray[2 * idx] = lowerBound;
+			secondPartIndicesArray[2 * idx + 1] = upperBound;
+			if (idx == splitDimIdx)
+			{
+				firstPartIndicesArray[2 * idx + 1] = componentInSplitDim;
+				secondPartIndicesArray[2 * idx] = componentInSplitDim + 1;
+			}
+			else
+			{
+				firstPartIndicesArray[2 * idx + 1] = upperBound;
+				secondPartIndicesArray[2 * idx] = lowerBound;
+			}
+		}
 	}
 
 	int Transformator::determineMaxRange(int spaceDimension, int histogramResolution)
