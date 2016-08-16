@@ -6,7 +6,7 @@ namespace Measure
 	{
 	}
 
-	int RangeAuxData::getMaxRange()
+	int RangeAuxData::getMaxRange() const
 	{
 		return maxRange;
 	}
@@ -16,7 +16,7 @@ namespace Measure
 		this->maxRange = inputMaxRange;
 	}
 
-	int RangeAuxData::getRange()
+	int RangeAuxData::getRange() const
 	{
 		return range;
 	}
@@ -24,5 +24,18 @@ namespace Measure
 	void RangeAuxData::setRange(int inputRange)
 	{
 		this->range = inputRange;
+	}
+
+	RangeAuxData& RangeAuxData::operator= (const RangeAuxData& other)
+	{
+		this->setHistogram(other.getHistogram());
+		this->setHistogramResolution(other.getHistogramResolution());
+		this->setMaxRange(other.getMaxRange());
+		this->setPointNO(other.getPointNO());
+		this->setRange(other.getRange());
+		this->setServerNO(other.getServerNO());
+		this->setShells(other.getShells());
+		this->setSpaceDimension(other.getSpaceDimension());
+		return *this;
 	}
 }

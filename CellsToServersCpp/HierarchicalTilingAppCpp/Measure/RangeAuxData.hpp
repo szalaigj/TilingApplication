@@ -9,10 +9,11 @@ namespace Measure
 	{
 	public:
 		RangeAuxData(Vector_s& shells);
-		int getMaxRange();
+		int getMaxRange() const;
 		void setMaxRange(int inputMaxRange);
-		int getRange();
+		int getRange() const;
 		void setRange(int inputRange);
+		RangeAuxData& operator= (const RangeAuxData& other);
 	private:
 		int maxRange;
 		int range;

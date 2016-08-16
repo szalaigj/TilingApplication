@@ -5,15 +5,6 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
-    <Filter Include="DataUtilHandling">
-      <UniqueIdentifier>{9b850474-2e7a-4932-ab8a-67a5fd277623}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="DataUtilHandling\Sources">
-      <UniqueIdentifier>{cc1b1909-c59e-4324-aa5c-a5a15f075a91}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="DataUtilHandling\Headers">
-      <UniqueIdentifier>{3dce8be8-1a05-47cc-aef0-ec297e3ab935}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Program">
       <UniqueIdentifier>{c94ad84e-f4d3-492a-ae4e-f4e25ee908a3}</UniqueIdentifier>
     </Filter>
@@ -53,13 +44,22 @@
     <Filter Include="Transformation\Sources">
       <UniqueIdentifier>{0f122088-5e7c-49ce-af3c-609390c6f6ec}</UniqueIdentifier>
     </Filter>
+    <Filter Include="DataHandlingUtil">
+      <UniqueIdentifier>{9b850474-2e7a-4932-ab8a-67a5fd277623}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="DataHandlingUtil\Sources">
+      <UniqueIdentifier>{cc1b1909-c59e-4324-aa5c-a5a15f075a91}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="DataHandlingUtil\Headers">
+      <UniqueIdentifier>{3dce8be8-1a05-47cc-aef0-ec297e3ab935}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="DataHandlingUtil\InputParser.hpp">
-      <Filter>DataUtilHandling\Headers</Filter>
+      <Filter>DataHandlingUtil\Headers</Filter>
     </ClInclude>
     <ClInclude Include="DataHandlingUtil\ParsedData.hpp">
-      <Filter>DataUtilHandling\Headers</Filter>
+      <Filter>DataHandlingUtil\Headers</Filter>
     </ClInclude>
     <ClInclude Include="SumOfSquares\Shell.hpp">
       <Filter>SumOfSquares\Headers</Filter>
@@ -130,13 +130,19 @@
     <ClInclude Include="Measure\BoxMeasure.hpp">
       <Filter>Measure\Headers</Filter>
     </ClInclude>
+    <ClInclude Include="ArrayPartition\IterativeDivider.hpp">
+      <Filter>ArrayPartition\Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Measure\IncludingAllMeasures.hpp">
+      <Filter>Measure\Headers</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DataHandlingUtil\ParsedData.cpp">
-      <Filter>DataUtilHandling\Sources</Filter>
+      <Filter>DataHandlingUtil\Sources</Filter>
     </ClCompile>
     <ClCompile Include="DataHandlingUtil\InputParser.cpp">
-      <Filter>DataUtilHandling\Sources</Filter>
+      <Filter>DataHandlingUtil\Sources</Filter>
     </ClCompile>
     <ClCompile Include="Program.cpp">
       <Filter>Program</Filter>
@@ -185,6 +191,9 @@
     </ClCompile>
     <ClCompile Include="Measure\BoxAuxData.cpp">
       <Filter>Measure\Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="ArrayPartition\IterativeDivider.cpp">
+      <Filter>ArrayPartition\Sources</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

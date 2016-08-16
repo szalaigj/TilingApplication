@@ -8,18 +8,19 @@ namespace Measure
 	class BoxAuxData : public BaseAuxData
 	{
 	public:
-		int getSpaceDimension();
+		int getSpaceDimension() const;
 		void setSpaceDimension(int inputSpaceDimension);
-		int getHistogramResolution();
+		int getHistogramResolution() const;
 		void setHistogramResolution(int inputHistogramResolution);
-		int * getHistogram();
+		int * getHistogram() const;
 		void setHistogram(int * inputHistogram);
-		int * getHeftArray();
+		int * getHeftArray() const;
 		void setHeftArray(int * inputHeftArray);
-		int * getIndicesArrayOfQueryRegion();
+		int * getIndicesArrayOfQueryRegion() const;
 		void setIndicesArrayOfQueryRegion(int * inputIndicesArrayOfQueryRegion);
-		double getVolumeOfQueryRegion();
+		double getVolumeOfQueryRegion() const;
 		void setVolumeOfQueryRegion(double inputVolumeOfQueryRegion);
+		BoxAuxData& operator= (const BoxAuxData& other);
 	private:
 		int spaceDimension;
 		int histogramResolution;

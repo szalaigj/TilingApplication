@@ -1,30 +1,35 @@
 #ifndef PARSED_DATA_HPP_
 #define PARSED_DATA_HPP_
 
-namespace DataUtilHandling
+namespace DataHandlingUtil
 {
 	class ParsedData
 	{
 	public:
 		ParsedData(int spaceDimension, int histogramResolution, int serverNO, int pointNO, double delta,
-			int * histogram) : spaceDimension(spaceDimension), histogramResolution(histogramResolution),
-			serverNO(serverNO), pointNO(pointNO), delta(delta), histogram(histogram)
+			double kNNMeasCoeff, double lbMeasCoeff, int * histogram) : spaceDimension(spaceDimension), 
+			histogramResolution(histogramResolution), serverNO(serverNO), pointNO(pointNO), 
+			kNNMeasCoeff(kNNMeasCoeff), lbMeasCoeff(lbMeasCoeff), delta(delta), histogram(histogram)
 		{
 		}
 		~ParsedData();
 
-		int getSpaceDimension();
-		int getHistogramResolution();
-		int getServerNO();
-		int getPointNO();
-		double getDelta();
-		int * getHistogram();
+		int getSpaceDimension() const;
+		int getHistogramResolution() const;
+		int getServerNO() const;
+		int getPointNO() const;
+		double getDelta() const;
+		double getKNNMeasCoeff() const;
+		double getLbMeasCoeff() const;
+		int * getHistogram() const;
 	private:
 		int spaceDimension;
 		int histogramResolution;
 		int serverNO;
 		int pointNO;
 		double delta;
+		double kNNMeasCoeff;
+		double lbMeasCoeff;
 		int * histogram;
 	};
 }

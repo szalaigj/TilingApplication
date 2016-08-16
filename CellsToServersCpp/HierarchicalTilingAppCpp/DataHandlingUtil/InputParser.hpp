@@ -10,7 +10,7 @@
 #include <stdexcept>
 #include "ParsedData.hpp"
 
-namespace DataUtilHandling
+namespace DataHandlingUtil
 {
 	class InputParser
 	{

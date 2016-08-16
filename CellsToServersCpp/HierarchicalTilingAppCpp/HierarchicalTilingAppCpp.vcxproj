@@ -80,8 +80,10 @@
   <ItemGroup>
     <ClInclude Include="ArrayPartition\Coords.hpp" />
     <ClInclude Include="ArrayPartition\HeftArrayCreator.hpp" />
+    <ClInclude Include="ArrayPartition\IterativeDivider.hpp" />
     <ClInclude Include="DataHandlingUtil\InputParser.hpp" />
     <ClInclude Include="DataHandlingUtil\ParsedData.hpp" />
+    <ClInclude Include="Measure\IncludingAllMeasures.hpp" />
     <ClInclude Include="Measure\BaseAuxData.hpp" />
     <ClInclude Include="Measure\BaseMeasure.hpp" />
     <ClInclude Include="Measure\BoxAuxData.hpp" />
@@ -107,6 +109,7 @@
   <ItemGroup>
     <ClCompile Include="ArrayPartition\Coords.cpp" />
     <ClCompile Include="ArrayPartition\HeftArrayCreator.cpp" />
+    <ClCompile Include="ArrayPartition\IterativeDivider.cpp" />
     <ClCompile Include="DataHandlingUtil\InputParser.cpp" />
     <ClCompile Include="DataHandlingUtil\ParsedData.cpp" />
     <ClCompile Include="Measure\BaseAuxData.cpp" />

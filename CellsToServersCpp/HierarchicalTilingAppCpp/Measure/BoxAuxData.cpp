@@ -2,7 +2,7 @@
 
 namespace Measure
 {
-	int BoxAuxData::getSpaceDimension()
+	int BoxAuxData::getSpaceDimension() const
 	{
 		return spaceDimension;
 	}
@@ -12,7 +12,7 @@ namespace Measure
 		this->spaceDimension = inputSpaceDimension;
 	}
 
-	int BoxAuxData::getHistogramResolution()
+	int BoxAuxData::getHistogramResolution() const
 	{
 		return histogramResolution;
 	}
@@ -22,7 +22,7 @@ namespace Measure
 		this->histogramResolution = inputHistogramResolution;
 	}
 
-	int * BoxAuxData::getHistogram()
+	int * BoxAuxData::getHistogram() const
 	{
 		return histogram;
 	}
@@ -32,7 +32,7 @@ namespace Measure
 		this->histogram = inputHistogram;
 	}
 
-	int * BoxAuxData::getHeftArray()
+	int * BoxAuxData::getHeftArray() const
 	{
 		return heftArray;
 	}
@@ -42,7 +42,7 @@ namespace Measure
 		this->heftArray = inputHeftArray;
 	}
 
-	int * BoxAuxData::getIndicesArrayOfQueryRegion()
+	int * BoxAuxData::getIndicesArrayOfQueryRegion() const
 	{
 		return indicesArrayOfQueryRegion;
 	}
@@ -52,7 +52,7 @@ namespace Measure
 		this->indicesArrayOfQueryRegion = inputIndicesArrayOfQueryRegion;
 	}
 
-	double BoxAuxData::getVolumeOfQueryRegion()
+	double BoxAuxData::getVolumeOfQueryRegion() const
 	{
 		return volumeOfQueryRegion;
 	}
@@ -60,5 +60,17 @@ namespace Measure
 	void BoxAuxData::setVolumeOfQueryRegion(double inputVolumeOfQueryRegion)
 	{
 		this->volumeOfQueryRegion = inputVolumeOfQueryRegion;
+	}
+
+	BoxAuxData& BoxAuxData::operator= (const BoxAuxData& other)
+	{
+		this->setHeftArray(other.getHeftArray());
+		this->setHistogram(other.getHistogram());
+		this->setHistogramResolution(other.getHistogramResolution());
+		this->setIndicesArrayOfQueryRegion(other.getIndicesArrayOfQueryRegion());
+		this->setServerNO(other.getServerNO());
+		this->setSpaceDimension(other.getSpaceDimension());
+		this->setVolumeOfQueryRegion(other.getVolumeOfQueryRegion());
+		return *this;
 	}
 }

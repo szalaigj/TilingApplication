@@ -1,6 +1,6 @@
 #include "ParsedData.hpp"
 
-namespace DataUtilHandling
+namespace DataHandlingUtil
 {
 	ParsedData::~ParsedData()
 	{
@@ -10,32 +10,42 @@ namespace DataUtilHandling
 		}
 	}
 
-	int ParsedData::getSpaceDimension()
+	int ParsedData::getSpaceDimension() const
 	{
 		return spaceDimension;
 	}
 
-	int ParsedData::getHistogramResolution()
+	int ParsedData::getHistogramResolution() const
 	{
 		return histogramResolution;
 	}
 
-	int ParsedData::getServerNO()
+	int ParsedData::getServerNO() const
 	{
 		return serverNO;
 	}
 
-	int ParsedData::getPointNO()
+	int ParsedData::getPointNO() const
 	{
 		return pointNO;
 	}
 
-	double ParsedData::getDelta()
+	double ParsedData::getDelta() const
 	{
 		return delta;
 	}
 
-	int * ParsedData::getHistogram()
+	double ParsedData::getKNNMeasCoeff() const
+	{
+		return kNNMeasCoeff;
+	}
+
+	double ParsedData::getLbMeasCoeff() const
+	{
+		return lbMeasCoeff;
+	}
+
+	int * ParsedData::getHistogram() const
 	{
 		return histogram;
 	}

@@ -11,21 +11,18 @@
 #include "SumOfSquares/ShellBuilder.hpp"
 #include "Transformation/Transformator.hpp"
 #include "ArrayPartition/HeftArrayCreator.hpp"
-#include "Measure/LoadBalancingAuxData.hpp"
-#include "Measure/LoadBalancingMeasure.hpp"
-#include "Measure/KNNAuxData.hpp"
-#include "Measure/KNNMeasure.hpp"
+#include "ArrayPartition/IterativeDivider.hpp"
 
 int main(int argc, char** argv)
 {
     clock_t begin, end;
     double elapsed_secs;
-    DataUtilHandling::InputParser parser;
+    DataHandlingUtil::InputParser parser;
     SumOfSquares::CornacchiaMethod cornacchiaMethod;
     SumOfSquares::BacktrackingMethod backtrackingMethod(cornacchiaMethod);
     Transformation::Transformator transformator;
     begin = clock();
-    DataUtilHandling::ParsedData parsedData = parser.parseInputFile();
+    DataHandlingUtil::ParsedData parsedData = parser.parseInputFile();
 	SumOfSquares::ShellBuilder shellBuilder(backtrackingMethod);
 	ArrayPartition::HeftArrayCreator heftArrayCreator(transformator);
     int spaceDimension = parsedData.getSpaceDimension();
@@ -35,11 +32,6 @@ int main(int argc, char** argv)
 	int serverNO = parsedData.getServerNO();
 	int * histogram = parsedData.getHistogram();
     int * heftArray = heftArrayCreator.createHeftArray(spaceDimension, histogramResolution, histogram);
-	Measure::LoadBalancingAuxData lbAuxData;
-	lbAuxData.setDelta(delta);
-	lbAuxData.setPointNO(pointNO);
-	lbAuxData.setServerNO(serverNO);
-	Measure::LoadBalancingMeasure lbMeasure(lbAuxData, transformator);
 
     size_t kNN = (size_t)ceil(delta);
     size_t maxShellNO = transformator.determineMaxRange(spaceDimension, histogramResolution);
@@ -57,14 +49,8 @@ int main(int argc, char** argv)
         }
     }
 
-	Measure::KNNAuxData kNNAuxData(shellsForKNN);
-	kNNAuxData.setHistogram(histogram);
-	kNNAuxData.setHistogramResolution(histogramResolution);
-	kNNAuxData.setKNN(kNN);
-	kNNAuxData.setPointNO(pointNO);
-	kNNAuxData.setServerNO(serverNO);
-	kNNAuxData.setSpaceDimension(spaceDimension);
-	Measure::KNNMeasure(kNNAuxData, transformator);
+	ArrayPartition::IterativeDivider iterativeDivider(histogram, heftArray, transformator, parsedData,
+		kNN, maxRange, shellsForKNN, shellsForRange);
 
     end = clock();
     elapsed_secs = double(end - begin) / CLOCKS_PER_SEC;

@@ -70,8 +70,8 @@ namespace Measure
 		double volumeOfQueryRegion = 1.0;
 		for (int dimIdx = 0; dimIdx < getAuxData().getSpaceDimension(); dimIdx++)
 		{
-			int lowerBoundForCurrentDim = (getAuxData().getIndicesArrayOfQueryRegion)[2 * dimIdx];
-			int upperBoundForCurrentDim = (getAuxData().getIndicesArrayOfQueryRegion)[2 * dimIdx + 1];
+			int lowerBoundForCurrentDim = (getAuxData().getIndicesArrayOfQueryRegion())[2 * dimIdx];
+			int upperBoundForCurrentDim = (getAuxData().getIndicesArrayOfQueryRegion())[2 * dimIdx + 1];
 			volumeOfQueryRegion *= (upperBoundForCurrentDim - lowerBoundForCurrentDim + 1);
 		}
 		return volumeOfQueryRegion;

@@ -1,13 +1,13 @@
 #include "InputParser.hpp"
 
-namespace DataUtilHandling
+namespace DataHandlingUtil
 {
 	ParsedData& InputParser::parseInputFile()
 	{
 		ParsedData * result;
 		std::string filename, line;
 		int spaceDimension, histogramResolution, serverNO, pointNO;
-		double delta;
+		double delta, kNNMeasCoeff, lbMeasCoeff;
 		int * histogram;
 		std::cout << "Enter the input path and filename:" << std::endl;
 		std::getline(std::cin, filename);
@@ -21,13 +21,17 @@ namespace DataUtilHandling
 			std::getline(inputfile, line);
 			serverNO = atoi(line.c_str());
 			std::getline(inputfile, line);
+			kNNMeasCoeff = atof(line.c_str());
+			std::getline(inputfile, line);
+			lbMeasCoeff = atof(line.c_str());
+			std::getline(inputfile, line);
 			std::stringstream binStringstream(line);
 			int binNO = (int)pow(histogramResolution, spaceDimension);
 			histogram = parseHistogram(binStringstream, serverNO, binNO, pointNO, delta);
 			std::cout << "Space dim: " << spaceDimension << ", resolution: " << histogramResolution 
 				<< ", server no.: " << serverNO << std::endl;
 			result = new ParsedData(spaceDimension, histogramResolution, serverNO, pointNO, delta,
-					 histogram);
+					 kNNMeasCoeff, lbMeasCoeff, histogram);
 		}
 		else
 		{
