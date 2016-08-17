@@ -37,7 +37,7 @@ namespace Measure
 			result += computeMeasure(partition);
 		}
 		result /= (double)maxRange;
-		return maxRange;
+		return result;
 	}
 	
 	inline double RangeMeasure::computeMeasureForBin(int * indicesArrayOfBin, int * indicesArrayOfRegion)
@@ -51,8 +51,8 @@ namespace Measure
 		int binValue = (int)(getAuxData().getHistogram())[currentCellIdx];
 		if (binValue > 0)
 		{
-			Vector_s::const_iterator first = getAuxData().getShells().begin();
-			Vector_s::const_iterator last = getAuxData().getShells().begin() + getAuxData().getRange();
+			Vector_s::const_iterator first = shells.begin();
+			Vector_s::const_iterator last = shells.begin() + getAuxData().getRange();
 			Vector_s currentShells(first, last);
 			Dictionary_s * dictOfShells = transformator.convertIntPairsOfShellsToListOfIdxArrays(
                         histogramResolution, indicesArrayOfBin, currentShells);

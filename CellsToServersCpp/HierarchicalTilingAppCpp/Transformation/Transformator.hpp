@@ -13,7 +13,7 @@ namespace Transformation
 	{
 	public:
 		int calculateCellIdx(int arrayRank, int arrayResolution, int * indicesArray);
-		int calculateExtendedCellIdx(int arrayRank, int arrayResolution, 
+		int calculateExtendedCellIdx(int arrayRank, int serverNO, int arrayResolution, 
 			int * extendedIndicesArray);
 		int * copyIndicesArray(int spaceDimension, int * inputIndicesArray);
 		int * extendIndicesArray(int spaceDimension, int * inputIndicesArray);

@@ -59,14 +59,14 @@ namespace ArrayPartition
 		return diffSum;
 	}
 
-	double IterativeDivider::determineObjectiveValue(Vector_coords * partition)
+	double IterativeDivider::determineObjectiveValue(Vector_coords& partition)
 	{
 		int * extendedIndicesArray = determineExtendedIndicesArray();
 
 		fillObjectiveValueArray();
 
 		int extendedCellIdx = transformator.calculateExtendedCellIdx(2 * parsedData.getSpaceDimension() + 1,
-			parsedData.getHistogramResolution(), extendedIndicesArray);
+			parsedData.getServerNO(), parsedData.getHistogramResolution(), extendedIndicesArray);
 		bool hasEnoughBins = hasEnoughBinsArray[extendedCellIdx];
 		double objectiveValue = objectiveValueArray[extendedCellIdx];
 		if (!hasEnoughBins)
@@ -74,15 +74,15 @@ namespace ArrayPartition
 			throw std::runtime_error("Not enough bins");
 		}
 		objectiveValue = objectiveValue / (double)parsedData.getServerNO();
-		partition = partitionArray[extendedCellIdx];
-		diffSum = determineCurrentDiffSum(*partition);
-		double measureOfKNN = kNNMeasure->computeMeasure(*partition);
+		partition = *partitionArray[extendedCellIdx];
+		diffSum = determineCurrentDiffSum(partition);
+		double measureOfKNN = kNNMeasure->computeMeasure(partition);
 		std::cout << "k-NN measure of the partition: " << measureOfKNN << std::endl;
-		double measureOfRange = rangeMeasure->computeMeasure(*partition);
+		double measureOfRange = rangeMeasure->averageAllMeasures(partition);
 		std::cout << "Range measure of the partition: " << measureOfRange << std::endl;
-		double measureOfLB = lbMeasure->computeMeasure(*partition);
+		double measureOfLB = lbMeasure->computeMeasure(partition);
 		std::cout << "Load balancing measure of the partition: " << measureOfLB << std::endl;
-		double measureOfBox = boxMeasure->computeMeasure(*partition);
+		double measureOfBox = boxMeasure->averageAllMeasures(partition);
 		std::cout << "Box measure of the partition: " << measureOfBox << std::endl;
 		return objectiveValue;
 	}
@@ -92,7 +92,6 @@ namespace ArrayPartition
 		int spaceDimension = parsedData.getSpaceDimension();
 		for (int splitNO = 0; splitNO < parsedData.getServerNO(); splitNO++)
 		{
-			
 			int * outerIndicesArray = new int[spaceDimension]();
 			for (;// the following expression is based on the logic of the method determineNextIndicesArray
 				outerIndicesArray != nullptr;
@@ -126,7 +125,8 @@ namespace ArrayPartition
 							indicesArray, splitNO);
 					}
 					int extendedCellIdx = transformator.calculateExtendedCellIdx(2 * spaceDimension + 1,
-						parsedData.getHistogramResolution(), extendedIndicesArray);
+						parsedData.getServerNO(), parsedData.getHistogramResolution(), 
+						extendedIndicesArray);
 					objectiveValueArray[extendedCellIdx] = objectiveValue;
 					hasEnoughBinsArray[extendedCellIdx] = hasEnoughBins;
 					delete [] indicesArray;
@@ -141,7 +141,7 @@ namespace ArrayPartition
 		double& objectiveValue, int * indicesArray)
 	{
 		int spaceDimension = parsedData.getSpaceDimension();
-		int currentCellIdx = transformator.calculateCellIdx(spaceDimension,
+		int currentCellIdx = transformator.calculateCellIdx(2 * spaceDimension,
 			parsedData.getHistogramResolution(), indicesArray);
 		int heftOfRegion = heftArray[currentCellIdx];
 		Coords * coords = new Coords();
@@ -150,7 +150,7 @@ namespace ArrayPartition
 		Vector_coords * partition = new Vector_coords();
 		partition->push_back(coords);
 		int extendedCellIdx = transformator.calculateExtendedCellIdx(2 * spaceDimension + 1,
-			parsedData.getHistogramResolution(), extendedIndicesArray);
+			parsedData.getServerNO(), parsedData.getHistogramResolution(), extendedIndicesArray);
 		partitionArray[extendedCellIdx] = partition;
 		// If the heft of the current region is zero the objective value is zero 
 		// because region with zero heft should not belong to a server.
@@ -225,6 +225,7 @@ namespace ArrayPartition
 	{
 		int spaceDimension = parsedData.getSpaceDimension();
 		int histogramResolution = parsedData.getHistogramResolution();
+		int serverNO = parsedData.getServerNO();
 		int * firstPartExtendedIndicesArray = transformator.extendIndicesArray(spaceDimension,
 			firstPartIndicesArray);
 		firstPartExtendedIndicesArray[0] = firstSplitNO;
@@ -232,9 +233,9 @@ namespace ArrayPartition
 			secondPartIndicesArray);
 		secondPartExtendedIndicesArray[0] = secondSplitNO;
 		int firstExtendedCellIdx = transformator.calculateExtendedCellIdx(2 * spaceDimension + 1,
-			histogramResolution, firstPartExtendedIndicesArray);
+			serverNO, histogramResolution, firstPartExtendedIndicesArray);
 		int secondExtendedCellIdx = transformator.calculateExtendedCellIdx(2 * spaceDimension + 1,
-			histogramResolution, secondPartExtendedIndicesArray);
+			serverNO, histogramResolution, secondPartExtendedIndicesArray);
 		objectiveValueForFirstPart = objectiveValueArray[firstExtendedCellIdx];
 		firstPartPartition = partitionArray[firstExtendedCellIdx];
 		hasEnoughBinsForFirstPart = hasEnoughBinsArray[firstExtendedCellIdx];
@@ -260,8 +261,8 @@ namespace ArrayPartition
 			partition->push_back(*itr);
 		}
 		int extendedCellIdx = transformator.calculateExtendedCellIdx(
-			2 * parsedData.getSpaceDimension() + 1, parsedData.getHistogramResolution(),
-			extendedIndicesArray);
+			2 * parsedData.getSpaceDimension() + 1, parsedData.getServerNO(),
+			parsedData.getHistogramResolution(), extendedIndicesArray);
 		partitionArray[extendedCellIdx] = partition;
 	}
 

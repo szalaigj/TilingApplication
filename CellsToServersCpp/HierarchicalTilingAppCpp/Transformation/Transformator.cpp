@@ -12,13 +12,14 @@ namespace Transformation
 		return cellIdx;
 	}
 
-	int Transformator::calculateExtendedCellIdx(int arrayRank, int arrayResolution,
+	int Transformator::calculateExtendedCellIdx(int arrayRank, int serverNO, int arrayResolution,
 		int * extendedIndicesArray)
 	{
 		int extendedCellIdx = extendedIndicesArray[0];
 		for (int dimIdx = 1; dimIdx < arrayRank; dimIdx++)
 		{
-			extendedCellIdx += extendedIndicesArray[dimIdx] * (int)pow((double)arrayResolution, dimIdx);
+			extendedCellIdx += extendedIndicesArray[dimIdx] * serverNO
+				* (int)pow((double)arrayResolution, dimIdx - 1);
 		}
 		return extendedCellIdx;
 	}
@@ -50,7 +51,7 @@ namespace Transformation
 		for (int dimIdx = 0; dimIdx < spaceDimension; dimIdx++)
 		{
 			nextIndicesArray[dimIdx]++;
-			if (nextIndicesArray[dimIdx] <= histogramResolution)
+			if (nextIndicesArray[dimIdx] < histogramResolution)
 				return nextIndicesArray;
 			nextIndicesArray[dimIdx] = 0;
 		}
@@ -64,7 +65,7 @@ namespace Transformation
 		for (int dimIdx = 0; dimIdx < spaceDimension; dimIdx++)
 		{
 			nextIndicesArray[dimIdx]++;
-			if (nextIndicesArray[dimIdx] <= histogramResolution)
+			if (nextIndicesArray[dimIdx] < histogramResolution)
 				return nextIndicesArray;
 			nextIndicesArray[dimIdx] = lowerBoundArray[dimIdx];
 		}

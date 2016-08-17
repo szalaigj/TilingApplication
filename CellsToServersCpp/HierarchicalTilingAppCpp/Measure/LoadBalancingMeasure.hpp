@@ -11,14 +11,14 @@ namespace Measure
 	class LoadBalancingMeasure : public BaseMeasure<LoadBalancingAuxData>
 	{
 	public:
-		LoadBalancingMeasure(LoadBalancingAuxData auxData, Transformator transformator);
+		LoadBalancingMeasure(LoadBalancingAuxData& auxData, Transformator& transformator);
 		double computeMeasureForRegion(Coords& coords);
 		double computeMeasureForBin(int * indicesArrayOfBin, int * indicesArrayOfRegion);
 	};
 
 	// There was a compiler error ("unresolved external symbol") without inline keyword 
 	// (source: http://stackoverflow.com/a/456716)
-	inline LoadBalancingMeasure::LoadBalancingMeasure(LoadBalancingAuxData auxData, Transformator transformator) :
+	inline LoadBalancingMeasure::LoadBalancingMeasure(LoadBalancingAuxData& auxData, Transformator& transformator) :
 		BaseMeasure<LoadBalancingAuxData>(auxData, transformator)
 	{
 	}

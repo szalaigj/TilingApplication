@@ -20,7 +20,7 @@ namespace ArrayPartition
 			Transformator& transformator, ParsedData& parsedData, int kNN, int maxRange,
 			Vector_s& shellsForKNN,	Vector_s& shellsForRange);
 		double getDiffSum() const;
-		double determineObjectiveValue(Vector_coords * partition);
+		double determineObjectiveValue(Vector_coords& partition);
 	private:
 		void setMeasureInstances(int * histogram, int kNN, int maxRange, 
             Vector_s& shellsForKNN, Vector_s& shellsForRange);
