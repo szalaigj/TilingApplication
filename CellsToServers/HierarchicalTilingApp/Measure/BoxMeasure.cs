@@ -48,12 +48,6 @@ namespace HierarchicalTilingApp.Measure
 
         public override double computeMeasureForRegion(Coords coords)
         {
-            //double entireVolume = Math.Pow(AuxData.HistogramResolution, AuxData.SpaceDimension);
-            //int[] indicesArrayOfServer = transformator.determineIndicesArray(AuxData.SpaceDimension, 
-            //    coords.ExtendedIndicesArray);
-            //int heftOfIntersection = computeHeftOfIntersection(indicesArrayOfServer, AuxData.IndicesArrayOfQueryRegion);
-            //return (entireVolume * heftOfIntersection) / (AuxData.VolumeOfQueryRegion * coords.HeftOfRegion);
-
             int[] indicesArrayOfServer = transformator.determineIndicesArray(AuxData.SpaceDimension, 
                 coords.ExtendedIndicesArray);
             int heftOfIntersection = computeHeftOfIntersection(indicesArrayOfServer, AuxData.IndicesArrayOfQueryRegion);

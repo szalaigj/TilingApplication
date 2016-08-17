@@ -47,8 +47,9 @@ namespace HierarchicalTilingApp
                     out histogramResolution, out array);
             }
             int kNN = (int)Math.Ceiling(delta);
-            Shell[] shellsForKNN = shellBuilder.createShells(kNN, spaceDimension);
-            int maxRange = transformator.determineMaxRange(spaceDimension, histogramResolution);
+            int maxShellNO = transformator.determineMaxRange(spaceDimension, histogramResolution);
+            Shell[] shellsForKNN = shellBuilder.createShells(maxShellNO, spaceDimension);
+            int maxRange = transformator.determineMaxRange(spaceDimension, histogramResolution / 2);
             Shell[] shellsForRange = shellBuilder.createShells(maxRange, spaceDimension);
             Console.WriteLine("Point no.: {0}", pointNO);
             Console.WriteLine("Delta: {0}", delta);

@@ -24,8 +24,6 @@ namespace HierarchicalTilingApp.Measure
                 int nnOutserver = 0;
                 if (kNN - binValue + 1 > 0)
                 {
-                    Shell[] currentShells = new Shell[kNN - binValue + 1];
-                    Array.Copy(AuxData.Shells, currentShells, kNN - binValue + 1);
                     var dictOfShells = transformator.convertIntPairsOfShellsToListOfIdxArrays(
                         AuxData.HistogramResolution, indicesArrayOfBin, AuxData.Shells);
                     iterateOverShells(indicesArrayOfRegion, kNN, ref nnInServer, ref nnOutserver, dictOfShells);
