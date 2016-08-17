@@ -4,6 +4,7 @@
 #include <math.h>
 
 #include "DataHandlingUtil/InputParser.hpp"
+#include "DataHandlingUtil/OutputWriter.hpp"
 #include "SumOfSquares/IntTuple.hpp"
 #include "SumOfSquares/Shell.hpp"
 #include "SumOfSquares/CornacchiaMethod.hpp"
@@ -13,11 +14,16 @@
 #include "ArrayPartition/HeftArrayCreator.hpp"
 #include "ArrayPartition/IterativeDivider.hpp"
 
+const std::string& tilesOutput = "u:/temp/data/hier_tiling/tiles.dat";
+const std::string& serversOutput = "u:/temp/data/hier_tiling/servers.dat";
+const std::string& cellsToServersOutput = "u:/temp/data/hier_tiling/cells_to_servers.dat";
+
 int main(int argc, char** argv)
 {
     clock_t begin, end;
     double elapsed_secs;
     DataHandlingUtil::InputParser parser;
+	DataHandlingUtil::OutputWriter outputWriter;
     SumOfSquares::CornacchiaMethod cornacchiaMethod;
     SumOfSquares::BacktrackingMethod backtrackingMethod(cornacchiaMethod);
     Transformation::Transformator transformator;
@@ -43,15 +49,13 @@ int main(int argc, char** argv)
 		kNN, maxRange, shellsForKNN, shellsForRange);
 	Vector_coords partition;
 	double objectiveValue = iterativeDivider.determineObjectiveValue(partition);
-
-	int serialNO = 0;
-	for(Vector_coords::iterator itr = partition.begin(); itr != partition.end(); itr++)
-	{
-		Coords * coords = *itr;
-		coords->printCoords(spaceDimension, serialNO);
-		serialNO++;
-	}
-
+	std::cout << "Objective value: " << objectiveValue << std::endl;
+	std::cout << "Sum of differences between tile hefts and delta: " << iterativeDivider.getDiffSum()
+		<< std::endl;
+	outputWriter.writeOutTiles(spaceDimension, partition, tilesOutput);
+	outputWriter.writeOutServers(partition, serversOutput);
+	outputWriter.writeOutCellsToServers(histogramResolution, partition, cellsToServersOutput);
+	
     end = clock();
     elapsed_secs = double(end - begin) / CLOCKS_PER_SEC;
     std::cout << "Elapsed time (in min) of the input parsing" << " " << (elapsed_secs / 60.0) << std::endl;

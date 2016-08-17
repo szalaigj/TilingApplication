@@ -82,6 +82,7 @@
     <ClInclude Include="ArrayPartition\HeftArrayCreator.hpp" />
     <ClInclude Include="ArrayPartition\IterativeDivider.hpp" />
     <ClInclude Include="DataHandlingUtil\InputParser.hpp" />
+    <ClInclude Include="DataHandlingUtil\OutputWriter.hpp" />
     <ClInclude Include="DataHandlingUtil\ParsedData.hpp" />
     <ClInclude Include="Measure\IncludingAllMeasures.hpp" />
     <ClInclude Include="Measure\BaseAuxData.hpp" />
@@ -111,6 +112,7 @@
     <ClCompile Include="ArrayPartition\HeftArrayCreator.cpp" />
     <ClCompile Include="ArrayPartition\IterativeDivider.cpp" />
     <ClCompile Include="DataHandlingUtil\InputParser.cpp" />
+    <ClCompile Include="DataHandlingUtil\OutputWriter.cpp" />
     <ClCompile Include="DataHandlingUtil\ParsedData.cpp" />
     <ClCompile Include="Measure\BaseAuxData.cpp" />
     <ClCompile Include="Measure\BoxAuxData.cpp" />

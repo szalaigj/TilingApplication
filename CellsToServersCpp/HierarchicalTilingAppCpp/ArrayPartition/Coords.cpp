@@ -30,7 +30,7 @@ namespace ArrayPartition
 	void Coords::printCoords(int spaceDimension, int serialNO)
 	{
 		std::cout << serialNO << ". tile: [";
-		for (int idx = 0; idx < spaceDimension; idx++)
+		for (int idx = spaceDimension - 1; idx >= 0; idx--)
 		{
 			std::cout << " " << extendedIndicesArray[2 * idx + 1] << " " 
 				<< extendedIndicesArray[2 * idx + 2] << " ";
@@ -41,12 +41,11 @@ namespace ArrayPartition
 	void Coords::writeToStringBuilder(int spaceDimension, std::stringstream& strBldr)
 	{
 		strBldr << heftOfRegion;
-		for (int idx = 0; idx < spaceDimension; idx++)
+		for (int idx = spaceDimension - 1; idx >= 0; idx--)
 		{
 			strBldr << " " << extendedIndicesArray[2 * idx + 1] << " "
 				<< extendedIndicesArray[2 * idx + 2];
 		}
 		strBldr << std::endl;
-		//std::cout << strBldr.str();
 	}
 }

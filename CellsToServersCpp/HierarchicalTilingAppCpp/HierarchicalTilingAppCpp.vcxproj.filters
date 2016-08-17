@@ -136,6 +136,9 @@
     <ClInclude Include="Measure\IncludingAllMeasures.hpp">
       <Filter>Measure\Headers</Filter>
     </ClInclude>
+    <ClInclude Include="DataHandlingUtil\OutputWriter.hpp">
+      <Filter>DataHandlingUtil\Headers</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DataHandlingUtil\ParsedData.cpp">
@@ -194,6 +197,9 @@
     </ClCompile>
     <ClCompile Include="ArrayPartition\IterativeDivider.cpp">
       <Filter>ArrayPartition\Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="DataHandlingUtil\OutputWriter.cpp">
+      <Filter>DataHandlingUtil\Sources</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
