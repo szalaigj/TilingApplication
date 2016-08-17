@@ -2,7 +2,7 @@
 
 namespace ArrayPartition
 {
-	int * Coords::getExtendedIndicesArray()
+	int * Coords::getExtendedIndicesArray() const
 	{
 		return extendedIndicesArray;
 	}
@@ -12,7 +12,7 @@ namespace ArrayPartition
 		this->extendedIndicesArray = inputExtendedIndicesArray;
 	}
 
-	int Coords::getHeftOfRegion()
+	int Coords::getHeftOfRegion() const
 	{
 		return heftOfRegion;
 	}

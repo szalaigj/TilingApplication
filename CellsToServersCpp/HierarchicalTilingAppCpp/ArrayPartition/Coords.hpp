@@ -11,9 +11,9 @@ namespace ArrayPartition
 	class Coords
 	{
 	public:
-		int * getExtendedIndicesArray();
+		int * getExtendedIndicesArray() const;
 		void setExtendedIndicesArray(int * inputExtendedIndicesArray);
-		int getHeftOfRegion();
+		int getHeftOfRegion() const;
 		void setHeftOfRegion(int inputHeftOfRegion);
 		double differenceFromDelta(double delta);
 		void printCoords(int spaceDimension, int serialNO);
