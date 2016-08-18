@@ -15,8 +15,8 @@ namespace Measure
 	public:
 		T& getAuxData();
 		void setAuxData(T& inputAuxData);
-		double computeMeasure(Vector_coords& partition);
-		virtual double computeMeasureForRegion(Coords& coords) = 0;
+		double computeMeasure(int partitionSize, Coords ** partition);
+		virtual double computeMeasureForRegion(Coords * coords) = 0;
 		virtual double computeMeasureForBin(int * indicesArrayOfBin, int * indicesArrayOfRegion) = 0;
 	protected:
 		BaseMeasure(T& auxData, Transformator& transformator);
@@ -49,13 +49,13 @@ namespace Measure
 	}
 	
 	template <class T>
-	inline double BaseMeasure<T>::computeMeasure(Vector_coords& partition)
+	inline double BaseMeasure<T>::computeMeasure(int partitionSize, Coords ** partition)
 	{
 		double measure = 0.0;
-		for (Vector_coords::iterator itr = partition.begin(); itr != partition.end(); itr++)
+		for (int idx = 0; idx < partitionSize; idx++)
 		{
-			Coords * coords = *itr;
-			measure += computeMeasureForRegion(*coords);
+			Coords * coords = partition[idx];
+			measure += computeMeasureForRegion(coords);
 		}
 		measure = measure / (double)auxData.getServerNO();
 		return measure;

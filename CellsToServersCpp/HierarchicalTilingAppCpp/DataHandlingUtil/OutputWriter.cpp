@@ -2,42 +2,38 @@
 
 namespace DataHandlingUtil
 {
-	void OutputWriter::writeOutTiles(int spaceDimension, Vector_coords& partition, 
+	void OutputWriter::writeOutTiles(int spaceDimension, int serverNO, Coords ** partition,
 		const std::string& inputTilesOutput)
 	{
 		std::stringstream strBldr;
-		int serialNO = 1;
-		for(Vector_coords::iterator itr = partition.begin(); itr != partition.end(); itr++)
+		for (int serverIdx = 0; serverIdx < serverNO; serverIdx++)
 		{
-			Coords * coords = *itr;
-			coords->printCoords(spaceDimension, serialNO);
+			Coords * coords = partition[serverIdx];
+			coords->printCoords(spaceDimension, serverIdx + 1);
 			coords->writeToStringBuilder(spaceDimension, strBldr);
-			serialNO++;
 		}
 		writeAllText(inputTilesOutput, strBldr);
 	}
 
-	void OutputWriter::writeOutServers(Vector_coords& partition, const std::string& inputServersOutput)
+	void OutputWriter::writeOutServers(int serverNO, Coords ** partition,
+		const std::string& inputServersOutput)
 	{
 		std::stringstream strBldr;
-		int serverIdx = 0;
-		for(Vector_coords::iterator itr = partition.begin(); itr != partition.end(); itr++)
+		for (int serverIdx = 0; serverIdx < serverNO; serverIdx++)
 		{
-			Coords * coords = *itr;
+			Coords * coords = partition[serverIdx];
 			strBldr << coords->getHeftOfRegion() << " " << serverIdx << std::endl;
-			serverIdx++;
 		}
 		writeAllText(inputServersOutput, strBldr);
 	}
 
-	void OutputWriter::writeOutCellsToServers(int histogramResolution, Vector_coords& partition,
-		const std::string& inputCellsToServersOutput)
+	void OutputWriter::writeOutCellsToServers(int histogramResolution, int serverNO, 
+		Coords ** partition, const std::string& inputCellsToServersOutput)
 	{
 		std::stringstream strBldr;
-		int serverIdx = 0;
-		for(Vector_coords::iterator itr = partition.begin(); itr != partition.end(); itr++)
+		for (int serverIdx = 0; serverIdx < serverNO; serverIdx++)
 		{
-			Coords * coords = *itr;
+			Coords * coords = partition[serverIdx];
 			int * extendedIndicesArray = coords->getExtendedIndicesArray();
 			for (int x = extendedIndicesArray[1]; x <= extendedIndicesArray[2]; x++)
 			{
@@ -50,7 +46,6 @@ namespace DataHandlingUtil
 				}
 			}
 			strBldr << std::endl;
-			serverIdx++;
 		}
 		writeAllText(inputCellsToServersOutput, strBldr);
 	}

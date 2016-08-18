@@ -13,7 +13,7 @@ namespace ArrayPartition
 		int serverNO = parsedData.getServerNO();
 		int sizeOfArrays = serverNO * (int)pow((double)histogramResolution, 2 * spaceDimension);
 		this->objectiveValueArray = new double[sizeOfArrays]();
-		this->partitionArray = new Vector_coords*[sizeOfArrays]();
+		this->partitionArray = new Coords**[sizeOfArrays]();
 		this->hasEnoughBinsArray = new bool[sizeOfArrays]();
 		this->setMeasureInstances(histogram, kNN, maxRange, shellsForKNN, shellsForRange);
 	}
@@ -59,7 +59,7 @@ namespace ArrayPartition
 		return diffSum;
 	}
 
-	double IterativeDivider::determineObjectiveValue(Vector_coords& partition)
+	double IterativeDivider::determineObjectiveValue(Coords **& partition)
 	{
 		int * extendedIndicesArray = determineExtendedIndicesArray();
 
@@ -74,15 +74,15 @@ namespace ArrayPartition
 			throw std::runtime_error("Not enough bins");
 		}
 		objectiveValue = objectiveValue / (double)parsedData.getServerNO();
-		partition = *partitionArray[extendedCellIdx];
+		partition = partitionArray[extendedCellIdx];
 		diffSum = determineCurrentDiffSum(partition);
-		double measureOfKNN = kNNMeasure->computeMeasure(partition);
+		double measureOfKNN = kNNMeasure->computeMeasure(parsedData.getServerNO(), partition);
 		std::cout << "k-NN measure of the partition: " << measureOfKNN << std::endl;
-		double measureOfRange = rangeMeasure->averageAllMeasures(partition);
+		double measureOfRange = rangeMeasure->averageAllMeasures(parsedData.getServerNO(), partition);
 		std::cout << "Range measure of the partition: " << measureOfRange << std::endl;
-		double measureOfLB = lbMeasure->computeMeasure(partition);
+		double measureOfLB = lbMeasure->computeMeasure(parsedData.getServerNO(), partition);
 		std::cout << "Load balancing measure of the partition: " << measureOfLB << std::endl;
-		double measureOfBox = boxMeasure->averageAllMeasures(partition);
+		double measureOfBox = boxMeasure->averageAllMeasures(parsedData.getServerNO(), partition);
 		std::cout << "Box measure of the partition: " << measureOfBox << std::endl;
 		return objectiveValue;
 	}
@@ -147,16 +147,16 @@ namespace ArrayPartition
 		Coords * coords = new Coords();
 		coords->setExtendedIndicesArray(extendedIndicesArray);
 		coords->setHeftOfRegion(heftOfRegion);
-		Vector_coords * partition = new Vector_coords();
-		partition->push_back(coords);
+		Coords ** partition = new Coords*[1];
+		partition[0] = coords;
 		int extendedCellIdx = transformator.calculateExtendedCellIdx(2 * spaceDimension + 1,
 			parsedData.getServerNO(), parsedData.getHistogramResolution(), extendedIndicesArray);
 		partitionArray[extendedCellIdx] = partition;
 		// If the heft of the current region is zero the objective value is zero 
 		// because region with zero heft should not belong to a server.
 		if (heftOfRegion != 0)
-			objectiveValue = parsedData.getKNNMeasCoeff() * kNNMeasure->computeMeasureForRegion(*coords) +
-			parsedData.getLbMeasCoeff() * lbMeasure->computeMeasureForRegion(*coords);
+			objectiveValue = parsedData.getKNNMeasCoeff() * kNNMeasure->computeMeasureForRegion(coords) +
+			parsedData.getLbMeasCoeff() * lbMeasure->computeMeasureForRegion(coords);
 	}
 
 	void IterativeDivider::fillObjectiveValueWhenSplitNOIsLargerThenZero(int * extendedIndicesArray,
@@ -195,8 +195,8 @@ namespace ArrayPartition
 		int firstSplitNO, int secondSplitNO)
 	{
 		double objectiveValueForFirstPart, objectiveValueForSecondPart;
-		Vector_coords * firstPartPartition = nullptr;
-		Vector_coords * secondPartPartition = nullptr;
+		Coords ** firstPartPartition = nullptr;
+		Coords ** secondPartPartition = nullptr;
 		bool hasEnoughBinsForFirstPart, hasEnoughBinsForSecondPart;
 		getValuesFromParts(firstPartIndicesArray, secondPartIndicesArray, firstSplitNO, secondSplitNO, 
 			objectiveValueForFirstPart, firstPartPartition, hasEnoughBinsForFirstPart, 
@@ -213,14 +213,15 @@ namespace ArrayPartition
 			&& hasEnoughBinsForFirstPart && hasEnoughBinsForSecondPart)
 		{
 			objectiveValue = currentObjectiveValue;
-			setPartitionByParts(extendedIndicesArray, *firstPartPartition, *secondPartPartition);
+			setPartitionByParts(extendedIndicesArray, splitNO, firstSplitNO, firstPartPartition,
+				secondSplitNO, secondPartPartition);
 		}
 	}
 
 	void IterativeDivider::getValuesFromParts(int * firstPartIndicesArray, int * secondPartIndicesArray,
 		int firstSplitNO, int secondSplitNO, double& objectiveValueForFirstPart,
-		Vector_coords *& firstPartPartition, bool& hasEnoughBinsForFirstPart, 
-		double& objectiveValueForSecondPart, Vector_coords *& secondPartPartition, 
+		Coords **& firstPartPartition, bool& hasEnoughBinsForFirstPart, 
+		double& objectiveValueForSecondPart, Coords **& secondPartPartition, 
 		bool& hasEnoughBinsForSecondPart)
 	{
 		int spaceDimension = parsedData.getSpaceDimension();
@@ -246,19 +247,17 @@ namespace ArrayPartition
 		delete [] secondPartExtendedIndicesArray;
 	}
 
-	void IterativeDivider::setPartitionByParts(int * extendedIndicesArray,
-		Vector_coords& firstPartPartition, Vector_coords& secondPartPartition)
+	void IterativeDivider::setPartitionByParts(int * extendedIndicesArray, int splitNO, int firstSplitNO,
+		Coords **& firstPartPartition, int secondSplitNO, Coords **& secondPartPartition)
 	{
-		Vector_coords * partition = new Vector_coords();
-		for(Vector_coords::iterator itr = firstPartPartition.begin(); itr != firstPartPartition.end();
-			itr++)
+		Coords ** partition = new Coords*[splitNO + 1];
+		for (int idx = 0; idx < firstSplitNO + 1; idx++)
 		{
-			partition->push_back(*itr);
+			partition[idx] = firstPartPartition[idx];
 		}
-		for(Vector_coords::iterator itr = secondPartPartition.begin(); itr != secondPartPartition.end();
-			itr++)
+		for (int idx = firstSplitNO + 1; idx < splitNO + 1; idx++)
 		{
-			partition->push_back(*itr);
+			partition[idx] = secondPartPartition[idx - (firstSplitNO + 1)];
 		}
 		int extendedCellIdx = transformator.calculateExtendedCellIdx(
 			2 * parsedData.getSpaceDimension() + 1, parsedData.getServerNO(),
@@ -306,10 +305,10 @@ namespace ArrayPartition
 		return nullptr;
 	}
 
-	double IterativeDivider::determineCurrentDiffSum(Vector_coords& partition)
+	double IterativeDivider::determineCurrentDiffSum(Coords ** partition)
 	{
 		double diffSum = 0.0;
-		for (size_t idx = 0; idx < partition.size(); idx++)
+		for (int idx = 0; idx < parsedData.getServerNO(); idx++)
 		{
 			diffSum += (*partition[idx]).differenceFromDelta(parsedData.getDelta());
 		}

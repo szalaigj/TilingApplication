@@ -13,8 +13,8 @@ namespace Measure
 	{
 	public:
 		BoxMeasure(BoxAuxData& auxData, Transformator& transformator);
-		double averageAllMeasures(Vector_coords& partition);
-		double computeMeasureForRegion(Coords& coords);
+		double averageAllMeasures(int partitionSize, Coords ** partition);
+		double computeMeasureForRegion(Coords * coords);
 		double computeMeasureForBin(int * indicesArrayOfBin, int * indicesArrayOfRegion);
 	private:
 		double computeVolumeOfQueryRegion();
@@ -28,7 +28,7 @@ namespace Measure
 	{
 	}
 
-	inline double BoxMeasure::averageAllMeasures(Vector_coords& partition)
+	inline double BoxMeasure::averageAllMeasures(int partitionSize, Coords ** partition)
 	{
 		double result = 0.0;
 		int spaceDimension = getAuxData().getSpaceDimension();
@@ -54,7 +54,7 @@ namespace Measure
 					outerIndicesArray, innerIndicesArray);
 				getAuxData().setIndicesArrayOfQueryRegion(currentIndicesArrayOfQueryRegion);
 				getAuxData().setVolumeOfQueryRegion(computeVolumeOfQueryRegion());
-				result += computeMeasure(partition);
+				result += computeMeasure(partitionSize, partition);
 				delete [] currentIndicesArrayOfQueryRegion;
 			}
 			delete [] innerIndicesArray;
@@ -77,13 +77,13 @@ namespace Measure
 		return volumeOfQueryRegion;
 	}
 
-	inline double BoxMeasure::computeMeasureForRegion(Coords& coords)
+	inline double BoxMeasure::computeMeasureForRegion(Coords * coords)
 	{
 		int * indicesArrayOfServer = transformator.determineIndicesArray(
-			getAuxData().getSpaceDimension(), coords.getExtendedIndicesArray());
+			getAuxData().getSpaceDimension(), coords->getExtendedIndicesArray());
 		int heftOfIntersection = computeHeftOfIntersection(indicesArrayOfServer, 
 			getAuxData().getIndicesArrayOfQueryRegion());
-		return 1 - (double)heftOfIntersection / (double)coords.getHeftOfRegion();
+		return 1 - (double)heftOfIntersection / (double)coords->getHeftOfRegion();
 	}
 
 	inline int BoxMeasure::computeHeftOfIntersection(int * indicesArrayOfServer, 

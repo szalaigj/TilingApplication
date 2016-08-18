@@ -10,7 +10,7 @@ namespace Measure
 	class SimilarityMeasure : public BaseMeasure<T>
 	{
 	public:
-		double computeMeasureForRegion(Coords& coords);
+		double computeMeasureForRegion(Coords * coords);
 	protected:
 		SimilarityMeasure(T& auxData, Transformator& transformator);
 		bool isIdxArrayInTheRegion(int * idxArray, int * indicesArrayOfRegion);
@@ -27,13 +27,13 @@ namespace Measure
 	}
 
 	template <class T>
-	inline double SimilarityMeasure<T>::computeMeasureForRegion(Coords& coords)
+	inline double SimilarityMeasure<T>::computeMeasureForRegion(Coords * coords)
 	{
 		double measureForRegion = 0.0;
 		int spaceDimension = getAuxData().getSpaceDimension();
 		int histogramResolution = getAuxData().getHistogramResolution();
 		int * indicesArrayOfRegion =
-			transformator.determineIndicesArray(spaceDimension, coords.getExtendedIndicesArray());
+			transformator.determineIndicesArray(spaceDimension, coords->getExtendedIndicesArray());
 		int binNOInRegionWithoutZeroHeft = 0;
 		int * indicesArrayOfBin;
 		for (indicesArrayOfBin =

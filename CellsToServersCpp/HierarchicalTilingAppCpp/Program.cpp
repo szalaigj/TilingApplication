@@ -47,14 +47,14 @@ int main(int argc, char** argv)
 
 	ArrayPartition::IterativeDivider iterativeDivider(histogram, heftArray, transformator, parsedData,
 		kNN, maxRange, shellsForKNN, shellsForRange);
-	Vector_coords partition;
+	Coords ** partition = nullptr;
 	double objectiveValue = iterativeDivider.determineObjectiveValue(partition);
 	std::cout << "Objective value: " << objectiveValue << std::endl;
 	std::cout << "Sum of differences between tile hefts and delta: " << iterativeDivider.getDiffSum()
 		<< std::endl;
-	outputWriter.writeOutTiles(spaceDimension, partition, tilesOutput);
-	outputWriter.writeOutServers(partition, serversOutput);
-	outputWriter.writeOutCellsToServers(histogramResolution, partition, cellsToServersOutput);
+	outputWriter.writeOutTiles(spaceDimension, serverNO, partition, tilesOutput);
+	outputWriter.writeOutServers(serverNO, partition, serversOutput);
+	outputWriter.writeOutCellsToServers(histogramResolution, serverNO, partition, cellsToServersOutput);
 	
     end = clock();
     elapsed_secs = double(end - begin) / CLOCKS_PER_SEC;

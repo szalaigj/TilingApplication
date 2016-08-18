@@ -14,7 +14,7 @@ namespace Measure
 	{
 	public:
 		RangeMeasure(RangeAuxData& auxData, Transformator& transformator);
-		double averageAllMeasures(Vector_coords& partition);
+		double averageAllMeasures(int partitionSize, Coords ** partition);
 		double computeMeasureForBin(int * indicesArrayOfBin, int * indicesArrayOfRegion);
 	private:
 		double iterateOverShells(int * indicesArrayOfRegion, Dictionary_s * dictOfShells);
@@ -27,14 +27,14 @@ namespace Measure
 	{
 	}
 
-	inline double RangeMeasure::averageAllMeasures(Vector_coords& partition)
+	inline double RangeMeasure::averageAllMeasures(int partitionSize, Coords ** partition)
 	{
 		double result = 0.0;
 		int maxRange = getAuxData().getMaxRange();
 		for (int rangeIdx = 1; rangeIdx <= maxRange; rangeIdx++)
 		{
 			getAuxData().setRange(rangeIdx);
-			result += computeMeasure(partition);
+			result += computeMeasure(partitionSize, partition);
 		}
 		result /= (double)maxRange;
 		return result;

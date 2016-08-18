@@ -22,8 +22,6 @@ namespace ArrayPartition
 		int * extendedIndicesArray;
 		int heftOfRegion;
 	};
-
-	typedef std::vector<Coords *> Vector_coords;
 }
 
 #endif /* COORDS_HPP_ */

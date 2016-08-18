@@ -20,7 +20,7 @@ namespace ArrayPartition
 			Transformator& transformator, ParsedData& parsedData, int kNN, int maxRange,
 			Vector_s& shellsForKNN,	Vector_s& shellsForRange);
 		double getDiffSum() const;
-		double determineObjectiveValue(Vector_coords& partition);
+		double determineObjectiveValue(Coords **& partition);
 	private:
 		void setMeasureInstances(int * histogram, int kNN, int maxRange, 
             Vector_s& shellsForKNN, Vector_s& shellsForRange);
@@ -36,19 +36,19 @@ namespace ArrayPartition
 			int firstSplitNO, int secondSplitNO);
 		void getValuesFromParts(int * firstPartIndicesArray, int * secondPartIndicesArray,
 			int firstSplitNO, int secondSplitNO, double& objectiveValueForFirstPart,
-			Vector_coords *& firstPartPartition, bool& hasEnoughBinsForFirstPart, 
-			double& objectiveValueForSecondPart, Vector_coords *& secondPartPartition, 
+			Coords **& firstPartPartition, bool& hasEnoughBinsForFirstPart, 
+			double& objectiveValueForSecondPart, Coords **& secondPartPartition, 
 			bool& hasEnoughBinsForSecondPart);
-		void setPartitionByParts(int * extendedIndicesArray, Vector_coords& firstPartPartition,
-			Vector_coords& secondPartPartition);
+		void setPartitionByParts(int * extendedIndicesArray, int splitNO, int firstSplitNO,
+			Coords **& firstPartPartition, int secondSplitNO, Coords **& secondPartPartition);
 
 		int * determineExtendedIndicesArray();
 		int * determineNextIndicesArray(int * previousIndicesArray);
 		int * determineNextIndicesArray(int * lowerBoundArray, int * previousIndicesArray);
-		double determineCurrentDiffSum(Vector_coords& partition);
+		double determineCurrentDiffSum(Coords ** partition);
 		int * heftArray;
 		double * objectiveValueArray;
-		Vector_coords ** partitionArray;
+		Coords *** partitionArray;
 		bool * hasEnoughBinsArray;
 		ParsedData& parsedData;
 		Transformator& transformator;

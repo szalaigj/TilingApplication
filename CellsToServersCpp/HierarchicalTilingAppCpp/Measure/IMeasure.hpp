@@ -13,8 +13,8 @@ namespace Measure
 	public:
 		virtual T& getAuxData() = 0;
 		virtual void setAuxData(T& inputAuxData) = 0;
-		virtual double computeMeasure(Vector_coords& partition) = 0;
-		virtual double computeMeasureForRegion(Coords& coords) = 0;
+		virtual double computeMeasure(int partitionSize, Coords ** partition) = 0;
+		virtual double computeMeasureForRegion(Coords * coords) = 0;
 		virtual double computeMeasureForBin(int * indicesArrayOfBin, int * indicesArrayOfRegion) = 0;
 	};
 }

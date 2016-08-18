@@ -10,7 +10,7 @@ namespace Measure
 	class IAverageMeasure
 	{
 	public:
-		virtual double averageAllMeasures(Vector_coords& partition) = 0;
+		virtual double averageAllMeasures(int partitionSize, Coords ** partition) = 0;
 	};
 }
 

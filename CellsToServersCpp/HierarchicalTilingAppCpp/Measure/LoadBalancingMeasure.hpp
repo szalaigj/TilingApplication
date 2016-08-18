@@ -12,7 +12,7 @@ namespace Measure
 	{
 	public:
 		LoadBalancingMeasure(LoadBalancingAuxData& auxData, Transformator& transformator);
-		double computeMeasureForRegion(Coords& coords);
+		double computeMeasureForRegion(Coords * coords);
 		double computeMeasureForBin(int * indicesArrayOfBin, int * indicesArrayOfRegion);
 	};
 
@@ -23,9 +23,9 @@ namespace Measure
 	{
 	}
 
-	inline double LoadBalancingMeasure::computeMeasureForRegion(Coords& coords)
+	inline double LoadBalancingMeasure::computeMeasureForRegion(Coords * coords)
 	{
-		return 1 - (coords.differenceFromDelta(auxData.getDelta()) / (double)auxData.getPointNO());
+		return 1 - (coords->differenceFromDelta(auxData.getDelta()) / (double)auxData.getPointNO());
 	}
 
 	inline double LoadBalancingMeasure::computeMeasureForBin(int * indicesArrayOfBin, int * indicesArrayOfRegion)
