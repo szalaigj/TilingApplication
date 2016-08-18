@@ -2,12 +2,16 @@
 
 namespace ArrayPartition
 {
-	HeftArrayCreator::HeftArrayCreator(Transformator& transformator) :
-		transformator(transformator)
+	BaseHeftArrayCreator::BaseHeftArrayCreator(Transformator& transformator) : transformator(transformator)
 	{
 	}
 
-	int * HeftArrayCreator::createHeftArray(int spaceDimension, int histogramResolution, int * histogram)
+	HeftArrayCreator::HeftArrayCreator(Transformator& transformator) : BaseHeftArrayCreator(transformator)
+	{
+	}
+
+	int * BaseHeftArrayCreator::createHeftArray(int spaceDimension, int histogramResolution, 
+		int * histogram)
 	{
 		int elementNO = (int)pow((double)histogramResolution, 2 * spaceDimension);
 		// initializing the elements of the heftArray to zeros:
@@ -61,5 +65,46 @@ namespace ArrayPartition
 			delete [] innerIndicesArray;
 		}
 		delete [] outerIndicesArray;
+	}
+
+	HeftArrayCreatorOpenMP::HeftArrayCreatorOpenMP(Transformator& transformator) 
+		: BaseHeftArrayCreator(transformator)
+	{
+	}
+
+	void HeftArrayCreatorOpenMP::fillHeftArray(int spaceDimension, int histogramResolution,
+		int * histogram, int * heftArray)
+	{
+		int cellNO = (int)pow((double)histogramResolution, spaceDimension);
+		#pragma omp parallel for
+		for (int outerCellIdx = 0; outerCellIdx < cellNO; outerCellIdx++)
+		{
+			for (int innerCellIdx = outerCellIdx; innerCellIdx < cellNO; innerCellIdx++)
+			{
+				int currentHeftCellIdx;
+				int * heftArrayIndices = nullptr;
+				bool validHeftArrayIndices = transformator.calculateCellIdx(spaceDimension,
+					histogramResolution, outerCellIdx, innerCellIdx, currentHeftCellIdx, heftArrayIndices);
+				if (validHeftArrayIndices)
+				{
+					int binValue = 0;
+					int * indicesArrayOfBin;
+					for (indicesArrayOfBin = transformator.determineFirstContainedIndicesArray(
+						spaceDimension, heftArrayIndices);
+						indicesArrayOfBin != nullptr;
+						indicesArrayOfBin = transformator.determineNextContainedIndicesArray(
+						spaceDimension, heftArrayIndices, indicesArrayOfBin)
+					)
+					{
+						int currentCellIdx = transformator.calculateCellIdx(spaceDimension,
+							histogramResolution, indicesArrayOfBin);
+						binValue += histogram[currentCellIdx];
+					}
+					heftArray[currentHeftCellIdx] = binValue;
+					delete [] indicesArrayOfBin;
+					delete [] heftArrayIndices;
+				}
+			}
+		}
 	}
 }

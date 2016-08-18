@@ -139,6 +139,12 @@
     <ClInclude Include="DataHandlingUtil\OutputWriter.hpp">
       <Filter>DataHandlingUtil\Headers</Filter>
     </ClInclude>
+    <ClInclude Include="ArrayPartition\BaseDivider.hpp">
+      <Filter>ArrayPartition\Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="ArrayPartition\OpenMPDivider.hpp">
+      <Filter>ArrayPartition\Headers</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DataHandlingUtil\ParsedData.cpp">
@@ -200,6 +206,12 @@
     </ClCompile>
     <ClCompile Include="DataHandlingUtil\OutputWriter.cpp">
       <Filter>DataHandlingUtil\Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="ArrayPartition\BaseDivider.cpp">
+      <Filter>ArrayPartition\Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="ArrayPartition\OpenMPDivider.cpp">
+      <Filter>ArrayPartition\Sources</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

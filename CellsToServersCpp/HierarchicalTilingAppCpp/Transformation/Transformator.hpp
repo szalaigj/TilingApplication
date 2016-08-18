@@ -13,6 +13,8 @@ namespace Transformation
 	{
 	public:
 		int calculateCellIdx(int arrayRank, int arrayResolution, int * indicesArray);
+		bool calculateCellIdx(int arrayRank, int arrayResolution, int outerCellIdx, int innerCellIdx,
+			int& cellIdx, int *& mergedArrayIndices);
 		int calculateExtendedCellIdx(int arrayRank, int serverNO, int arrayResolution, 
 			int * extendedIndicesArray);
 		int * copyIndicesArray(int spaceDimension, int * inputIndicesArray);
@@ -27,6 +29,8 @@ namespace Transformation
 		int * mergeIndicesArrays(int spaceDimension, int * outerIndicesArray, int * innerIndicesArray);
 		int * mergeIndicesArrays(int spaceDimension, int splitNO, int * outerIndicesArray,
 			int * innerIndicesArray);
+		bool mergeIndicesArrays(int spaceDimension, int arrayResolution, int splitNO, int serverNO,
+			int outerCellIdx, int innerCellIdx, int& extendedCellIdx, int *& mergedArrayIndices);
 		int * determineIndicesArray(int spaceDimension, int * extendedIndicesArray);
 		Dictionary_s * convertIntPairsOfShellsToListOfIdxArrays(int histogramResolution,
 			int * inputIndicesArray, Vector_s shells);

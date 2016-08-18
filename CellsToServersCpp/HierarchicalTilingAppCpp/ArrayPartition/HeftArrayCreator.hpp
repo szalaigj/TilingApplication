@@ -8,14 +8,31 @@ using namespace Transformation;
 
 namespace ArrayPartition
 {
-	class HeftArrayCreator
+	class BaseHeftArrayCreator
+	{
+	public:
+		BaseHeftArrayCreator(Transformator& transformator);
+		int * createHeftArray(int spaceDimension, int histogramResolution, int * histogram);
+	protected:
+		Transformator& transformator;
+		virtual void fillHeftArray(int spaceDimension, int histogramResolution, int * histogram,
+			int * heftArray) = 0;
+	};
+
+	class HeftArrayCreator : public BaseHeftArrayCreator
 	{
 	public:
 		HeftArrayCreator(Transformator& transformator);
-		int * createHeftArray(int spaceDimension, int histogramResolution, int * histogram);
-	private:
+	protected:
 		void fillHeftArray(int spaceDimension, int histogramResolution, int * histogram, int * heftArray);
-		Transformator& transformator;
+	};
+
+	class HeftArrayCreatorOpenMP : public BaseHeftArrayCreator
+	{
+	public:
+		HeftArrayCreatorOpenMP(Transformator& transformator);
+	protected:
+		void fillHeftArray(int spaceDimension, int histogramResolution, int * histogram, int * heftArray);
 	};
 }
 

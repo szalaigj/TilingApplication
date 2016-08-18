@@ -12,7 +12,7 @@
 #include "SumOfSquares/ShellBuilder.hpp"
 #include "Transformation/Transformator.hpp"
 #include "ArrayPartition/HeftArrayCreator.hpp"
-#include "ArrayPartition/IterativeDivider.hpp"
+#include "ArrayPartition/OpenMPDivider.hpp"
 
 const std::string& tilesOutput = "u:/temp/data/hier_tiling/tiles.dat";
 const std::string& serversOutput = "u:/temp/data/hier_tiling/servers.dat";
@@ -20,6 +20,10 @@ const std::string& cellsToServersOutput = "u:/temp/data/hier_tiling/cells_to_ser
 
 int main(int argc, char** argv)
 {
+	//#pragma omp parallel
+	//std::cout << "Hello" << std::endl;
+
+
     clock_t begin, end;
     double elapsed_secs;
     DataHandlingUtil::InputParser parser;
@@ -30,7 +34,7 @@ int main(int argc, char** argv)
     begin = clock();
     DataHandlingUtil::ParsedData parsedData = parser.parseInputFile();
 	SumOfSquares::ShellBuilder shellBuilder(backtrackingMethod);
-	ArrayPartition::HeftArrayCreator heftArrayCreator(transformator);
+	ArrayPartition::HeftArrayCreatorOpenMP heftArrayCreator(transformator);
     int spaceDimension = parsedData.getSpaceDimension();
     int histogramResolution = parsedData.getHistogramResolution();
 	double delta = parsedData.getDelta();
@@ -45,12 +49,12 @@ int main(int argc, char** argv)
     SumOfSquares::Vector_s shellsForKNN = shellBuilder.createShells(maxShellNO, spaceDimension);
 	SumOfSquares::Vector_s shellsForRange = shellBuilder.createShells(maxRange, spaceDimension);
 
-	ArrayPartition::IterativeDivider iterativeDivider(histogram, heftArray, transformator, parsedData,
+	ArrayPartition::OpenMPDivider divider(histogram, heftArray, transformator, parsedData,
 		kNN, maxRange, shellsForKNN, shellsForRange);
 	Coords ** partition = nullptr;
-	double objectiveValue = iterativeDivider.determineObjectiveValue(partition);
+	double objectiveValue = divider.determineObjectiveValue(partition);
 	std::cout << "Objective value: " << objectiveValue << std::endl;
-	std::cout << "Sum of differences between tile hefts and delta: " << iterativeDivider.getDiffSum()
+	std::cout << "Sum of differences between tile hefts and delta: " << divider.getDiffSum()
 		<< std::endl;
 	outputWriter.writeOutTiles(spaceDimension, serverNO, partition, tilesOutput);
 	outputWriter.writeOutServers(serverNO, partition, serversOutput);

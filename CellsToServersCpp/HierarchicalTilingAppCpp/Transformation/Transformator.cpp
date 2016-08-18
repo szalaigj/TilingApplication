@@ -12,6 +12,38 @@ namespace Transformation
 		return cellIdx;
 	}
 
+	// For OpenMP solution 
+	bool Transformator::calculateCellIdx(int arrayRank, int arrayResolution,
+		int outerCellIdx, int innerCellIdx, int& cellIdx, int *& mergedArrayIndices)
+	{
+		bool validArrayIndices = true;
+		cellIdx = 0;
+		mergedArrayIndices = new int[2 * arrayRank];
+		for (int dimIdx = arrayRank - 1; dimIdx >= 0; dimIdx--)
+		{
+			int outerArrayResPow = (int)pow((double)arrayResolution, dimIdx);
+			int outerCoordVal = outerCellIdx / outerArrayResPow;
+			int innerArrayResPow = (int)pow((double)arrayResolution, dimIdx);
+			int innerCoordVal = innerCellIdx / innerArrayResPow;
+			if (outerCoordVal <= innerCoordVal)
+			{
+				cellIdx += outerCoordVal * (int)pow((double)arrayResolution, 2 * dimIdx);
+				cellIdx += innerCoordVal * (int)pow((double)arrayResolution, 2 * dimIdx + 1);
+				mergedArrayIndices[2 * dimIdx] = outerCoordVal;
+				mergedArrayIndices[2 * dimIdx + 1] = innerCoordVal;
+				outerCellIdx -= outerCoordVal * outerArrayResPow;
+				innerCellIdx -= innerCoordVal * innerArrayResPow;
+			}
+			else
+			{
+				validArrayIndices = false;
+				delete [] mergedArrayIndices;
+				break;
+			}
+		}
+		return validArrayIndices;
+	}
+
 	int Transformator::calculateExtendedCellIdx(int arrayRank, int serverNO, int arrayResolution,
 		int * extendedIndicesArray)
 	{
@@ -122,6 +154,41 @@ namespace Transformation
 			mergedArrayIndices[2 * dimIdx + 2] = innerIndicesArray[dimIdx];
 		}
 		return mergedArrayIndices;
+	}
+	
+	// For OpenMP solution
+	bool Transformator::mergeIndicesArrays(int spaceDimension, int arrayResolution, int splitNO,
+		int serverNO, int outerCellIdx, int innerCellIdx, int& extendedCellIdx, int *& mergedArrayIndices)
+	{
+		bool validArrayIndices = true;
+		extendedCellIdx = splitNO;
+		mergedArrayIndices = new int[2 * spaceDimension + 1];
+		mergedArrayIndices[0] = splitNO;
+		for (int dimIdx = spaceDimension - 1; dimIdx >= 0; dimIdx--)
+		{
+			int outerArrayResPow = (int)pow((double)arrayResolution, dimIdx);
+			int outerCoordVal = outerCellIdx / outerArrayResPow;
+			int innerArrayResPow = (int)pow((double)arrayResolution, dimIdx);
+			int innerCoordVal = innerCellIdx / innerArrayResPow;
+			if (outerCoordVal <= innerCoordVal)
+			{
+				extendedCellIdx += outerCoordVal * serverNO * 
+					(int)pow((double)arrayResolution, 2 * dimIdx);
+				extendedCellIdx += innerCoordVal * serverNO * 
+					(int)pow((double)arrayResolution, 2 * dimIdx + 1);
+				mergedArrayIndices[2 * dimIdx + 1] = outerCoordVal;
+				mergedArrayIndices[2 * dimIdx + 2] = innerCoordVal;
+				outerCellIdx -= outerCoordVal * outerArrayResPow;
+				innerCellIdx -= innerCoordVal * innerArrayResPow;
+			}
+			else
+			{
+				validArrayIndices = false;
+				delete [] mergedArrayIndices;
+				break;
+			}
+		}
+		return validArrayIndices;
 	}
 
 	int * Transformator::determineIndicesArray(int spaceDimension, int * extendedIndicesArray)
