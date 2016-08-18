@@ -48,7 +48,7 @@ namespace Measure
 				Dictionary_s * dictOfShells = transformator.convertIntPairsOfShellsToListOfIdxArrays(
 					histogramResolution, indicesArrayOfBin, shells);
 				iterateOverShells(indicesArrayOfRegion, kNN, nnInServer, nnOutserver, dictOfShells);
-				delete dictOfShells;
+				cleanUpDictOfShells(dictOfShells);
 			}
 			//nnInServer should not be greater than (kNN - nnOutserver) because nnOutserver has been 'commited':
 			nnInServer = (nnInServer <= kNN - nnOutserver) ? nnInServer : kNN - nnOutserver;

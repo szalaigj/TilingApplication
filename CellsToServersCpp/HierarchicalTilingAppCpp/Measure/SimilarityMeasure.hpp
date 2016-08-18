@@ -14,6 +14,7 @@ namespace Measure
 	protected:
 		SimilarityMeasure(T& auxData, Transformator& transformator);
 		bool isIdxArrayInTheRegion(int * idxArray, int * indicesArrayOfRegion);
+		void cleanUpDictOfShells(Dictionary_s * dictOfShells);
 	};
 
 	// There was a compiler error ("unresolved external symbol") without inline keyword 
@@ -72,6 +73,23 @@ namespace Measure
 			}
 		}
 		return result;
+	}
+
+	template <class T>
+	inline void SimilarityMeasure<T>::cleanUpDictOfShells(Dictionary_s * dictOfShells)
+	{
+		for(Dictionary_s::iterator itr = dictOfShells->begin(); itr != dictOfShells->end(); itr++)
+		{
+			Shell_idxs * idxArraysOnCurrentShell = itr->second;
+			for (Shell_idxs::iterator subItr = idxArraysOnCurrentShell->begin(); 
+				subItr != idxArraysOnCurrentShell->end(); subItr++)
+			{
+				int * currentIndicesArray = *subItr;
+				delete [] currentIndicesArray;
+			}
+			delete idxArraysOnCurrentShell;
+		}
+		delete dictOfShells;
 	}
 }
 

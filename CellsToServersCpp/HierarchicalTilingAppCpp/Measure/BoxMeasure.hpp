@@ -116,6 +116,7 @@ namespace Measure
 					getAuxData().getHistogramResolution(), indicesArrayOfIntersection);
 			heftOfIntersection = (int)(getAuxData().getHeftArray())[currentHeftCellIdx];
 		}
+		delete [] indicesArrayOfIntersection;
 		return heftOfIntersection;
 	}
 

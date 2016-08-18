@@ -57,6 +57,7 @@ namespace Measure
 			Dictionary_s * dictOfShells = transformator.convertIntPairsOfShellsToListOfIdxArrays(
                         histogramResolution, indicesArrayOfBin, currentShells);
 			measureForBin = iterateOverShells(indicesArrayOfRegion, dictOfShells);
+			cleanUpDictOfShells(dictOfShells);
 		}
 		return measureForBin;
 	}

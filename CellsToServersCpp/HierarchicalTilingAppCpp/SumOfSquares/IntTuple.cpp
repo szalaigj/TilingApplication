@@ -32,7 +32,12 @@ namespace SumOfSquares
 		{
 			outputIndicesArray[dimIdx] = tuple[dimIdx] + inputIndicesArray[dimIdx];
 		}
-		return isValidIdxArray(histogramResolution, outputIndicesArray);
+		bool isValid = isValidIdxArray(histogramResolution, outputIndicesArray);
+		if (!isValid)
+		{
+			delete [] outputIndicesArray; // For prevention of the memory leak
+		}
+		return isValid;
 	}
 
 	bool IntTuple::isValidIdxArray(int histogramResolution, int * outputIndicesArray)
