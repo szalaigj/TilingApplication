@@ -1,6 +1,7 @@
 #ifndef HEFT_ARRAY_CREATOR_HPP_
 #define HEFT_ARRAY_CREATOR_HPP_
 #include <math.h>
+#include <iostream>
 
 #include "../Transformation/Transformator.hpp"
 

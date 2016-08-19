@@ -14,10 +14,8 @@ namespace ArrayPartition
 		int histogramResolution = parsedData.getHistogramResolution();
 		int serverNO = parsedData.getServerNO();
 		int cellNO = (int)pow((double)histogramResolution, spaceDimension);
-		//double totalIterNO = (serverNO * cellNO * (cellNO + 1)) / 2.0;
-		//std::cout << "The total number of the iterations: " << totalIterNO << std::endl;
 		double iterNOForCurrentSplitNO = (cellNO * (cellNO + 1)) / 2.0;
-		int stepSize = (int)iterNOForCurrentSplitNO / 5;
+		int stepSize = (int)iterNOForCurrentSplitNO / 20;
 		int localCountMax = stepSize / nThreads;
 		for (int splitNO = 0; splitNO < serverNO; splitNO++)
 		{
