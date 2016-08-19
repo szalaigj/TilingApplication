@@ -76,7 +76,7 @@ namespace ArrayPartition
 		int * histogram, int * heftArray)
 	{
 		int cellNO = (int)pow((double)histogramResolution, spaceDimension);
-		#pragma omp parallel for
+#pragma omp parallel for num_threads(nThreads)
 		for (int outerCellIdx = 0; outerCellIdx < cellNO; outerCellIdx++)
 		{
 			for (int innerCellIdx = outerCellIdx; innerCellIdx < cellNO; innerCellIdx++)

@@ -6,6 +6,8 @@
 
 using namespace Transformation;
 
+extern const size_t nThreads;
+
 namespace ArrayPartition
 {
 	class BaseHeftArrayCreator

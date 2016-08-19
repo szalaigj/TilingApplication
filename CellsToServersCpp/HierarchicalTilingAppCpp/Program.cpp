@@ -18,20 +18,19 @@ const std::string& tilesOutput = "u:/temp/data/hier_tiling/tiles.dat";
 const std::string& serversOutput = "u:/temp/data/hier_tiling/servers.dat";
 const std::string& cellsToServersOutput = "u:/temp/data/hier_tiling/cells_to_servers.dat";
 
+// For OpenMP solution
+const size_t nThreads = 8;
+
 int main(int argc, char** argv)
 {
-	//#pragma omp parallel
-	//std::cout << "Hello" << std::endl;
-
-
     clock_t begin, end;
-    double elapsed_secs;
-    DataHandlingUtil::InputParser parser;
+	double elapsed_secs;
+	begin = clock();
+	DataHandlingUtil::InputParser parser;
 	DataHandlingUtil::OutputWriter outputWriter;
     SumOfSquares::CornacchiaMethod cornacchiaMethod;
     SumOfSquares::BacktrackingMethod backtrackingMethod(cornacchiaMethod);
     Transformation::Transformator transformator;
-    begin = clock();
     DataHandlingUtil::ParsedData parsedData = parser.parseInputFile();
 	SumOfSquares::ShellBuilder shellBuilder(backtrackingMethod);
 	ArrayPartition::HeftArrayCreatorOpenMP heftArrayCreator(transformator);

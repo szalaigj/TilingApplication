@@ -13,10 +13,22 @@ namespace ArrayPartition
 		int spaceDimension = parsedData.getSpaceDimension();
 		int histogramResolution = parsedData.getHistogramResolution();
 		int serverNO = parsedData.getServerNO();
+		int cellNO = (int)pow((double)histogramResolution, spaceDimension);
+		//double totalIterNO = (serverNO * cellNO * (cellNO + 1)) / 2.0;
+		//std::cout << "The total number of the iterations: " << totalIterNO << std::endl;
+		double iterNOForCurrentSplitNO = (cellNO * (cellNO + 1)) / 2.0;
+		int stepSize = (int)iterNOForCurrentSplitNO / 5;
+		int localCountMax = stepSize / nThreads;
 		for (int splitNO = 0; splitNO < serverNO; splitNO++)
 		{
-			int cellNO = (int)pow((double)histogramResolution, spaceDimension);
-			#pragma omp parallel for
+// The following solution for the progress bar is based on 
+//http://stackoverflow.com/questions/28050669/can-i-report-progress-for-openmp-tasks
+			int count = 0;
+#pragma omp parallel num_threads(nThreads)
+			{
+			int reportedCount = 0;
+			int localCount = 0;
+#pragma omp for
 			for (int outerCellIdx = 0; outerCellIdx < cellNO; outerCellIdx++)
 			{
 				for (int innerCellIdx = outerCellIdx; innerCellIdx < cellNO; innerCellIdx++)
@@ -30,8 +42,30 @@ namespace ArrayPartition
 					{
 						fillObjectiveValueArrayCore(splitNO, extendedCellIdx, extendedIndicesArray);
 					}
+					// update local and global progress counters
+					if (localCount >= localCountMax)
+					{
+#pragma omp atomic
+						count += localCountMax;
+						localCount = 0;
+					}
+					else
+					{
+						++localCount;
+					}
+					// report progress
+#pragma omp critical
+					if (count - reportedCount >= stepSize)
+					{
+						std::cout << "Progress for splitNO " << (splitNO + 1) <<": " << 
+							((int)((100.0*count)/iterNOForCurrentSplitNO)) << "%\r";
+						std::cout.flush();
+						reportedCount = count;
+					}
 				}
 			}
+			}
+			std::cout << "Progress for splitNO " << (splitNO + 1) <<": 100%" << std::endl;
 		}
 	}
 }

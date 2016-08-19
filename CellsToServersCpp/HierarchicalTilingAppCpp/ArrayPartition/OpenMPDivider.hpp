@@ -6,6 +6,8 @@ using namespace DataHandlingUtil;
 using namespace Transformation;
 using namespace Measure;
 
+extern const size_t nThreads;
+
 namespace ArrayPartition
 {
 	class OpenMPDivider : public BaseDivider
