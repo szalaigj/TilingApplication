@@ -1,0 +1,219 @@
+# depslib dependency file v1.0
+1484568699 source:/home/szalai/projects/TilingApplication/CellsToServersCppLinux/HierarchicalTilingAppCpp/ArrayPartition/Coords.cpp
+	"Coords.hpp"
+
+1484569194 /home/szalai/projects/TilingApplication/CellsToServersCppLinux/HierarchicalTilingAppCpp/ArrayPartition/Coords.hpp
+	<math.h>
+	<stdlib.h>
+	<string>
+	<iostream>
+	<sstream>
+	<vector>
+
+1484568699 source:/home/szalai/projects/TilingApplication/CellsToServersCppLinux/HierarchicalTilingAppCpp/ArrayPartition/HeftArrayCreator.cpp
+	"HeftArrayCreator.hpp"
+
+1484572515 /home/szalai/projects/TilingApplication/CellsToServersCppLinux/HierarchicalTilingAppCpp/ArrayPartition/HeftArrayCreator.hpp
+	<omp.h>
+	<math.h>
+	<iostream>
+	"../Transformation/Transformator.hpp"
+
+1484568913 /home/szalai/projects/TilingApplication/CellsToServersCppLinux/HierarchicalTilingAppCpp/Transformation/Transformator.hpp
+	<math.h>
+	"../SumOfSquares/Shell.hpp"
+
+1484570048 /home/szalai/projects/TilingApplication/CellsToServersCppLinux/HierarchicalTilingAppCpp/SumOfSquares/Shell.hpp
+	<math.h>
+	<map>
+	"IntTuple.hpp"
+
+1484570007 /home/szalai/projects/TilingApplication/CellsToServersCppLinux/HierarchicalTilingAppCpp/SumOfSquares/IntTuple.hpp
+	<unordered_set>
+	<list>
+	<vector>
+
+1484568699 source:/home/szalai/projects/TilingApplication/CellsToServersCppLinux/HierarchicalTilingAppCpp/ArrayPartition/IterativeDivider.cpp
+	"IterativeDivider.hpp"
+
+1484568699 /home/szalai/projects/TilingApplication/CellsToServersCppLinux/HierarchicalTilingAppCpp/ArrayPartition/IterativeDivider.hpp
+	"BaseDivider.hpp"
+
+1484568645 /home/szalai/projects/TilingApplication/CellsToServersCppLinux/HierarchicalTilingAppCpp/ArrayPartition/BaseDivider.hpp
+	<stdexcept>
+	<iostream>
+	"../DataHandlingUtil/ParsedData.hpp"
+	"../Transformation/Transformator.hpp"
+	"../Measure/IncludingAllMeasures.hpp"
+
+1484568846 /home/szalai/projects/TilingApplication/CellsToServersCppLinux/HierarchicalTilingAppCpp/DataHandlingUtil/ParsedData.hpp
+
+1484568887 /home/szalai/projects/TilingApplication/CellsToServersCppLinux/HierarchicalTilingAppCpp/Measure/IncludingAllMeasures.hpp
+	"KNNMeasure.hpp"
+	"RangeMeasure.hpp"
+	"LoadBalancingMeasure.hpp"
+	"BoxMeasure.hpp"
+	"KNNAuxData.hpp"
+	"RangeAuxData.hpp"
+	"LoadBalancingAuxData.hpp"
+	"BoxAuxData.hpp"
+
+1484568887 /home/szalai/projects/TilingApplication/CellsToServersCppLinux/HierarchicalTilingAppCpp/Measure/KNNMeasure.hpp
+	"SimilarityMeasure.hpp"
+	"KNNAuxData.hpp"
+	"../SumOfSquares/Shell.hpp"
+
+1484570519 /home/szalai/projects/TilingApplication/CellsToServersCppLinux/HierarchicalTilingAppCpp/Measure/SimilarityMeasure.hpp
+	"BaseMeasure.hpp"
+	"SimilarityAuxData.hpp"
+
+1484568887 /home/szalai/projects/TilingApplication/CellsToServersCppLinux/HierarchicalTilingAppCpp/Measure/BaseMeasure.hpp
+	"IMeasure.hpp"
+	"BaseAuxData.hpp"
+	"../Transformation/Transformator.hpp"
+
+1484568887 /home/szalai/projects/TilingApplication/CellsToServersCppLinux/HierarchicalTilingAppCpp/Measure/IMeasure.hpp
+	"../ArrayPartition/Coords.hpp"
+
+1484568887 /home/szalai/projects/TilingApplication/CellsToServersCppLinux/HierarchicalTilingAppCpp/Measure/BaseAuxData.hpp
+
+1484568887 /home/szalai/projects/TilingApplication/CellsToServersCppLinux/HierarchicalTilingAppCpp/Measure/SimilarityAuxData.hpp
+	"DefaultAuxData.hpp"
+	"../SumOfSquares/Shell.hpp"
+
+1484568887 /home/szalai/projects/TilingApplication/CellsToServersCppLinux/HierarchicalTilingAppCpp/Measure/DefaultAuxData.hpp
+	"BaseAuxData.hpp"
+
+1484568887 /home/szalai/projects/TilingApplication/CellsToServersCppLinux/HierarchicalTilingAppCpp/Measure/KNNAuxData.hpp
+	"SimilarityAuxData.hpp"
+
+1484568887 /home/szalai/projects/TilingApplication/CellsToServersCppLinux/HierarchicalTilingAppCpp/Measure/RangeMeasure.hpp
+	"IAverageMeasure.hpp"
+	"SimilarityMeasure.hpp"
+	"RangeAuxData.hpp"
+	"../SumOfSquares/Shell.hpp"
+
+1484568887 /home/szalai/projects/TilingApplication/CellsToServersCppLinux/HierarchicalTilingAppCpp/Measure/IAverageMeasure.hpp
+	"../ArrayPartition/Coords.hpp"
+
+1484568887 /home/szalai/projects/TilingApplication/CellsToServersCppLinux/HierarchicalTilingAppCpp/Measure/RangeAuxData.hpp
+	"SimilarityAuxData.hpp"
+
+1484568887 /home/szalai/projects/TilingApplication/CellsToServersCppLinux/HierarchicalTilingAppCpp/Measure/LoadBalancingMeasure.hpp
+	"BaseMeasure.hpp"
+	"LoadBalancingAuxData.hpp"
+
+1484568887 /home/szalai/projects/TilingApplication/CellsToServersCppLinux/HierarchicalTilingAppCpp/Measure/LoadBalancingAuxData.hpp
+	"DefaultAuxData.hpp"
+
+1484568887 /home/szalai/projects/TilingApplication/CellsToServersCppLinux/HierarchicalTilingAppCpp/Measure/BoxMeasure.hpp
+	<math.h>
+	<algorithm>
+	"IAverageMeasure.hpp"
+	"BaseMeasure.hpp"
+	"BoxAuxData.hpp"
+
+1484568887 /home/szalai/projects/TilingApplication/CellsToServersCppLinux/HierarchicalTilingAppCpp/Measure/BoxAuxData.hpp
+	"BaseAuxData.hpp"
+
+1484568699 source:/home/szalai/projects/TilingApplication/CellsToServersCppLinux/HierarchicalTilingAppCpp/ArrayPartition/OpenMPDivider.cpp
+	"OpenMPDivider.hpp"
+
+1484568699 /home/szalai/projects/TilingApplication/CellsToServersCppLinux/HierarchicalTilingAppCpp/ArrayPartition/OpenMPDivider.hpp
+	"BaseDivider.hpp"
+
+1484568846 source:/home/szalai/projects/TilingApplication/CellsToServersCppLinux/HierarchicalTilingAppCpp/DataHandlingUtil/InputParser.cpp
+	"InputParser.hpp"
+
+1484568846 /home/szalai/projects/TilingApplication/CellsToServersCppLinux/HierarchicalTilingAppCpp/DataHandlingUtil/InputParser.hpp
+	<iostream>
+	<math.h>
+	<fstream>
+	<string>
+	<sstream>
+	<stdexcept>
+	"ParsedData.hpp"
+
+1484568846 source:/home/szalai/projects/TilingApplication/CellsToServersCppLinux/HierarchicalTilingAppCpp/DataHandlingUtil/OutputWriter.cpp
+	"OutputWriter.hpp"
+
+1484568846 /home/szalai/projects/TilingApplication/CellsToServersCppLinux/HierarchicalTilingAppCpp/DataHandlingUtil/OutputWriter.hpp
+	<string>
+	<sstream>
+	<fstream>
+	"../ArrayPartition/Coords.hpp"
+
+1484568846 source:/home/szalai/projects/TilingApplication/CellsToServersCppLinux/HierarchicalTilingAppCpp/DataHandlingUtil/ParsedData.cpp
+	"ParsedData.hpp"
+
+1484568887 source:/home/szalai/projects/TilingApplication/CellsToServersCppLinux/HierarchicalTilingAppCpp/Measure/BaseAuxData.cpp
+	"BaseAuxData.hpp"
+
+1484568887 source:/home/szalai/projects/TilingApplication/CellsToServersCppLinux/HierarchicalTilingAppCpp/Measure/BoxAuxData.cpp
+	"BoxAuxData.hpp"
+
+1484568887 source:/home/szalai/projects/TilingApplication/CellsToServersCppLinux/HierarchicalTilingAppCpp/Measure/DefaultAuxData.cpp
+	"DefaultAuxData.hpp"
+
+1484568887 source:/home/szalai/projects/TilingApplication/CellsToServersCppLinux/HierarchicalTilingAppCpp/Measure/KNNAuxData.cpp
+	"KNNAuxData.hpp"
+
+1484568887 source:/home/szalai/projects/TilingApplication/CellsToServersCppLinux/HierarchicalTilingAppCpp/Measure/LoadBalancingAuxData.cpp
+	"LoadBalancingAuxData.hpp"
+
+1484568887 source:/home/szalai/projects/TilingApplication/CellsToServersCppLinux/HierarchicalTilingAppCpp/Measure/RangeAuxData.cpp
+	"RangeAuxData.hpp"
+
+1484568887 source:/home/szalai/projects/TilingApplication/CellsToServersCppLinux/HierarchicalTilingAppCpp/Measure/SimilarityAuxData.cpp
+	"SimilarityAuxData.hpp"
+
+1484571276 source:/home/szalai/projects/TilingApplication/CellsToServersCppLinux/HierarchicalTilingAppCpp/Program.cpp
+	<iostream>
+	<time.h>
+	<math.h>
+	"DataHandlingUtil/InputParser.hpp"
+	"DataHandlingUtil/OutputWriter.hpp"
+	"SumOfSquares/IntTuple.hpp"
+	"SumOfSquares/Shell.hpp"
+	"SumOfSquares/CornacchiaMethod.hpp"
+	"SumOfSquares/BacktrackingMethod.hpp"
+	"SumOfSquares/ShellBuilder.hpp"
+	"Transformation/Transformator.hpp"
+	"ArrayPartition/HeftArrayCreator.hpp"
+	"ArrayPartition/OpenMPDivider.hpp"
+
+1484568901 /home/szalai/projects/TilingApplication/CellsToServersCppLinux/HierarchicalTilingAppCpp/SumOfSquares/CornacchiaMethod.hpp
+	<math.h>
+	<limits>
+	"IntTuple.hpp"
+
+1484568901 /home/szalai/projects/TilingApplication/CellsToServersCppLinux/HierarchicalTilingAppCpp/SumOfSquares/BacktrackingMethod.hpp
+	<math.h>
+	"CornacchiaMethod.hpp"
+
+1484568901 /home/szalai/projects/TilingApplication/CellsToServersCppLinux/HierarchicalTilingAppCpp/SumOfSquares/ShellBuilder.hpp
+	"BacktrackingMethod.hpp"
+	"IntTuple.hpp"
+	"Shell.hpp"
+
+1484568901 source:/home/szalai/projects/TilingApplication/CellsToServersCppLinux/HierarchicalTilingAppCpp/SumOfSquares/BacktrackingMethod.cpp
+	"BacktrackingMethod.hpp"
+
+1484568901 source:/home/szalai/projects/TilingApplication/CellsToServersCppLinux/HierarchicalTilingAppCpp/SumOfSquares/CornacchiaMethod.cpp
+	"CornacchiaMethod.hpp"
+
+1484568901 source:/home/szalai/projects/TilingApplication/CellsToServersCppLinux/HierarchicalTilingAppCpp/SumOfSquares/IntTuple.cpp
+	"IntTuple.hpp"
+
+1484568901 source:/home/szalai/projects/TilingApplication/CellsToServersCppLinux/HierarchicalTilingAppCpp/SumOfSquares/Shell.cpp
+	"Shell.hpp"
+
+1484568901 source:/home/szalai/projects/TilingApplication/CellsToServersCppLinux/HierarchicalTilingAppCpp/SumOfSquares/ShellBuilder.cpp
+	"ShellBuilder.hpp"
+
+1484568913 source:/home/szalai/projects/TilingApplication/CellsToServersCppLinux/HierarchicalTilingAppCpp/Transformation/Transformator.cpp
+	"Transformator.hpp"
+
+1484568414 source:/home/szalai/projects/TilingApplication/CellsToServersCppLinux/HierarchicalTilingAppCpp/ArrayPartition/BaseDivider.cpp
+	"BaseDivider.hpp"
+

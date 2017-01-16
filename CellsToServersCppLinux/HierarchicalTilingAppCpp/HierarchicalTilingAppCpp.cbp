@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="HierarchicalTilingAppCpp" />
+		<Option pch_mode="2" />
+		<Option compiler="gcc" />
+		<Build>
+			<Target title="Debug">
+				<Option output="bin/Debug/HierarchicalTilingAppCpp" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj/Debug/" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-std=c++11" />
+					<Add option="-g" />
+				</Compiler>
+			</Target>
+			<Target title="Release">
+				<Option output="bin/Release/HierarchicalTilingAppCpp" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj/Release/" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-O2" />
+				</Compiler>
+				<Linker>
+					<Add option="-s" />
+				</Linker>
+			</Target>
+		</Build>
+		<Compiler>
+			<Add option="-Wall" />
+		</Compiler>
+		<Unit filename="ArrayPartition/BaseDivider.cpp" />
+		<Unit filename="ArrayPartition/BaseDivider.hpp" />
+		<Unit filename="ArrayPartition/Coords.cpp" />
+		<Unit filename="ArrayPartition/Coords.hpp" />
+		<Unit filename="ArrayPartition/HeftArrayCreator.cpp" />
+		<Unit filename="ArrayPartition/HeftArrayCreator.hpp" />
+		<Unit filename="ArrayPartition/IterativeDivider.cpp" />
+		<Unit filename="ArrayPartition/IterativeDivider.hpp" />
+		<Unit filename="ArrayPartition/OpenMPDivider.cpp" />
+		<Unit filename="ArrayPartition/OpenMPDivider.hpp" />
+		<Unit filename="DataHandlingUtil/InputParser.cpp" />
+		<Unit filename="DataHandlingUtil/InputParser.hpp" />
+		<Unit filename="DataHandlingUtil/OutputWriter.cpp" />
+		<Unit filename="DataHandlingUtil/OutputWriter.hpp" />
+		<Unit filename="DataHandlingUtil/ParsedData.cpp" />
+		<Unit filename="DataHandlingUtil/ParsedData.hpp" />
+		<Unit filename="Measure/BaseAuxData.cpp" />
+		<Unit filename="Measure/BaseAuxData.hpp" />
+		<Unit filename="Measure/BaseMeasure.hpp" />
+		<Unit filename="Measure/BoxAuxData.cpp" />
+		<Unit filename="Measure/BoxAuxData.hpp" />
+		<Unit filename="Measure/BoxMeasure.hpp" />
+		<Unit filename="Measure/DefaultAuxData.cpp" />
+		<Unit filename="Measure/DefaultAuxData.hpp" />
+		<Unit filename="Measure/IAverageMeasure.hpp" />
+		<Unit filename="Measure/IMeasure.hpp" />
+		<Unit filename="Measure/IncludingAllMeasures.hpp" />
+		<Unit filename="Measure/KNNAuxData.cpp" />
+		<Unit filename="Measure/KNNAuxData.hpp" />
+		<Unit filename="Measure/KNNMeasure.hpp" />
+		<Unit filename="Measure/LoadBalancingAuxData.cpp" />
+		<Unit filename="Measure/LoadBalancingAuxData.hpp" />
+		<Unit filename="Measure/LoadBalancingMeasure.hpp" />
+		<Unit filename="Measure/RangeAuxData.cpp" />
+		<Unit filename="Measure/RangeAuxData.hpp" />
+		<Unit filename="Measure/RangeMeasure.hpp" />
+		<Unit filename="Measure/SimilarityAuxData.cpp" />
+		<Unit filename="Measure/SimilarityAuxData.hpp" />
+		<Unit filename="Measure/SimilarityMeasure.hpp" />
+		<Unit filename="Program.cpp" />
+		<Unit filename="SumOfSquares/BacktrackingMethod.cpp" />
+		<Unit filename="SumOfSquares/BacktrackingMethod.hpp" />
+		<Unit filename="SumOfSquares/CornacchiaMethod.cpp" />
+		<Unit filename="SumOfSquares/CornacchiaMethod.hpp" />
+		<Unit filename="SumOfSquares/IntTuple.cpp" />
+		<Unit filename="SumOfSquares/IntTuple.hpp" />
+		<Unit filename="SumOfSquares/Shell.cpp" />
+		<Unit filename="SumOfSquares/Shell.hpp" />
+		<Unit filename="SumOfSquares/ShellBuilder.cpp" />
+		<Unit filename="SumOfSquares/ShellBuilder.hpp" />
+		<Unit filename="Transformation/Transformator.cpp" />
+		<Unit filename="Transformation/Transformator.hpp" />
+		<Extensions>
+			<envvars />
+			<code_completion />
+			<debugger />
+			<lib_finder disable_auto="1" />
+		</Extensions>
+	</Project>
+</CodeBlocks_project_file>
