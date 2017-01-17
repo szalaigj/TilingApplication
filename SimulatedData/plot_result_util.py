@@ -68,10 +68,10 @@ class PlotResultUtil:
   def _determine_euclidean_distances_of_centers(self, tilesCoords, coordsMins, stepx, stepy):
     tile_centers = np.zeros(shape=(tilesCoords.shape[0],2))
     for tileCoord_idx in range(tilesCoords.shape[0]):
-      tile_x = coordsMins[0] + stepx * tilesCoords[tileCoord_idx][1]
-      tile_y = coordsMins[1] + stepy * tilesCoords[tileCoord_idx][3]
-      width = stepx * (tilesCoords[tileCoord_idx][2] + 1 - tilesCoords[tileCoord_idx][1])
-      height = stepy * (tilesCoords[tileCoord_idx][4] + 1 - tilesCoords[tileCoord_idx][3])
+      tile_x = coordsMins[0] + stepx * tilesCoords[tileCoord_idx][3]
+      tile_y = coordsMins[1] + stepy * tilesCoords[tileCoord_idx][1]
+      width = stepx * (tilesCoords[tileCoord_idx][4] + 1 - tilesCoords[tileCoord_idx][3])
+      height = stepy * (tilesCoords[tileCoord_idx][2] + 1 - tilesCoords[tileCoord_idx][1])
       tile_center_x = tile_x + (width/2.0)
       tile_center_y = tile_y + (height/2.0)
       tile_centers[tileCoord_idx] =  np.array([tile_center_x,tile_center_y])
@@ -97,14 +97,14 @@ class PlotResultUtil:
       neighborhoods[tileCoord_idx] = []
     for tileCoord_idx in range(tilesCoords.shape[0]):
       for tileCoord_subidx in range(tilesCoords.shape[0]):
-        tile_idx_x_low = tilesCoords[tileCoord_idx][1]
-        tile_idx_x_high = tilesCoords[tileCoord_idx][2]
-        tile_idx_y_low = tilesCoords[tileCoord_idx][3]
-        tile_idx_y_high = tilesCoords[tileCoord_idx][4]
-        tile_subidx_x_low = tilesCoords[tileCoord_subidx][1]
-        tile_subidx_x_high = tilesCoords[tileCoord_subidx][2]
-        tile_subidx_y_low = tilesCoords[tileCoord_subidx][3]
-        tile_subidx_y_high = tilesCoords[tileCoord_subidx][4]
+        tile_idx_x_low = tilesCoords[tileCoord_idx][3]
+        tile_idx_x_high = tilesCoords[tileCoord_idx][4]
+        tile_idx_y_low = tilesCoords[tileCoord_idx][1]
+        tile_idx_y_high = tilesCoords[tileCoord_idx][2]
+        tile_subidx_x_low = tilesCoords[tileCoord_subidx][3]
+        tile_subidx_x_high = tilesCoords[tileCoord_subidx][4]
+        tile_subidx_y_low = tilesCoords[tileCoord_subidx][1]
+        tile_subidx_y_high = tilesCoords[tileCoord_subidx][2]
         if ((tileCoord_idx != tileCoord_subidx) and (((tile_idx_x_low <= tile_subidx_x_low) and (tile_subidx_x_low <= tile_idx_x_high) and ((tile_subidx_y_low == tile_idx_y_high + 1) or (tile_idx_y_low == tile_subidx_y_high + 1))) or ((tile_subidx_x_low <= tile_idx_x_low) and (tile_idx_x_low <= tile_subidx_x_high) and ((tile_subidx_y_low == tile_idx_y_high + 1) or (tile_idx_y_low == tile_subidx_y_high + 1))) or ((tile_idx_y_low <= tile_subidx_y_low) and (tile_subidx_y_low <= tile_idx_y_high) and ((tile_subidx_x_low == tile_idx_x_high + 1) or (tile_idx_x_low == tile_subidx_x_high + 1))) or ((tile_subidx_y_low <= tile_idx_y_low) and (tile_idx_y_low <= tile_subidx_y_high)) and ((tile_subidx_x_low == tile_idx_x_high + 1) or (tile_idx_x_low == tile_subidx_x_high + 1)))):
           neighborhoods[tileCoord_idx].append(tileCoord_subidx)
     print neighborhoods
@@ -171,10 +171,10 @@ class PlotResultUtil:
     color_pos = self._determine_color_pos(similarities)
     server_to_colors = self._determine_server_to_colors(nserver, tiles_to_servers, tilesCoords.shape[0], color_pos)
     for tileCoord_idx in range(tilesCoords.shape[0]):
-      tile_x = coordsMins[0] + stepx * tilesCoords[tileCoord_idx][1]
-      tile_y = coordsMins[1] + stepy * tilesCoords[tileCoord_idx][3]
-      width = stepx * (tilesCoords[tileCoord_idx][2] + 1 - tilesCoords[tileCoord_idx][1])
-      height = stepy * (tilesCoords[tileCoord_idx][4] + 1 - tilesCoords[tileCoord_idx][3])
+      tile_x = coordsMins[0] + stepx * tilesCoords[tileCoord_idx][3]
+      tile_y = coordsMins[1] + stepy * tilesCoords[tileCoord_idx][1]
+      width = stepx * (tilesCoords[tileCoord_idx][4] + 1 - tilesCoords[tileCoord_idx][3])
+      height = stepy * (tilesCoords[tileCoord_idx][2] + 1 - tilesCoords[tileCoord_idx][1])
       if(self.rectangle_edges):
         ax.add_patch(patches.Rectangle((tile_x, tile_y),width,height,fill=False,linewidth=3,linestyle='solid',edgecolor='k',zorder = 2))
       related_server_idx = tiles_to_servers[tileCoord_idx]
@@ -222,8 +222,7 @@ class PlotResultUtil:
     coordsMaxs = coords.max(axis=0)
     coordsMins = coords.min(axis=0)
     borders = self._determine_borders(coordsMaxs, coordsMins)
-    fig = figure()
-    ax = subplot(111, aspect='equal')
+    fig, ax = subplots()
     if(self.data_alpha == 0.0):
       current_alpha = np.minimum(1.0, 1000.0 / coords.shape[0])
     else:
