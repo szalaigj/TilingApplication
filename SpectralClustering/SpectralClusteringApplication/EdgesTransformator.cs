@@ -38,7 +38,11 @@ namespace SpectralClusteringApplication
                 transformator.transformCellIdxToIndicesArray(histogramResolution, 
                     hstgramIndicesOfFromNode, idxOfFromNode);
                 int heftOfFromNode = (int)array.GetValue(hstgramIndicesOfFromNode);
-                if (heftOfFromNode == 0)
+                if (heftOfFromNode - 1 >= kNN)
+                {
+                    weightMX[idxOfFromNode, idxOfFromNode] = 1.0;
+                }
+                else if (heftOfFromNode == 0)
                 {
                    foreach (var vertexWithoutZeroHeft in verticesWithoutZeroHeft)
                     {
@@ -48,7 +52,7 @@ namespace SpectralClusteringApplication
                 }
                 else if (heftOfFromNode - 1 < kNN)
                 {
-                    determineEdgeWeightNoLoopEdgeCase(weightMX, idxOfFromNode,
+                    determineEdgeWeight(weightMX, idxOfFromNode,
                         hstgramIndicesOfFromNode, heftOfFromNode);
                 }
             }
@@ -70,14 +74,16 @@ namespace SpectralClusteringApplication
             }
         }
 
-        private void determineEdgeWeightNoLoopEdgeCase(Matrix<double> weightMX, int idxOfFromNode, 
+        private void determineEdgeWeight(Matrix<double> weightMX, int idxOfFromNode, 
             int[] hstgramIndicesOfFromNode, int heftOfFromNode)
         {
             List<int[]> hstgramIndicesOfToNodeList =
             determineAdjacentIndices(hstgramIndicesOfFromNode);
+            int sumHeftOfToNodes = 0;
             foreach (var hstgramIndicesOfToNode in hstgramIndicesOfToNodeList)
             {
                 int heftOfToNode = (int)array.GetValue(hstgramIndicesOfToNode);
+                sumHeftOfToNodes += heftOfToNode;
                 if (heftOfToNode != 0)
                 {
                     double edgeWeight = Math.Min(heftOfToNode, kNN - (heftOfFromNode - 1));
@@ -85,6 +91,10 @@ namespace SpectralClusteringApplication
                         hstgramIndicesOfToNode);
                     weightMX[idxOfFromNode, idxOfToNode] = edgeWeight;
                 }
+            }
+            if (sumHeftOfToNodes == 0)
+            {
+                weightMX[idxOfFromNode, idxOfFromNode] = 1.0;
             }
         }
 
