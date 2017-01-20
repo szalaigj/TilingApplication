@@ -59,7 +59,8 @@ namespace SpectralClusteringApplication
         private void innerDetermineNormCutAndChildren(SpectralTreeNode spectralTreeRoot, Matrix<double> partOfWeightMX)
         {
             Matrix<double> randomWalkMX = randomWalkDesigner.createPageRankMX(partOfWeightMX, alpha);
-            Vector<double> pi = randomWalkDesigner.createStationaryDistributionOf(randomWalkMX);
+            //Vector<double> pi = randomWalkDesigner.createStationaryDistributionOf(randomWalkMX);
+            Vector<double> pi = randomWalkDesigner.createStationaryDistributionUsingPowerIterationOf(randomWalkMX);
             Matrix<double> theta = thetaMatrixFormation.createThetaMX(randomWalkMX, pi);
             Vector<double> secondLargestEigVec = thetaMatrixFormation.determineSecondLargestEigVec(theta);
             List<int> firstPartIdx, secondPartIdx;

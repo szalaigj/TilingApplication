@@ -23,22 +23,11 @@ namespace SpectralClusteringApplication
 
         public Vector<double> determineSecondLargestEigVec(Matrix<double> theta)
         {
+            // TODO: replace the following with searching for only second largest eigenpair
+            // based on: http://math.stackexchange.com/questions/1114777/approximate-the-second-largest-eigenvalue-and-corresponding-eigenvector-given
+            // and e.g. power iterations
             Evd<double> evdOfTheta = theta.Evd();
             return determineNthLargestEigVec(theta, 2);
-            // TODO: remove following comment lines:
-            //List<double> eigenValuesOfTheta = evdOfTheta.EigenValues.
-            //    Select(eigComplexVal => eigComplexVal.Real).ToList();
-            //eigenValuesOfTheta.Sort();
-            //double secondLargestEigVal = eigenValuesOfTheta[theta.RowCount - 2];
-            //int secondLargestIdx = 0;
-            //for (int idx = 0; idx < evdOfTheta.EigenValues.Count; idx++)
-            //{
-            //    if (Math.Abs(evdOfTheta.EigenValues[idx].Real - secondLargestEigVal) < 0.0000001)
-            //    {
-            //        secondLargestIdx = idx;
-            //    }
-            //}
-            //return evdOfTheta.EigenVectors.Column(secondLargestIdx);
         }
 
         public Vector<double> determineNthLargestEigVec(Matrix<double> theta, int index)
@@ -47,19 +36,6 @@ namespace SpectralClusteringApplication
             // Based on documentation (see: http://numerics.mathdotnet.com/api/MathNet.Numerics.LinearAlgebra.Factorization/Evd%601.htm#EigenValues)
             // The property EigenValues of Evd stores eigenvalues of matrix in ascending order
             int nthLargestIdx = theta.RowCount - index;
-            // TODO: remove following comment lines:
-            //List<double> eigenValuesOfTheta = evdOfTheta.EigenValues.
-            //    Select(eigComplexVal => eigComplexVal.Real).ToList();
-            //eigenValuesOfTheta.Sort();
-            //double nthLargestEigVal = eigenValuesOfTheta[theta.RowCount - index];
-            //int nthLargestIdx = 0;
-            //for (int idx = 0; idx < evdOfTheta.EigenValues.Count; idx++)
-            //{
-            //    if (Math.Abs(evdOfTheta.EigenValues[idx].Real - nthLargestEigVal) < 0.0000001)
-            //    {
-            //        nthLargestIdx = idx;
-            //    }
-            //}
             return evdOfTheta.EigenVectors.Column(nthLargestIdx);
         }
 
@@ -73,25 +49,6 @@ namespace SpectralClusteringApplication
             eigenValuesOfTheta.Sort();
             Matrix<double> objCoords = Matrix<double>.Build.DenseDiagonal(nodeNO, depth, 0.0);
             int cntOfDepth = 0;
-            // TODO: remove following comment lines:
-            //for (int idxOfEigVal = evdOfTheta.EigenValues.Count - 1; (idxOfEigVal >= 0) && (cntOfDepth != depth); 
-            //    idxOfEigVal--)
-            //{
-            //    for (int nThEigVal = 2; nThEigVal < depth + 2; nThEigVal++)
-            //    {
-            //        double currentEigVal = eigenValuesOfTheta[nodeNO - nThEigVal];
-            //        if (Math.Abs(evdOfTheta.EigenValues[idxOfEigVal].Real - currentEigVal) < 0.0000001)
-            //        {
-            //            Vector<double> currentEigVec = evdOfTheta.EigenVectors.Column(idxOfEigVal);
-            //            for (int idxOfObj = 0; idxOfObj < nodeNO; idxOfObj++)
-            //            {
-            //                objCoords[idxOfObj, nThEigVal - 2] = currentEigVec[idxOfObj];
-            //            }
-            //            cntOfDepth++;
-            //            break;
-            //        }
-            //    }
-            //}
             // Based on documentation (see: http://numerics.mathdotnet.com/api/MathNet.Numerics.LinearAlgebra.Factorization/Evd%601.htm#EigenValues)
             // The property EigenValues of Evd stores eigenvalues of matrix in ascending order
             for (int idx = evdOfTheta.EigenValues.Count - 1; (idx >= 0) && (cntOfDepth < depth); idx--)
