@@ -123,7 +123,7 @@ namespace SpectralClusteringApplication.SumOfSquares
             {
                 for (int t = 1; t < num / 2; t++)
                 {
-                    if (t * t < int.MaxValue)
+                    if (t < Math.Sqrt(int.MaxValue))
                     {
                         innerApplyCornacchiaMethodPrimitiveSolution(num, container, t);
                     }
@@ -150,7 +150,7 @@ namespace SpectralClusteringApplication.SumOfSquares
                     r2 = (r1 % r2);
                     r1 = tmp;
                 }
-                if (r1 * r1 > num)
+                if (r1 > Math.Sqrt(num))
                 {
                     x = r2;
                     y = r1 % r2;
